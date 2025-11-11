@@ -34,7 +34,7 @@ class FinancialIntegration {
 
     /**
      * Processa dados financeiros
-     * Agora aceita QUALQUER status válido (não apenas "Presença confirmada")
+     * Agora ACUMULA dados como no módulo de Evoluções
      */
     processData(text, silent = false, acceptAnyStatus = false) {
         try {
@@ -79,8 +79,16 @@ class FinancialIntegration {
                 return;
             }
 
-            // Analyze (passa records que já estão filtrados)
-            this.analyzer = new FinancialAnalyzer(recordsToProcess);
+            // 🔑 CRUCIAL: Recupera registros antigos para ACUMULAR
+            const registrosAntigos = window.dataManager?.getFinanceiroRecords?.() || [];
+            console.log(`📊 Registros antigos carregados: ${registrosAntigos.length}`);
+            
+            // Combina registros antigos com novos (ACUMULAÇÃO)
+            const registrosCombinados = [...registrosAntigos, ...recordsToProcess];
+            console.log(`📊 Total de registros após acumular: ${registrosCombinados.length}`);
+
+            // Analyze com TODOS os registros (antigos + novos)
+            this.analyzer = new FinancialAnalyzer(registrosCombinados);
             const analysis = this.analyzer.analyze();
             console.log(`   - Análise gerada: ${analysis?.summary?.totalAtendimentos} atendimentos`);
 
@@ -93,26 +101,26 @@ class FinancialIntegration {
                 return;
             }
 
-            // Salva dados (sem deixar falhas afetarem notificação)
+            // Salva dados (COMBINADOS - antigos + novos)
             try {
                 if (window.dataManager) {
-                    window.dataManager.addFinanceiro(analysis, recordsToProcess);
-                    console.log(`   - Dados salvos no dataManager`);
+                    window.dataManager.addFinanceiro(analysis, registrosCombinados);
+                    console.log(`   - Dados salvos no dataManager (acumulado)`);
                 }
             } catch (saveError) {
                 console.warn('Aviso ao salvar dados financeiros:', saveError);
             }
 
-            // Render
-            console.log(`   - Renderizando UI com ${recordsToProcess.length} registros`);
-            this.ui.render(analysis, recordsToProcess);
+            // Render com dados ACUMULADOS
+            console.log(`   - Renderizando UI com ${registrosCombinados.length} registros acumulados`);
+            this.ui.render(analysis, registrosCombinados);
 
             // Mostra notificação apenas se não for silencioso
             if (!silent) {
-                this.showNotification(`${recordsToProcess.length} registros processados com sucesso!`, 'success');
+                this.showNotification(`${recordsToProcess.length} registros processados! Total acumulado: ${registrosCombinados.length}`, 'success');
             }
             
-            console.log(`✅ FinancialIntegration.processData() concluído com sucesso`);
+            console.log(`✅ FinancialIntegration.processData() concluído com ${registrosCombinados.length} registros totais`);
         } catch (error) {
             console.error('Erro na análise financeira:', error);
             if (!silent) {

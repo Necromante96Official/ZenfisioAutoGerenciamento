@@ -84,13 +84,16 @@ class DataManager {
 
     /**
      * Adiciona dados financeiros
-     * Mantém compatibilidade com diferentes estruturas de dados
+     * ACUMULA com dados antigos (não substitui)
      */
     addFinanceiro(analysis, records = []) {
         if (!analysis) return false;
         
-        // Se análise já possui estrutura de resumo, usa diretamente
-        // Caso contrário, tenta extrair os campos esperados
+        console.log(`💾 DataManager.addFinanceiro() - Acumulando dados`);
+        console.log(`   - Novos registros: ${records.length}`);
+        console.log(`   - Registros antigos: ${this.data.financeiro_records?.length || 0}`);
+        
+        // Atualiza análise (esta é sempre recalculada com dados acumulados)
         this.data.financeiro = {
             summary: analysis.summary || analysis?.summary,
             byDate: analysis.byDate || analysis?.byDate,
@@ -105,7 +108,11 @@ class DataManager {
             records = analysis.records;
         }
         
+        // 🔑 CRUCIAL: Usa os records passados diretamente (já contém acúmulo de FinancialIntegration)
         this.data.financeiro_records = Array.isArray(records) ? records : [];
+        
+        console.log(`   - Total acumulado: ${this.data.financeiro_records.length}`);
+        
         this.saveData();
         return true;
     }
