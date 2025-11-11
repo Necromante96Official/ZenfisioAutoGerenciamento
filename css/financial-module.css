@@ -518,3 +518,112 @@
         gap: 1rem;
     }
 }
+
+/* ========================================
+   REGISTROS DETALHADOS
+   ======================================== */
+
+.financial-detailed-records {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.records-group {
+    background: var(--bg-secondary);
+    border: 1px solid rgba(47, 190, 143, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    animation: slideUp 0.3s var(--transition-normal);
+}
+
+.records-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, rgba(47, 190, 143, 0.1), rgba(47, 190, 143, 0.02));
+    border-bottom: 2px solid rgba(47, 190, 143, 0.2);
+}
+
+.records-group-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.records-count {
+    background: var(--accent-primary);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.records-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.detailed-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.detailed-table thead {
+    background: rgba(47, 190, 143, 0.08);
+    border-bottom: 2px solid rgba(47, 190, 143, 0.3);
+}
+
+.detailed-table th {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.detailed-table tbody tr {
+    border-bottom: 1px solid rgba(47, 190, 143, 0.1);
+    animation: fadeIn 0.3s var(--transition-normal) forwards;
+    opacity: 0;
+    transition: background-color var(--transition-normal);
+}
+
+.detailed-table tbody tr:hover {
+    background-color: rgba(47, 190, 143, 0.05);
+}
+
+.detailed-table td {
+    padding: 0.9rem 1.2rem;
+    color: var(--text-secondary);
+}
+
+.detailed-table .value-cell {
+    font-weight: 600;
+    color: var(--accent-primary);
+}
+
+@media (max-width: 768px) {
+    .records-group {
+        border-radius: 8px;
+    }
+
+    .records-group-header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .detailed-table {
+        font-size: 0.85rem;
+    }
+
+    .detailed-table th,
+    .detailed-table td {
+        padding: 0.6rem 0.8rem;
+    }
+}

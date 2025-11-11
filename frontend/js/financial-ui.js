@@ -90,6 +90,9 @@ class FinancialUI {
                 case 'pacientes':
                     activeTab.innerHTML = this._renderPatients(this.data.byPatient || { isentos: [], particulares: [] });
                     break;
+                case 'registros':
+                    activeTab.innerHTML = this._renderDetailedRecords(this.originalRecords);
+                    break;
             }
         }
     }
@@ -182,6 +185,9 @@ class FinancialUI {
                         <button class="financial-tab-btn" data-tab="pacientes">
                             👥 Pacientes
                         </button>
+                        <button class="financial-tab-btn" data-tab="registros">
+                            📋 Registros Detalhados
+                        </button>
                     </div>
                 </div>
 
@@ -205,6 +211,11 @@ class FinancialUI {
                     <!-- Pacientes Tab -->
                     <div class="financial-tab-pane" id="pacientes">
                         ${this._renderPatients(byPatient)}
+                    </div>
+
+                    <!-- Registros Detalhados Tab -->
+                    <div class="financial-tab-pane" id="registros">
+                        ${this._renderDetailedRecords(this.originalRecords)}
                     </div>
                 </div>
             </div>
@@ -395,6 +406,99 @@ class FinancialUI {
                 </div>
             </div>
         `;
+    }
+
+    /**
+     * Renderiza registros detalhados com status
+     */
+    _renderDetailedRecords(records) {
+        if (!records || records.length === 0) {
+            return `<div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <div class="empty-state-title">Nenhum registro encontrado</div>
+                <div class="empty-state-text">Processe dados para ver registros detalhados</div>
+            </div>`;
+        }
+
+        // Agrupa por status para melhor visualização
+        const porStatus = {};
+        records.forEach(record => {
+            const status = record.status || 'Sem Status';
+            if (!porStatus[status]) {
+                porStatus[status] = [];
+            }
+            porStatus[status].push(record);
+        });
+
+        return `
+            <div class="financial-detailed-records">
+                ${Object.entries(porStatus).map(([status, regs]) => `
+                    <div class="records-group">
+                        <div class="records-group-header">
+                            <h4>${this._getStatusIcon(status)} ${status}</h4>
+                            <span class="records-count">${regs.length} registro${regs.length !== 1 ? 's' : ''}</span>
+                        </div>
+                        <div class="records-table">
+                            <table class="detailed-table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Horário</th>
+                                        <th>Fisioterapeuta</th>
+                                        <th>Paciente</th>
+                                        <th>Convênio</th>
+                                        <th>Procedimentos</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${regs.map((r, idx) => `
+                                        <tr style="animation-delay: ${idx * 0.02}s">
+                                            <td>${r.dataProcessamento || r.dataAtendimento || '-'}</td>
+                                            <td>${r.horario || '-'}</td>
+                                            <td>${r.fisioterapeuta || '-'}</td>
+                                            <td>${r.paciente || '-'}</td>
+                                            <td>${r.convenio || '-'}</td>
+                                            <td>${r.procedimentos || '-'}</td>
+                                            <td class="value-cell">R$ ${this._formatValue(r.valor || 0)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    /**
+     * Retorna ícone para cada status
+     */
+    _getStatusIcon(status) {
+        const icons = {
+            'Presença confirmada': '✅',
+            'Confirmado': '✅',
+            'Atendido': '📋',
+            'Compareceu': '👤',
+            'Falta': '❌',
+            'Cancelado': '🚫',
+            'Sem Status': '❓'
+        };
+        
+        // Verifica se há correspondência exata
+        if (icons[status]) {
+            return icons[status];
+        }
+        
+        // Verifica correspondência parcial
+        for (const [key, icon] of Object.entries(icons)) {
+            if (status.toLowerCase().includes(key.toLowerCase())) {
+                return icon;
+            }
+        }
+        
+        return '📌'; // ícone padrão
     }
 
     /**

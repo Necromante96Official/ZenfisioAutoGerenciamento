@@ -84,7 +84,7 @@ class NotificationSystem {
         // Cria elemento para o ícone
         const iconSpan = document.createElement('span');
         iconSpan.className = 'notification-icon';
-        iconSpan.textContent = icon;
+        iconSpan.innerHTML = icon; // Usa innerHTML em vez de textContent para suportar emojis corretamente
         iconSpan.style.cssText = `
             flex-shrink: 0;
             font-size: 1.2em;
@@ -93,6 +93,7 @@ class NotificationSystem {
             align-items: center;
             justify-content: center;
             min-width: 24px;
+            line-height: 1;
         `;
 
         // Cria elemento para o texto
@@ -105,7 +106,7 @@ class NotificationSystem {
             white-space: normal;
         `;
 
-        // Adiciona ícone e texto à notificação
+        // Adiciona apenas ícone e texto à notificação (sem duplicação)
         notification.appendChild(iconSpan);
         notification.appendChild(textSpan);
 

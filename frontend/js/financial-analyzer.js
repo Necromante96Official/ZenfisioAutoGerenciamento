@@ -9,6 +9,14 @@ class FinancialAnalyzer {
     }
 
     /**
+     * Normaliza nome para agrupamento consistente
+     */
+    _normalizeName(name) {
+        if (!name || typeof name !== 'string') return '';
+        return name.trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    /**
      * Executa análise completa
      */
     analyze() {
@@ -28,16 +36,8 @@ class FinancialAnalyzer {
 
     /**
      * Valida record financeiro (não utilizado - validation feita no parser)
+     * REMOVIDO: Função não é utilizada no processo de análise
      */
-    _validateRecord(record) {
-        return record && 
-               record.fisioterapeuta && 
-               record.paciente && 
-               record.convenio &&
-               record.procedimentos &&
-               record.status && 
-               record.status.toLowerCase().includes('presença confirmada');
-    }
 
     /**
      * Gera resumo geral
@@ -64,13 +64,32 @@ class FinancialAnalyzer {
         const dateMap = {};
 
         this.records.forEach(record => {
-            const dataProcessamento = record.dataProcessamento || 'Data não informada';
+            // Garante que dataProcessamento seja preenchida, nunca fica "Data não informada"
+            let dataProcessamento = record.dataProcessamento;
+            
+            // Se não tiver data, usa data do mês/ano ou data atual
+            if (!dataProcessamento || dataProcessamento === 'Data não informada') {
+                if (record.mes && record.ano) {
+                    // Tenta formatar com mês/ano disponíveis
+                    const dia = '01';
+                    const mes = String(record.mes).padStart(2, '0');
+                    const ano = record.ano;
+                    dataProcessamento = `${dia}/${mes}/${ano}`;
+                } else {
+                    // Usa data atual como fallback
+                    const hoje = new Date();
+                    const dia = String(hoje.getDate()).padStart(2, '0');
+                    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+                    const ano = hoje.getFullYear();
+                    dataProcessamento = `${dia}/${mes}/${ano}`;
+                }
+            }
             
             if (!dateMap[dataProcessamento]) {
                 dateMap[dataProcessamento] = {
                     data: dataProcessamento,
-                    mes: record.mes,
-                    ano: record.ano,
+                    mes: record.mes || new Date().getMonth() + 1,
+                    ano: record.ano || new Date().getFullYear(),
                     atendimentos: 0,
                     pagantes: 0,
                     isentos: 0,
@@ -141,11 +160,14 @@ class FinancialAnalyzer {
         const professionals = {};
 
         this.records.forEach(record => {
-            const pro = record.fisioterapeuta;
+            // Normaliza nome do profissional para evitar duplicatas por espaços/maiúsculas
+            const proNormalized = this._normalizeName(record.fisioterapeuta);
+            const proDisplay = record.fisioterapeuta; // Original para exibição
 
-            if (!professionals[pro]) {
-                professionals[pro] = {
-                    nome: pro,
+            if (!professionals[proNormalized]) {
+                professionals[proNormalized] = {
+                    nome: proDisplay,
+                    nomeNormalizado: proNormalized,
                     atendimentos: 0,
                     pagantes: 0,
                     isentos: 0,
@@ -155,15 +177,16 @@ class FinancialAnalyzer {
                 };
             }
 
-            professionals[pro].atendimentos++;
-            professionals[pro].receita += record.valor || 0;
-            professionals[pro].pacientes.add(record.paciente);
-            professionals[pro].especialidades.add(this._extractSpecialty(record.procedimentos));
+            professionals[proNormalized].atendimentos++;
+            professionals[proNormalized].receita += record.valor || 0;
+            const pacienteNormalized = this._normalizeName(record.paciente);
+            professionals[proNormalized].pacientes.add(pacienteNormalized);
+            professionals[proNormalized].especialidades.add(this._extractSpecialty(record.procedimentos));
 
             if (this._isIsento(record.convenio)) {
-                professionals[pro].isentos++;
+                professionals[proNormalized].isentos++;
             } else {
-                professionals[pro].pagantes++;
+                professionals[proNormalized].pagantes++;
             }
         });
 
@@ -184,8 +207,12 @@ class FinancialAnalyzer {
         const particulares = [];
 
         this.records.forEach(record => {
+            // Normaliza nome do paciente
+            const pacienteNormalizado = this._normalizeName(record.paciente);
+            
             const patientEntry = {
                 nome: record.paciente,
+                nomeNormalizado: pacienteNormalizado,
                 celular: record.celular || '-',
                 fisioterapeuta: record.fisioterapeuta,
                 especialidade: this._extractSpecialty(record.procedimentos),
@@ -212,17 +239,20 @@ class FinancialAnalyzer {
     }
 
     /**
-     * Agrupa pacientes por nome
+     * Agrupa pacientes por nome (usa nome normalizado para agrupamento)
      */
     _groupPatients(patients) {
         const grouped = {};
 
         patients.forEach(p => {
-            if (!grouped[p.nome]) {
-                grouped[p.nome] = { ...p };
+            // Usa nome normalizado como chave
+            const key = p.nomeNormalizado || this._normalizeName(p.nome);
+            
+            if (!grouped[key]) {
+                grouped[key] = { ...p };
             } else {
-                grouped[p.nome].atendimentos++;
-                grouped[p.nome].valor += p.valor;
+                grouped[key].atendimentos++;
+                grouped[key].valor += p.valor;
             }
         });
 
@@ -256,11 +286,14 @@ class FinancialAnalyzer {
 
     /**
      * Determina se é isento
+     * Retorna true se contém "isento" na descrição
+     * Retorna false para particular ou convênio
      */
     _isIsento(convenio) {
         if (!convenio) return false;
-        const lower = convenio.toLowerCase();
-        return lower.includes('isento') || !lower.includes('particular');
+        const lower = convenio.toLowerCase().trim();
+        // Isento = contém palavra "isento"
+        return lower.includes('isento');
     }
 
     /**

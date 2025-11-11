@@ -38,8 +38,14 @@ class FinancialIntegration {
      */
     processData(text, silent = false, acceptAnyStatus = false) {
         try {
+            console.log(`📊 FinancialIntegration.processData() iniciado`);
+            console.log(`   - Tamanho do texto: ${text?.length} caracteres`);
+            console.log(`   - Silent mode: ${silent}`);
+            console.log(`   - Accept any status: ${acceptAnyStatus}`);
+
             // Parse
             const records = this.parser.parse(text);
+            console.log(`   - Records parseados: ${records.length}`);
             
             if (records.length === 0) {
                 if (!silent) {
@@ -69,18 +75,21 @@ class FinancialIntegration {
                         : 'Nenhum registro com "Presença confirmada"';
                     this.showNotification(msg, 'warning');
                 }
+                console.log(`   - Nenhum registro para processar após filtro`);
                 return;
             }
 
             // Analyze (passa records que já estão filtrados)
             this.analyzer = new FinancialAnalyzer(recordsToProcess);
             const analysis = this.analyzer.analyze();
+            console.log(`   - Análise gerada: ${analysis?.summary?.totalAtendimentos} atendimentos`);
 
             // Verifica se gerou alguma análise
             if (!analysis.summary || analysis.summary.totalAtendimentos === 0) {
                 if (!silent) {
                     this.showNotification('Nenhum dado para análise', 'warning');
                 }
+                console.log(`   - Análise sem dados válidos`);
                 return;
             }
 
@@ -88,18 +97,22 @@ class FinancialIntegration {
             try {
                 if (window.dataManager) {
                     window.dataManager.addFinanceiro(analysis, recordsToProcess);
+                    console.log(`   - Dados salvos no dataManager`);
                 }
             } catch (saveError) {
                 console.warn('Aviso ao salvar dados financeiros:', saveError);
             }
 
             // Render
+            console.log(`   - Renderizando UI com ${recordsToProcess.length} registros`);
             this.ui.render(analysis, recordsToProcess);
 
             // Mostra notificação apenas se não for silencioso
             if (!silent) {
                 this.showNotification(`✅ ${recordsToProcess.length} registros processados com sucesso!`, 'success');
             }
+            
+            console.log(`✅ FinancialIntegration.processData() concluído com sucesso`);
         } catch (error) {
             console.error('Erro na análise financeira:', error);
             if (!silent) {

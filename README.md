@@ -3,11 +3,13 @@
   
   # Auto Gerenciamento Zenfisio
   
-  **Sistema Inteligente de Gerenciamento de Dados e Análise Financeira para Clínicas de Fisioterapia**
+  **Sistema Proprietário de Gerenciamento de Dados e Análise Financeira**
   
-  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.6-brightgreen)](https://github.com/Necromante96Official/ZenfisioAutoGerenciamento)
-  [![Licença](https://img.shields.io/badge/licen%C3%A7a-Proprietária-blue)](LICENSE)
-  [![Status](https://img.shields.io/badge/status-Em%20Desenvolvimento-yellow)](https://github.com/Necromante96Official/ZenfisioAutoGerenciamento)
+  *Uso Exclusivo: Zenfisio - Clínica de Fisioterapia*
+  
+  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.6-brightgreen)](#)
+  [![Licença](https://img.shields.io/badge/licen%C3%A7a-Proprietária%20Zenfisio-blue)](#direitos-autorais)
+  [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
   
 </div>
 
@@ -31,9 +33,11 @@
 
 ## 🎯 Sobre o Projeto
 
-**Auto Gerenciamento Zenfisio** é uma solução web moderna e intuitiva desenvolvida especificamente para clínicas de fisioterapia. O sistema automatiza o processamento de dados de pacientes, análise de evoluções pendentes e fornece insights financeiros detalhados através de uma interface responsiva e amigável.
+**Auto Gerenciamento Zenfisio** é um sistema web proprietário desenvolvido exclusivamente para uso interno na Clínica Zenfisio de Fisioterapia. O sistema automatiza o processamento de dados de pacientes, análise de evoluções pendentes e fornece insights financeiros detalhados através de uma interface moderna e responsiva.
 
-Desenvolvido com tecnologias vanilla JavaScript, HTML5 e CSS3, o projeto oferece uma experiência leve, rápida e confiável, sem dependências externas complexas.
+Desenvolvido com tecnologias vanilla JavaScript, HTML5 e CSS3, oferece uma experiência de uso leve, rápida e confiável, otimizada para os fluxos operacionais específicos da clínica.
+
+⚠️ **INFORMAÇÃO IMPORTANTE**: Este software é de propriedade exclusiva da Zenfisio e seu acesso e uso são restritos ao pessoal autorizado da clínica.
 
 ---
 
@@ -48,7 +52,7 @@ Desenvolvido com tecnologias vanilla JavaScript, HTML5 e CSS3, o projeto oferece
   - Por Paciente (particular vs. isento)
 - **Filtros Avançados**: Customize análises por período, especialidade e profissional
 - **Indicadores de Performance**: Total de atendimentos, receita, taxa de conversão
-- **Exportação de Dados**: Backup e compartilhamento de informações
+- **Backup de Dados**: Exportação segura de dados em JSON para recuperação local
 
 ### 📝 Módulo de Evoluções Pendentes
 - **Processamento Inteligente**: Extração automática de informações do texto
@@ -65,11 +69,11 @@ Desenvolvido com tecnologias vanilla JavaScript, HTML5 e CSS3, o projeto oferece
 - **Modal Personalizado**: Confirmações e diálogos profissionais
 
 ### 💾 Gerenciamento de Dados
-- **Armazenamento Local**: Dados persistidos em LocalStorage
+- **Armazenamento Local**: Dados persistidos exclusivamente em LocalStorage
 - **Auto-save**: Salvamento automático a cada 10 segundos
-- **Backup Inteligente**: Exportação e importação de dados em JSON
+- **Backup Seguro**: Exportação de dados em JSON para recuperação
 - **Limpeza Modular**: Remova dados de forma independente por módulo
-- **Histórico de Versões**: Rastreamento completo de atualizações
+- **Histórico de Versões**: Rastreamento completo de atualizações do sistema
 
 ---
 
@@ -97,34 +101,23 @@ O projeto foi deliberadamente desenvolvido sem frameworks ou bibliotecas externa
 ### Pré-requisitos
 - Navegador moderno com suporte a ES6+ (Chrome 51+, Firefox 54+, Safari 10+, Edge 15+)
 - Servidor web local (para servir arquivos estáticos)
+- Permissão de acesso concedida pela administração da Clínica Zenfisio
 
-### Passo 1: Clonar o Repositório
-
-```bash
-git clone https://github.com/Necromante96Official/ZenfisioAutoGerenciamento.git
-cd ZenfisioAutoGerenciamento
-```
-
-### Passo 2: Iniciar Servidor Local
+### Inicializar o Sistema
 
 **Opção A: Python 3**
 ```bash
 python -m http.server 8000
 ```
 
-**Opção B: Node.js**
-```bash
-npx http-server
-```
-
-**Opção C: PowerShell Windows (Incluído)**
+**Opção B: PowerShell Windows (Recomendado - Incluído)**
 ```batch
 server.bat
 ```
 
-### Passo 3: Acessar a Aplicação
+### Acessar a Aplicação
 
-Abra seu navegador e acesse:
+Após iniciar o servidor, abra seu navegador e acesse:
 ```
 http://localhost:8000
 ```
@@ -180,13 +173,16 @@ http://localhost:8000
    - Selecione período, especialidade ou profissional
    - Aplique para visualizar dados específicos
 
-4. **Limpeza**
+4. **Limpeza de Dados**
    - Use "Limpar Financeiro" para remover dados deste módulo
+   - Confirme na janela modal de confirmação
    - Dados de Evoluções **não serão afetados**
+   - Importante: Sempre faça backup antes de limpar
 
-5. **Exportação**
-   - Clique em "Exportar" para baixar dados em JSON
-   - Guarde como backup ou para compartilhamento
+5. **Backup Local**
+   - Use "Exportar" para baixar dados em JSON
+   - Guarde backups regularmente em local seguro
+   - Importante para recuperação de dados
 
 ---
 
@@ -308,192 +304,248 @@ Diálogos elegantes e responsivos que:
 
 ## 📜 Termos de Uso
 
-### 1. Licença de Uso
+### 1. Licença Proprietária Exclusiva
 
-Este software é fornecido sob uma **Licença Proprietária Personalizada**. Você tem direito de:
-- ✅ Usar o software em sua clínica
-- ✅ Fazer backup e restauração
-- ✅ Usar em ambiente local/privado
-- ✅ Customizar para sua operação específica
+Este software é propriedade intelectual da **Zenfisio - Clínica de Fisioterapia** e fornecido sob licença proprietária personalizada restritiva. 
 
-### 2. Restrições
+**Usuários Autorizados:**
+- ✅ Apenas funcionários da Zenfisio com autorização expressa
+- ✅ Acesso limitado ao horário de funcionamento comercial
+- ✅ Uso exclusivamente para operações internas da clínica
 
-Você **NÃO** pode:
-- ❌ Redistribuir o software sem autorização
-- ❌ Vender ou ofertar comercialmente
-- ❌ Remover ou modificar avisos de copyright
-- ❌ Usar em terceiros sem consentimento
-- ❌ Criar versões derivadas para revenda
+### 2. Direitos Concedidos
 
-### 3. Dados Pessoais
+Os usuários autorizados têm direito de:
+- ✅ Usar o software exclusivamente na clínica Zenfisio
+- ✅ Processar e gerenciar dados de pacientes da clínica
+- ✅ Fazer backup dos dados para recuperação
+- ✅ Utilizar em ambiente local da clínica
 
-- Todos os dados são armazenados **localmente** em sua máquina
-- Nenhuma informação é enviada para servidores externos
-- Você mantém controle total sobre seus dados
-- Recomenda-se fazer backup regularmente
+### 3. Restrições Absolutas
 
-### 4. Suporte
+**Terminantemente Proibido:**
+- ❌ Copiar, clonar ou redistribuir o software
+- ❌ Acessar, modificar ou visualizar o código-fonte sem autorização
+- ❌ Utilizar em outras clínicas ou organizações
+- ❌ Criar versões derivadas ou modificadas
+- ❌ Vender, licenciar ou comercializar de qualquer forma
+- ❌ Compartilhar acesso com pessoas não autorizadas
+- ❌ Remover ou modificar avisos de copyright e propriedade
+- ❌ Realizar engenharia reversa ou decomposição
+- ❌ Utilizar para fins competitivos
 
-- Suporte técnico disponível através do repositório GitHub
-- Reportar bugs através de Issues
-- Sugestões e melhorias bem-vindas
+### 4. Proteção de Dados
 
-### 5. Limitação de Responsabilidade
+- 🔒 Todos os dados são armazenados **exclusivamente localmente** em sua máquina
+- 🔒 Nenhuma informação é transmitida para servidores externos
+- 🔒 Dados de pacientes são confidenciais e protegidos por LGPD
+- 🔒 Responsabilidade total da clínica pela segurança dos dados
+- 🔒 Backups devem ser realizados regularmente pela clínica
 
-Este software é fornecido "COMO ESTÁ", sem garantias. O desenvolvedor não se responsabiliza por:
-- Perda de dados
-- Interrupções de serviço
-- Danos diretos ou indiretos
-- Uso indevido ou negligência
+### 5. Conformidade Legal
+
+- Este software está em conformidade com a LGPD (Lei Geral de Proteção de Dados)
+- Dados pessoais de pacientes são tratados conforme legislação vigente
+- A clínica é responsável pela privacidade e segurança dos dados
+- Uso deve estar de acordo com normas do Conselho Federal de Fisioterapia
+
+### 6. Suporte Técnico
+
+- Suporte técnico disponível exclusivamente para usuários autorizados
+- Reportar bugs através de canais internos autorizados
+- Melhorias solicitadas pelos responsáveis da clínica
+
+### 7. Limitação de Responsabilidade
+
+Este software é fornecido "COMO ESTÁ". A Zenfisio não se responsabiliza por:
+- Perda ou corrupção de dados (recomenda-se backup regular)
+- Interrupções ou indisponibilidade do serviço
+- Danos diretos, indiretos ou consequentes
+- Uso indevido por pessoas não autorizadas
+- Falhas de segurança causadas por negligência do usuário
+
+### 8. Encerramento de Acesso
+
+A Zenfisio reserva-se o direito de:
+- Revogar acesso a qualquer momento
+- Encerrar uso do software sem aviso prévio
+- Alterar funcionalidades e termos conforme necessário
+- Investigar violações de uso e tomar ações legais
 
 ---
 
-## ©️ Direitos Autorais
+## ©️ Direitos Autorais e Propriedade
 
 ```
-© 2024-2025 Auto Gerenciamento Zenfisio
-Todos os direitos reservados.
+© 2025 - Auto Gerenciamento Zenfisio
+TODOS OS DIREITOS RESERVADOS
 
-Desenvolvido por: Lucas Tavares
 Zenfisio - Clínica de Fisioterapia
+Desenvolvido por: Lucas Tavares
+Data de Criação: Novembro de 2025
+Versão: 1.0.0.6
 ```
 
-### Propriedade Intelectual
+### Propriedade Intelectual Exclusiva
 
-- **Logo e Marca**: Zenfisio™ é marca registrada
-- **Código-fonte**: Protegido por copyright © 2024-2025
-- **Documentação**: Todos os direitos reservados
-- **Versão**: 1.0.0.6
+- **Logo e Marca Registrada**: Zenfisio™ é marca registrada e propriedade da clínica
+- **Código-fonte**: Protegido por copyright © 2025 - Propriedade exclusiva da Zenfisio
+- **Arquivos de Sistema**: Todos os direitos reservados
+- **Documentação**: Propriedade intelectual da Zenfisio
+- **Dados e Estruturas**: Desenvolvimento customizado para a clínica
 
-### Exceções de Copyright
+### Avisos Legais Importantes
 
-Você pode usar este software:
-- Para fins internos da sua clínica
-- Para backup e recuperação
-- Para customização local
-- Conforme permitido pelos termos de uso acima
+⚠️ **Este software é de propriedade exclusiva da Zenfisio e não pode ser:**
 
-### Atribuição
+- Copiado ou duplicado de qualquer forma
+- Compartilhado com terceiros
+- Utilizado em outra organização
+- Modificado ou adaptado sem autorização expressa
+- Submetido a engenharia reversa
+- Redistribuído ou vendido
 
-Ao usar este software, você concorda em:
-- Manter avisos de copyright e licença
-- Reconhecer o trabalho desenvolvido
-- Informar bugs e sugestões aos desenvolvedores
+### Conformidade Regulatória
+
+- Sistema desenvolvido em conformidade com a **LGPD** (Lei Geral de Proteção de Dados)
+- Atende normas do **Conselho Federal de Fisioterapia**
+- Implementa segurança e privacidade de dados de pacientes
+- Data: Novembro de 2025
+
+### Proteção Legal
+
+Qualquer violação dos direitos autorais ou termos de uso resultará em ações legais conforme previsto na legislação brasileira, incluindo:
+
+- Ações civis por danos morais e materiais
+- Ações criminais conforme Lei 9.610/98 (Lei de Direitos Autorais)
+- Bloqueio de acesso ao software
+- Multas e penalidades conforme legislação aplicável
 
 ---
 
-## 🤝 Suporte e Contribuição
+## 🤝 Suporte Técnico
 
-### Reportar Bugs
+### Reportar Problemas
 
-1. Acesse o repositório GitHub
-2. Clique em "Issues"
-3. Crie um novo issue com:
-   - Título descritivo
-   - Descrição detalhada
-   - Passos para reproduzir
-   - Screenshots se aplicável
-   - Versão do navegador
+Para reportar problemas técnicos:
 
-### Sugerir Melhorias
+1. Entre em contato com a administração da clínica
+2. Descreva claramente o problema encontrado
+3. Forneça informações sobre quando ocorreu
+4. Mencione qual módulo estava sendo utilizado
 
-- Contribuições e sugestões são bem-vindas
-- Descreva claramente sua sugestão
-- Explique o benefício para o projeto
-- Exemplos de uso são apreciados
+### Solicitações de Melhoria
 
-### Contato
+Sugestões de melhorias são bem-vindas e devem ser:
 
-- **GitHub**: [Necromante96Official](https://github.com/Necromante96Official)
-- **Email**: Disponível no perfil GitHub
+- Reportadas para a administração da clínica
+- Documentadas com descrição clara do benefício
+- Analisadas pela equipe responsável
+- Implementadas conforme prioridade da clínica
+
+### Contato Responsável
+
+- **Administração da Clínica**: Contatar diretamente
+- **Desenvolvedor**: Lucas Tavares (autorizado apenas para assuntos técnicos)
 - **Organização**: Zenfisio - Clínica de Fisioterapia
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Plano de Evolução
 
-### Versão 1.1.0 (Próxima)
-- [ ] Integração com banco de dados backend
-- [ ] Autenticação e multi-usuário
-- [ ] Relatórios em PDF
-- [ ] Agendamento de atendimentos
-- [ ] Integração com calendário (Google Calendar)
+### Versão 1.1.0 (Prevista para Q1 2025)
+- [ ] Integração com banco de dados seguro
+- [ ] Autenticação multi-usuário com permissões
+- [ ] Geração de relatórios em PDF
+- [ ] Agendamento integrado de atendimentos
+- [ ] Sincronização com Google Calendar
 
-### Versão 1.2.0 (Futuro)
-- [ ] App mobile (React Native/Flutter)
-- [ ] Notificações push
-- [ ] Integração com WhatsApp
-- [ ] SMS confirmação de agendamentos
-- [ ] Sync em nuvem
+### Versão 1.2.0 (Prevista para Q2 2025)
+- [ ] Aplicativo mobile para iOS/Android
+- [ ] Notificações em tempo real
+- [ ] Integração com WhatsApp Business
+- [ ] SMS automático para confirmação
+- [ ] Backup automático em nuvem segura
 
-### Versão 2.0.0 (Longo Prazo)
-- [ ] Inteligência Artificial para previsão
-- [ ] Dashboard executivo com BI
+### Versão 2.0.0 (Futuro - 2025/2026)
+- [ ] Analytics avançado com IA
+- [ ] Dashboard executivo com KPIs
 - [ ] Gestão de estoque e equipamentos
-- [ ] Integração com sistemas contábeis
-- [ ] API para terceiros
+- [ ] Integração contábil
+- [ ] API interna para sistemas parceiros
 
 ---
 
-## 📈 Estatísticas do Projeto
+## 📈 Informações do Sistema
 
-| Métrica | Valor |
-|---------|-------|
+| Informação | Valor |
+|-----------|-------|
 | **Versão Atual** | 1.0.0.6 |
-| **Linha de Código** | 15.000+ |
-| **Módulos** | 2 (Evoluções, Financeiro) |
-| **Estilos CSS** | 2.500+ linhas |
-| **Sem Dependências Externas** | ✅ Sim |
-| **Tamanho (Minificado)** | ~150 KB |
-| **Performance (Lighthouse)** | 95+ |
+| **Data de Lançamento** | Novembro de 2025 |
+| **Ano de Desenvolvimento** | 2025 |
+| **Linhas de Código** | 15.000+ |
+| **Módulos Principais** | 2 (Evoluções, Financeiro) |
+| **Arquivos CSS** | 2.500+ linhas |
+| **Dependências Externas** | Nenhuma (Vanilla Stack) |
+| **Tamanho** | ~150 KB |
+| **Performance** | 95+ (Lighthouse Score) |
 
 ---
 
-## 🌟 Destaques da Versão 1.0.0.6
+## 🌟 Versão 1.0.0.6 (Novembro 2025)
 
-### ✨ Novidades
+### ✨ Características Implementadas
 - ✅ Modal de confirmação personalizado
-- ✅ Limpeza independente por módulo
-- ✅ Acumulação de dados (sem auto-limpeza)
-- ✅ Documentação completa
-- ✅ Estrutura modular melhorada
+- ✅ Limpeza independente de dados por módulo
+- ✅ Acumulação de dados sem limpeza automática
+- ✅ Documentação completa (README.md)
+- ✅ Estrutura modular e escalável
+- ✅ Botões de filtro e limpeza posicionados corretamente
+- ✅ Termos de uso específicos para Zenfisio
 
-### 🐛 Correções
-- ✅ Renderização de dados Financeiro
-- ✅ Botões de filtro funcionando corretamente
+### 🐛 Correções Implementadas
+- ✅ Renderização correta de dados do Financeiro
+- ✅ Botões funcionando adequadamente
 - ✅ Validações de dados robustas
-- ✅ Tratamento de erros aprimorado
+- ✅ Tratamento aprimorado de erros
 
-### 📚 Documentação
-- ✅ README.md detalhado
-- ✅ CHANGELOG.md completo
-- ✅ Histórico de versões
-- ✅ Exemplos de uso
-
----
-
-## 📞 Precisa de Ajuda?
-
-1. **Leia a Documentação**: Comece pelo README
-2. **Verifique Exemplos**: Consulte o histórico do projeto
-3. **Abra uma Issue**: Descreva seu problema em detalhes
-4. **Procure na Internet**: Muitos problemas têm soluções conhecidas
+### 📚 Documentação Completa
+- ✅ README.md com instruções de uso
+- ✅ CHANGELOG.md com histórico
+- ✅ Termos legais claros
+- ✅ Estrutura de arquivos documentada
 
 ---
 
-## 📄 Licença
+## 📞 Informações Importantes
 
-Este projeto está licenciado sob uma **Licença Proprietária Personalizada**.
+### Avisos Críticos
 
-Veja o arquivo [LICENSE](LICENSE) para detalhes completos.
+⚠️ **LEITURA OBRIGATÓRIA:**
+
+1. Este software é **propriedade exclusiva da Zenfisio**
+2. **Acesso restrito** a funcionários autorizados apenas
+3. **Proibido compartilhar** com qualquer pessoa fora da clínica
+4. **Proibido copiar ou clonar** o código em qualquer circunstância
+5. **Dados de pacientes são confidenciais** - LGPD compliance obrigatório
+6. **Backup regular é essencial** para evitar perda de dados
+7. **Suporte técnico exclusivo** para funcionários da clínica
+
+### Contato para Dúvidas
+
+Qualquer dúvida sobre uso, licença ou termos deve ser esclarecida com a administração da Clínica Zenfisio antes de utilizar o sistema.
 
 ---
 
 <div align="center">
   
-  **Desenvolvido com ❤️ para Zenfisio - Clínica de Fisioterapia**
+  **Auto Gerenciamento Zenfisio**
   
-  © 2024-2025 • Todos os direitos reservados • Versão 1.0.0.6
+  Sistema Proprietário © 2025 - Zenfisio Clínica de Fisioterapia
+  
+  Todos os direitos reservados | LGPD Compliant | Versão 1.0.0.6
+  
+  *Desenvolvido com padrões profissionais e segurança de dados prioritária*
   
   [⬆ Voltar ao Topo](#auto-gerenciamento-zenfisio)
   

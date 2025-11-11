@@ -138,14 +138,22 @@ class FinancialParser {
 
     /**
      * Retorna registros validados
+     * Valida que pelo menos os campos principais estejam preenchidos
      */
     getValidRecords() {
-        return this.records.filter(r => 
-            r.fisioterapeuta && 
-            r.paciente && 
-            r.convenio && 
-            r.procedimentos
-        );
+        return this.records.filter(r => {
+            // Requer pelo menos fisioterapeuta OU paciente (um dos principais)
+            const temDadosPrincipais = (r.fisioterapeuta && r.fisioterapeuta.trim()) || 
+                                       (r.paciente && r.paciente.trim());
+            
+            // Requer que tenha status válido
+            const temStatus = r.status && r.status.trim();
+            
+            // Requer que tenha algum valor ou informação
+            const temConteudo = temDadosPrincipais && temStatus;
+            
+            return temConteudo;
+        });
     }
 
     /**

@@ -137,7 +137,9 @@ class EvolucoesIntegration {
             let resultadoEvolucoes = { sucesso: 0, ignoradas: 0 };
             let resultadoFinanceiro = 0;
 
-            // Processa registros com "Presença confirmada" em Evoluções
+            // ==========================================
+            // PASSO 1: Processa registros com "Presença confirmada" em Evoluções
+            // ==========================================
             if (comPresenca.length > 0) {
                 resultadoEvolucoes = this.analyzer.processarMultiplas(comPresenca);
                 
@@ -151,35 +153,45 @@ class EvolucoesIntegration {
                 }
             }
 
-            // Processa registros com outros status em Análise Financeira
-            if (semPresenca.length > 0 && window.FinancialIntegration) {
+            // ==========================================
+            // PASSO 2: Processa TODOS os dados em Análise Financeira
+            // Inclui tanto "Presença confirmada" quanto outros status
+            // ==========================================
+            // Cria lista combinada de TODOS os registros para análise financeira
+            const todosParaFinanceiro = [...comPresenca, ...semPresenca];
+            
+            if (todosParaFinanceiro.length > 0 && window.FinancialIntegration) {
                 try {
-                    // Chama o processamento financeiro diretamente com parser para aceitar outros statuses
-                    const financialParser = window.FinancialIntegration.parser;
+                    // Cria um novo parser para processar apenas os registros novos
+                    // sem acumular com dados anteriores
+                    const newParser = new FinancialParser();
                     
-                    // Adiciona registros com outros status (ACUMULA com dados anteriores)
-                    semPresenca.forEach(a => {
-                        financialParser.records.push({
-                            horario: a.horario,
-                            fisioterapeuta: a.fisioterapeuta,
-                            paciente: a.paciente,
-                            celular: a.celular,
-                            convenio: a.convenio,
-                            status: a.status,
-                            procedimentos: a.procedimentos,
-                            repetido: a.repetido || '',
-                            dataAtendimento: a.periodo || '',
-                            valor: a.valorAtendimento || 0,
-                            dataProcessamento: a.dataProcessamento, // Adiciona data de processamento
-                            mes: a.mes, // Mês do processamento
-                            ano: a.ano  // Ano do processamento
-                        });
+                    // Adiciona registros com conversão correta de campos
+                    // valorAtendimento é o campo do agendamento, valor é o do parser financeiro
+                    todosParaFinanceiro.forEach(agendamento => {
+                        // Cria registro com campos corretos do parser financeiro
+                        const record = {
+                            horario: agendamento.horario || '',
+                            fisioterapeuta: agendamento.fisioterapeuta || '',
+                            paciente: agendamento.paciente || '',
+                            celular: agendamento.celular || '',
+                            convenio: agendamento.convenio || '',
+                            status: agendamento.status || '',
+                            procedimentos: agendamento.procedimentos || '',
+                            repetido: agendamento.repetido || '',
+                            dataAtendimento: agendamento.periodo || '', // Campo correto
+                            valor: agendamento.valorAtendimento || 0, // ✅ Converte campo de agendamento
+                            dataProcessamento: agendamento.dataProcessamento || `${String(new Date().getDate()).padStart(2,'0')}/${String(new Date().getMonth()+1).padStart(2,'0')}/${new Date().getFullYear()}`,
+                            mes: agendamento.mes || new Date().getMonth() + 1,
+                            ano: agendamento.ano || new Date().getFullYear()
+                        };
+                        newParser.records.push(record);
                     });
 
-                    console.log(`📊 ${semPresenca.length} registros adicionados ao parser financeiro`);
+                    console.log(`📊 ${todosParaFinanceiro.length} registros adicionados ao parser financeiro`);
 
-                    // Cria análise com os registros validados (sem filtro por status)
-                    const recordsValidados = financialParser.getValidRecords();
+                    // Processa análise com registros validados
+                    const recordsValidados = newParser.getValidRecords();
                     console.log(`✅ ${recordsValidados.length} registros validados para análise financeira`);
 
                     if (recordsValidados.length > 0) {
@@ -187,15 +199,37 @@ class EvolucoesIntegration {
                         const analysis = analyzer.analyze();
 
                         // Salva dados financeiros
-                        if (window.dataManager) {
-                            window.dataManager.addFinanceiro(analysis, recordsValidados);
+                        try {
+                            if (window.dataManager) {
+                                window.dataManager.addFinanceiro(analysis, recordsValidados);
+                            }
+                        } catch (saveError) {
+                            console.warn('Aviso ao salvar dados financeiros:', saveError);
                         }
 
-                        // Renderiza na UI - PASSA OS RECORDS PARA OS FILTROS!
-                        window.FinancialIntegration.ui.render(analysis, recordsValidados);
+                        // Renderiza na UI com registros validados
+                        // Verifica se FinancialIntegration e sua UI estão inicializadas
+                        if (window.FinancialIntegration && window.FinancialIntegration.ui) {
+                            window.FinancialIntegration.ui.render(analysis, recordsValidados);
+                            console.log(`✅ Análise Financeira renderizada com sucesso`);
+                        } else {
+                            // Se não estiver renderizado, tenta renderizar manualmente
+                            const financialModule = document.getElementById('financeiro');
+                            if (financialModule) {
+                                // Cria UI se necessário
+                                if (!window.FinancialIntegration) {
+                                    window.FinancialIntegration = {};
+                                }
+                                if (!window.FinancialIntegration.ui) {
+                                    window.FinancialIntegration.ui = new FinancialUI();
+                                }
+                                window.FinancialIntegration.ui.render(analysis, recordsValidados);
+                                console.log(`✅ Análise Financeira renderizada com sucesso (inicialização automática)`);
+                            } else {
+                                console.warn('⚠️ Container #financeiro não encontrado para renderização');
+                            }
+                        }
                         resultadoFinanceiro = recordsValidados.length;
-
-                        console.log(`✅ Análise Financeira renderizada com sucesso`);
                     }
                 } catch (errorFin) {
                     console.error('❌ Erro ao processar Análise Financeira:', errorFin);
@@ -204,7 +238,7 @@ class EvolucoesIntegration {
 
             // Monta mensagens granulares (cada notificação com uma informação)
             
-            // Se apenas evoluções foram processadas
+            // Se apenas evoluções foram processadas (sem dados de financeiro)
             if (resultadoEvolucoes.sucesso > 0 && resultadoFinanceiro === 0) {
                 const plural = resultadoEvolucoes.sucesso !== 1 ? 's' : '';
                 this.mostrarNotificacao(
@@ -216,11 +250,11 @@ class EvolucoesIntegration {
                     'info'
                 );
             }
-            // Se apenas análise financeira foi processada
+            // Se apenas financeiro foi processado (sem evoluções)
             else if (resultadoEvolucoes.sucesso === 0 && resultadoFinanceiro > 0) {
                 const plural = resultadoFinanceiro !== 1 ? 's' : '';
                 this.mostrarNotificacao(
-                    `${resultadoFinanceiro} atendimento${plural} enviado${plural} para Análise Financeira`,
+                    `${resultadoFinanceiro} atendimento${plural} processado${plural} para Análise Financeira`,
                     'success'
                 );
                 this.mostrarNotificacao(
@@ -228,13 +262,13 @@ class EvolucoesIntegration {
                     'info'
                 );
             }
-            // Se ambos foram processados
+            // Se ambos foram processados (evoluções + financeiro)
             else if (resultadoEvolucoes.sucesso > 0 && resultadoFinanceiro > 0) {
                 const pluralEv = resultadoEvolucoes.sucesso !== 1 ? 's' : '';
                 const pluralFin = resultadoFinanceiro !== 1 ? 's' : '';
                 
                 this.mostrarNotificacao(
-                    `${resultadoEvolucoes.sucesso} evolução${pluralEv} adicionada${pluralEv} com "Presença confirmada"`,
+                    `${resultadoEvolucoes.sucesso} evolução${pluralEv} adicionada${pluralEv} (com "Presença confirmada")`,
                     'success'
                 );
                 this.mostrarNotificacao(
@@ -242,7 +276,7 @@ class EvolucoesIntegration {
                     'success'
                 );
                 this.mostrarNotificacao(
-                    `Processamento concluído em Evoluções e Financeiro`,
+                    `Processamento dual concluído: Evoluções + Financeiro`,
                     'info'
                 );
             }
