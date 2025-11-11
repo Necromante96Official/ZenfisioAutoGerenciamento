@@ -416,6 +416,20 @@
     color: var(--text-secondary);
 }
 
+.patient-procedure {
+    display: block;
+    padding: 0.6rem;
+    margin-bottom: 0.6rem;
+    background: rgba(47, 190, 143, 0.08);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
 .patient-meta {
     display: flex;
     gap: 0.4rem;
@@ -606,6 +620,20 @@
     color: var(--accent-primary);
 }
 
+.detailed-table .procedure-cell {
+    min-width: 250px;
+    max-width: 350px;
+}
+
+.procedure-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
 @media (max-width: 768px) {
     .records-group {
         border-radius: 8px;
@@ -625,5 +653,10 @@
     .detailed-table th,
     .detailed-table td {
         padding: 0.6rem 0.8rem;
+    }
+
+    .detailed-table .procedure-cell {
+        min-width: 180px;
+        max-width: 220px;
     }
 }

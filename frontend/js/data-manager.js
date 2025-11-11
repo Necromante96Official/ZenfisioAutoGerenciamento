@@ -84,19 +84,28 @@ class DataManager {
 
     /**
      * Adiciona dados financeiros
+     * Mantém compatibilidade com diferentes estruturas de dados
      */
     addFinanceiro(analysis, records = []) {
         if (!analysis) return false;
         
+        // Se análise já possui estrutura de resumo, usa diretamente
+        // Caso contrário, tenta extrair os campos esperados
         this.data.financeiro = {
-            summary: analysis.summary,
-            byDate: analysis.byDate,
-            bySpecialty: analysis.bySpecialty,
-            byProfessional: analysis.byProfessional,
-            byPatient: analysis.byPatient,
+            summary: analysis.summary || analysis?.summary,
+            byDate: analysis.byDate || analysis?.byDate,
+            bySpecialty: analysis.bySpecialty || analysis?.bySpecialty,
+            byProfessional: analysis.byProfessional || analysis?.byProfessional,
+            byPatient: analysis.byPatient || analysis?.byPatient,
             timestamp: new Date().toISOString()
         };
-        this.data.financeiro_records = records; // Salva os records para filtros
+        
+        // Se records não foram passados, tenta extrair dos dados financeiros
+        if (records.length === 0 && analysis?.records) {
+            records = analysis.records;
+        }
+        
+        this.data.financeiro_records = Array.isArray(records) ? records : [];
         this.saveData();
         return true;
     }
@@ -142,7 +151,7 @@ class DataManager {
                 throw new Error('Formato inválido: versão não especificada');
             }
 
-            // Valida estrutura
+            // Valida estrutura de evoluções
             if (Array.isArray(importData.data.evolucoes) || importData.data.evolucoes === undefined) {
                 if (importData.data.evolucoes === undefined) {
                     importData.data.evolucoes = [];
@@ -151,14 +160,19 @@ class DataManager {
                 throw new Error('Dados de evoluções inválidos');
             }
 
+            // Valida estrutura financeira
             if (importData.data.financeiro === undefined) {
-                importData.data.financeiro = [];
+                importData.data.financeiro = {};
+            }
+            
+            if (importData.data.financeiro_records === undefined) {
+                importData.data.financeiro_records = [];
             }
 
-            // Carrega dados
+            // Carrega dados mantendo a estrutura
             this.data = {
                 evolucoes: importData.data.evolucoes || [],
-                financeiro: importData.data.financeiro || [],
+                financeiro: importData.data.financeiro || {},
                 financeiro_records: importData.data.financeiro_records || [],
                 timestamp: new Date().toISOString()
             };

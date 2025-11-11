@@ -115,7 +115,7 @@ class ClearDataManager {
             }
 
             // 4. Mostra notificação de sucesso
-            this.showNotification('✅ Dados de Evoluções foram limpos com sucesso!', 'success', 3000);
+            this.showNotification('Dados de Evoluções foram limpos com sucesso!', 'success', 3000);
 
             console.log('🎉 Limpeza de Evoluções finalizada!');
 
@@ -159,7 +159,7 @@ class ClearDataManager {
             }
 
             // 3. Mostra notificação de sucesso
-            this.showNotification('✅ Dados de Análise Financeira foram limpos com sucesso!', 'success', 3000);
+            this.showNotification('Dados de Análise Financeira foram limpos com sucesso!', 'success', 3000);
 
             console.log('🎉 Limpeza de Financeiro finalizada!');
 

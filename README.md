@@ -7,7 +7,7 @@
   
   *Uso Exclusivo: Zenfisio - Clínica de Fisioterapia*
   
-  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.6-brightgreen)](#)
+  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.7-brightgreen)](#)
   [![Licença](https://img.shields.io/badge/licen%C3%A7a-Proprietária%20Zenfisio-blue)](#direitos-autorais)
   [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
   
@@ -151,10 +151,16 @@ O projeto foi deliberadamente desenvolvido sem frameworks ou bibliotecas externa
    - Dados de Evoluções **não serão afetados**
    - Importante: Sempre faça backup antes de limpar
 
-5. **Backup Local**
-   - Use "Exportar" para baixar dados em JSON
+5. **Backup e Exportação de Dados**
+   - Use "Exportar" para baixar dados em múltiplos formatos
+   - **Formatos Disponíveis**:
+     - **JSON**: Formato estruturado para importação futura (recomendado para backups técnicos)
+     - **TXT**: Arquivo legível em qualquer editor de texto (ideal para consulta rápida)
+     - **Markdown**: Relatório profissional formatado (perfeito para documentação)
+   - Escolha o formato na janela modal que aparece ao clicar em "Exportar"
    - Guarde backups regularmente em local seguro
-   - Importante para recuperação de dados
+   - Importante: Sempre faça backup antes de limpar dados
+   - Use o formato JSON para importar dados posteriormente no sistema
 
 ---
 
@@ -271,6 +277,71 @@ Diálogos elegantes e responsivos que:
 - Suportam tema claro/escuro
 - Incluem atalhos de teclado (ESC para cancelar)
 
+### 💾 Sistema de Backup e Exportação v2
+
+#### Formatos de Exportação
+
+| Formato | Extensão | Uso Recomendado | Conteúdo |
+|---------|----------|-----------------|----------|
+| **JSON** | `.json` | Importação técnica | Dados estruturados em JSON completo |
+| **TXT** | `.txt` | Consulta legível | Relatório formatado em texto simples |
+| **Markdown** | `.md` | Documentação | Relatório profissional com formatação |
+
+#### Como Usar Backup
+
+1. **Exportar Dados**
+   - Clique em "Exportar" no menu principal
+   - Escolha o formato desejado na janela modal
+   - Arquivo será baixado automaticamente com timestamp
+   - Arquivo contém: evoluções, financeiro, metadados, resumo estatístico
+
+2. **Importar Dados (apenas JSON)**
+   - Clique em "Importar" no menu principal
+   - Selecione arquivo `.json` previamente exportado
+   - Sistema validará e restaurará todos os dados
+   - Página recarregará automaticamente com dados restaurados
+   - UI será sincronizada com dados importados
+
+3. **Nomenclatura de Arquivos**
+   - Formato: `zenfisio_backup_YYYY-MM-DD_HH-MM-SS.ext`
+   - Exemplo: `zenfisio_backup_2025-11-15_14-30-45.json`
+   - Timestamp permite rastreamento de backups múltiplos
+
+#### Dados Capturados em Backup
+
+**Módulo Evoluções:**
+- Todos os registros de evoluções processados
+- Análise geral e estatísticas
+- Informações por paciente
+- Informações por fisioterapeuta
+- Cronologia completa
+- Filtros ativos (se houver)
+
+**Módulo Financeiro:**
+- Todos os registros financeiros
+- Resumo completo de análise
+- Detalhamento por data, especialidade, profissional e paciente
+- Filtros ativos (se houver)
+
+**Metadados:**
+- Data e hora de exportação
+- Versão do sistema
+- Navegador utilizado
+- Resolução da tela
+- Resumo estatístico completo
+
+#### Segurança e Boas Práticas
+
+- ✅ Arquivos salvos **localmente** em sua máquina
+- ✅ Nenhum dado enviado para servidor externo
+- ✅ Validação automática de integridade
+- ✅ Faça backup regularmente (diariamente é recomendado)
+- ✅ Sempre backup antes de limpar dados
+- ✅ Guarde backups em pasta segura (Google Drive, OneDrive)
+- ✅ Mantenha múltiplas cópias de backups importantes
+- ✅ Use JSON para backups técnicos
+- ✅ Use TXT/MD para consulta e documentação
+
 ---
 
 ## 📜 Termos de Uso
@@ -354,7 +425,7 @@ TODOS OS DIREITOS RESERVADOS
 Zenfisio - Clínica de Fisioterapia
 Desenvolvido por: GameDev Necromante96Official
 Data de Criação: Novembro de 2025
-Versão: 1.0.0.6
+Versão: 1.0.0.7
 ```
 
 ### Propriedade Intelectual Exclusiva
@@ -451,7 +522,7 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 | Informação | Valor |
 |-----------|-------|
-| **Versão Atual** | 1.0.0.6 |
+| **Versão Atual** | 1.0.0.7 |
 | **Data de Lançamento** | Novembro de 2025 |
 | **Ano de Desenvolvimento** | 2025 |
 | **Linhas de Código** | 15.000+ |
@@ -463,9 +534,51 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 ---
 
-## 🌟 Versão 1.0.0.6 (Novembro 2025)
+## 🌟 Histórico de Versões
 
-### ✨ Características Implementadas
+### Versão 1.0.0.7 (Novembro 2025) - ATUAL ✨
+
+**🚀 Melhorias Implementadas:**
+- ✅ **Exportação/Importação Completa v2** - Novo sistema com suporte a 3 formatos:
+  - JSON (recomendado para importação/exportação estruturada)
+  - TXT (formato legível para consulta e relatórios)
+  - Markdown (documentação profissional)
+- ✅ **Modal de Seleção de Formato** - Interface visual para escolher formato
+- ✅ **Coleta Abrangente de Dados** - Captura todos os dados de todas as páginas e abas
+- ✅ **Serialização Inteligente** - Suporta Maps, Dates e objetos complexos
+- ✅ **Importação com Restauração Completa** - Restaura dados e recarrega UI automaticamente
+- ✅ **Correção de Procedimentos** - Nome completo dos procedimentos exibido nas abas Especialidades, Registros e Pacientes
+- ✅ **Sistema de Notificações Aprimorado** - Sem duplicação de ícones, mensagens limpas
+- ✅ **Filtro Modal Funcional** - Aba flutuante de filtros operacional em análise financeira
+- ✅ **Botões Responsivos** - Detecção correta de DOM readyState
+- ✅ **Gravação de Dados Consolidada** - Auto-save a cada 10 segundos com sincronização perfeita
+
+**🐛 Correções Implementadas:**
+- ✅ Removido arquivo `export-import-manager.js` obsoleto
+- ✅ Duplicação de ícones em notificações eliminada (5 instâncias corrigidas)
+- ✅ Event listeners de botões agora funcionam corretamente
+- ✅ Inicialização do export/import sincronizada com DOM
+- ✅ Dados de procedimentos formatados corretamente
+- ✅ Modal de filtros agora ativo e responsivo
+
+**📊 Novo em v2:**
+- Exportação em Markdown para relatórios profissionais
+- Exportação em TXT legível para arquivamento
+- Metadados completos em cada backup (data, versão, navegador, etc)
+- Resumo quantitativo dos dados exportados
+- Log detalhado de operações com timestamps
+- Validação robusta de arquivos importados
+- Sincronização automática UI após importação
+
+**📝 Documentação:**
+- ✅ README atualizado com novo sistema de export/import
+- ✅ Histórico completo de versões documentado
+- ✅ Instruções claras para todos os formatos
+- ✅ Exemplos de uso para cada funcionalidade
+
+### Versão 1.0.0.6 (Novembro 2025)
+
+**✨ Características Implementadas:**
 - ✅ Modal de confirmação personalizado
 - ✅ Limpeza independente de dados por módulo
 - ✅ Acumulação de dados sem limpeza automática
@@ -474,13 +587,13 @@ Sugestões de melhorias são bem-vindas e devem ser:
 - ✅ Botões de filtro e limpeza posicionados corretamente
 - ✅ Termos de uso específicos para Zenfisio
 
-### 🐛 Correções Implementadas
+**🐛 Correções Implementadas:**
 - ✅ Renderização correta de dados do Financeiro
 - ✅ Botões funcionando adequadamente
 - ✅ Validações de dados robustas
 - ✅ Tratamento aprimorado de erros
 
-### 📚 Documentação Completa
+**📚 Documentação Completa:**
 - ✅ README.md com instruções de uso
 - ✅ CHANGELOG.md com histórico
 - ✅ Termos legais claros
@@ -514,7 +627,7 @@ Qualquer dúvida sobre uso, licença ou termos deve ser esclarecida com a admini
   
   Sistema Proprietário © 2025 - Zenfisio Clínica de Fisioterapia
   
-  Todos os direitos reservados | LGPD Compliant | Versão 1.0.0.6
+  Todos os direitos reservados | LGPD Compliant | Versão 1.0.0.7
   
   *Desenvolvido com padrões profissionais e segurança de dados prioritária*
   

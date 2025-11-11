@@ -109,7 +109,7 @@ class FinancialIntegration {
 
             // Mostra notificação apenas se não for silencioso
             if (!silent) {
-                this.showNotification(`✅ ${recordsToProcess.length} registros processados com sucesso!`, 'success');
+                this.showNotification(`${recordsToProcess.length} registros processados com sucesso!`, 'success');
             }
             
             console.log(`✅ FinancialIntegration.processData() concluído com sucesso`);

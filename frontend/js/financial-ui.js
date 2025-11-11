@@ -44,12 +44,23 @@ class FinancialUI {
     }
 
     /**
-     * Abre modal de filtros (DESABILITADO - Não mostra modal mesmo com dados)
+     * Abre modal de filtros
      */
     openFilterModal() {
-        // Modal desabilitado conforme solicitação
-        // Mantém a função para compatibilidade, mas não executa nada
-        return;
+        if (!this.filterModal) {
+            this.filterModal = new FilterModal('financeiro');
+        }
+
+        if (this.originalRecords.length === 0) {
+            if (window.notify) {
+                window.notify.warning('Nenhum dado disponível para filtrar', 2000);
+            }
+            return;
+        }
+
+        this.filterModal.open(this.originalRecords, (filteredRecords) => {
+            this.reanalyzeWithFilters(filteredRecords);
+        });
     }
 
     /**
@@ -280,7 +291,9 @@ class FinancialUI {
                 ${specialties.map((s, idx) => `
                     <div class="financial-item" style="animation-delay: ${idx * 0.05}s">
                         <div class="item-header">
-                            <div class="item-title">${s.nome}</div>
+                            <div class="item-title">
+                                🎯 ${FinancialAnalyzer.formatarProcedimento(s.nome)}
+                            </div>
                             <div class="item-badge">${s.atendimentos} Atendimento${s.atendimentos !== 1 ? 's' : ''}</div>
                         </div>
                         <div class="item-stats">
@@ -368,9 +381,11 @@ class FinancialUI {
                                 <div class="patient-info">
                                     <span class="info-item">📞 ${p.celular}</span>
                                 </div>
+                                <div class="patient-procedure">
+                                    <strong>Procedimento:</strong> ${FinancialAnalyzer.formatarProcedimento(p.procedimentos)}
+                                </div>
                                 <div class="patient-meta">
-                                    <span class="meta-tag">${p.fisioterapeuta}</span>
-                                    <span class="meta-tag">${p.especialidade}</span>
+                                    <span class="meta-tag">Fisio: ${p.fisioterapeuta}</span>
                                 </div>
                                 <div class="patient-stats">
                                     <span class="stat-badge">${p.atendimentos} Atendimento${p.atendimentos !== 1 ? 's' : ''}</span>
@@ -392,9 +407,11 @@ class FinancialUI {
                                 <div class="patient-info">
                                     <span class="info-item">📞 ${p.celular}</span>
                                 </div>
+                                <div class="patient-procedure">
+                                    <strong>Procedimento:</strong> ${FinancialAnalyzer.formatarProcedimento(p.procedimentos)}
+                                </div>
                                 <div class="patient-meta">
-                                    <span class="meta-tag">${p.fisioterapeuta}</span>
-                                    <span class="meta-tag">${p.especialidade}</span>
+                                    <span class="meta-tag">Fisio: ${p.fisioterapeuta}</span>
                                 </div>
                                 <div class="patient-stats">
                                     <span class="stat-badge">${p.atendimentos} Atendimento${p.atendimentos !== 1 ? 's' : ''}</span>
@@ -447,7 +464,7 @@ class FinancialUI {
                                         <th>Fisioterapeuta</th>
                                         <th>Paciente</th>
                                         <th>Convênio</th>
-                                        <th>Procedimentos</th>
+                                        <th>Procedimento/Especialidade</th>
                                         <th>Valor</th>
                                     </tr>
                                 </thead>
@@ -459,7 +476,9 @@ class FinancialUI {
                                             <td>${r.fisioterapeuta || '-'}</td>
                                             <td>${r.paciente || '-'}</td>
                                             <td>${r.convenio || '-'}</td>
-                                            <td>${r.procedimentos || '-'}</td>
+                                            <td class="procedure-cell">
+                                                <div class="procedure-text">${FinancialAnalyzer.formatarProcedimento(r.procedimentos)}</div>
+                                            </td>
                                             <td class="value-cell">R$ ${this._formatValue(r.valor || 0)}</td>
                                         </tr>
                                     `).join('')}

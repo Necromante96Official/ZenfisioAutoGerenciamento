@@ -17,6 +17,48 @@ class FinancialAnalyzer {
     }
 
     /**
+     * Formata procedimento de forma legível
+     * Transforma: "Atendimento Fisioterapia Neurofuncional Adulto 2x semana"
+     * Em: "Atendimento: Fisioterapia Neurofuncional Adulto - 2x semana"
+     */
+    _formatProcedimento(procedimento) {
+        if (!procedimento || typeof procedimento !== 'string') return '-';
+        
+        let texto = procedimento.trim();
+        
+        // Padrão: "Atendimento Tipo 2x/3x semana" ou similares
+        // Separa a frequência (Ex: "2x semana", "3x semana", etc)
+        const frequenciaMatch = texto.match(/(\d+x\s+\w+)$/i);
+        let frequencia = '';
+        let base = texto;
+        
+        if (frequenciaMatch) {
+            frequencia = frequenciaMatch[1];
+            base = texto.substring(0, texto.lastIndexOf(frequenciaMatch[0])).trim();
+        }
+        
+        // Separa a primeira palavra (normalmente "Atendimento")
+        const partes = base.split(/\s+/);
+        if (partes.length === 0) return texto;
+        
+        const primeira = partes[0];
+        const resto = partes.slice(1).join(' ');
+        
+        // Monta a string formatada
+        let resultado = `${primeira}:`;
+        
+        if (resto) {
+            resultado += ` *${resto}*`;
+        }
+        
+        if (frequencia) {
+            resultado += ` - ${frequencia}`;
+        }
+        
+        return resultado;
+    }
+
+    /**
      * Executa análise completa
      */
     analyze() {
@@ -261,27 +303,13 @@ class FinancialAnalyzer {
 
     /**
      * Extrai especialidade do procedimento
+     * Agora retorna o procedimento completo para melhor identificação
      */
     _extractSpecialty(procedimentos) {
         if (!procedimentos) return 'Geral';
         
-        const specialties = {
-            'postura': 'Educação Postural',
-            'dor crônica': 'Dor Crônica',
-            'ortopedia': 'Ortopedia',
-            'neurologia': 'Neurologia',
-            'traumatologia': 'Traumatologia',
-            'respiratória': 'Fisioterapia Respiratória',
-            'desportiva': 'Fisioterapia Desportiva'
-        };
-
-        for (let [key, specialty] of Object.entries(specialties)) {
-            if (procedimentos.toLowerCase().includes(key)) {
-                return specialty;
-            }
-        }
-
-        return 'Geral';
+        // Retorna o procedimento completo (ex: "Fisioterapia Ortopedia 3x semana")
+        return procedimentos.trim();
     }
 
     /**
@@ -301,6 +329,46 @@ class FinancialAnalyzer {
      */
     getAnalysis() {
         return this.analysis;
+    }
+
+    /**
+     * Método estático para formatar procedimento (acessível sem instância)
+     */
+    static formatarProcedimento(procedimento) {
+        if (!procedimento || typeof procedimento !== 'string') return '-';
+        
+        let texto = procedimento.trim();
+        
+        // Padrão: "Atendimento Tipo 2x/3x semana" ou similares
+        // Separa a frequência (Ex: "2x semana", "3x semana", etc)
+        const frequenciaMatch = texto.match(/(\d+x\s+\w+)$/i);
+        let frequencia = '';
+        let base = texto;
+        
+        if (frequenciaMatch) {
+            frequencia = frequenciaMatch[1];
+            base = texto.substring(0, texto.lastIndexOf(frequenciaMatch[0])).trim();
+        }
+        
+        // Separa a primeira palavra (normalmente "Atendimento")
+        const partes = base.split(/\s+/);
+        if (partes.length === 0) return texto;
+        
+        const primeira = partes[0];
+        const resto = partes.slice(1).join(' ');
+        
+        // Monta a string formatada
+        let resultado = `${primeira}:`;
+        
+        if (resto) {
+            resultado += ` <strong>${resto}</strong>`;
+        }
+        
+        if (frequencia) {
+            resultado += ` - ${frequencia}`;
+        }
+        
+        return resultado;
     }
 
     /**

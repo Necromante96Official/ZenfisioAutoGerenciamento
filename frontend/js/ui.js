@@ -1,36 +1,7 @@
 // UI Helper Functions
 class UI {
-    static showNotification(message, type = 'info', duration = 3000) {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type} animate-slide-down`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                ${this.getIcon(type)}
-                <span>${message}</span>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        if (duration > 0) {
-            setTimeout(() => {
-                notification.classList.add('fade-out');
-                setTimeout(() => notification.remove(), 300);
-            }, duration);
-        }
-        
-        return notification;
-    }
-
-    static getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✗',
-            warning: '⚠',
-            info: 'ℹ'
-        };
-        return `<span class="notification-icon">${icons[type] || icons.info}</span>`;
-    }
+    // NOTA: Sistema de notificações foi movido para notifications.js
+    // Mantido apenas métodos de utilidade
 
     static formatCurrency(value) {
         return new Intl.NumberFormat('pt-BR', {
@@ -45,14 +16,6 @@ class UI {
 
     static formatNumber(num) {
         return new Intl.NumberFormat('pt-BR').format(num);
-    }
-
-    static showLoading(element) {
-        element.classList.add('animate-pulse');
-    }
-
-    static hideLoading(element) {
-        element.classList.remove('animate-pulse');
     }
 
     static smoothScroll(element, offset = 100) {
@@ -98,12 +61,14 @@ class UI {
 
     static copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
-            this.showNotification('Copiado para a área de transferência!', 'success');
+            if (window.notify) {
+                window.notify.success('Copiado para a área de transferência!');
+            }
         });
     }
 }
 
-// Add stylesheet for data tables (notification CSS removed - using notifications.js instead)
+// Estilos para tabelas de dados
 const style = document.createElement('style');
 style.textContent = `
     .data-table {
