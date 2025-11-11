@@ -96,34 +96,6 @@ O projeto foi deliberadamente desenvolvido sem frameworks ou bibliotecas externa
 
 ---
 
-## 🚀 Instalação e Configuração
-
-### Pré-requisitos
-- Navegador moderno com suporte a ES6+ (Chrome 51+, Firefox 54+, Safari 10+, Edge 15+)
-- Servidor web local (para servir arquivos estáticos)
-- Permissão de acesso concedida pela administração da Clínica Zenfisio
-
-### Inicializar o Sistema
-
-**Opção A: Python 3**
-```bash
-python -m http.server 8000
-```
-
-**Opção B: PowerShell Windows (Recomendado - Incluído)**
-```batch
-server.bat
-```
-
-### Acessar a Aplicação
-
-Após iniciar o servidor, abra seu navegador e acesse:
-```
-http://localhost:8000
-```
-
----
-
 ## 📖 Como Usar
 
 ### Módulo de Evoluções Pendentes
@@ -232,7 +204,6 @@ ZenfisioAutoGerenciamento/
 │   │
 │   └── css/                            # Estilos alternativos (organizados)
 │
-├── js/                                 # Versão antiga (legado)
 │
 ├── backend/                            # Suporte backend (em desenvolvimento)
 │
@@ -381,7 +352,7 @@ A Zenfisio reserva-se o direito de:
 TODOS OS DIREITOS RESERVADOS
 
 Zenfisio - Clínica de Fisioterapia
-Desenvolvido por: Lucas Tavares
+Desenvolvido por: GameDev Necromante96Official
 Data de Criação: Novembro de 2025
 Versão: 1.0.0.6
 ```
