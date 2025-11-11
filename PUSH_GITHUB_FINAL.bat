@@ -7,6 +7,11 @@ REM ===============================================
 chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
+REM Forçar Git a usar Chrome para autenticação
+set "GIT_ASKPASS="
+set "BROWSER=C:\Program Files\Google\Chrome\Application\chrome.exe"
+set "GIT_TRACE=1"
+
 REM Definir diretório do projeto
 set "PROJECT_DIR=C:\Users\Clinica\Desktop\= Lucas Tavares =\Automação 2\zenfisio-manager"
 

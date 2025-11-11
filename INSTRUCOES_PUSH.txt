@@ -1,0 +1,96 @@
+# 🚀 PUSH PARA GITHUB - AUTO GERENCIAMENTO ZENFISIO v1.0.0.6
+
+## 📋 Opções de Push
+
+### ✅ Opção 1: COM CHROME (Recomendado) - **CLIQUE DUPLO AQUI**
+Arquivo: `PUSH_COM_CHROME.bat`
+
+**O que faz:**
+- Abre o Chrome automaticamente
+- Faz login no GitHub pelo navegador
+- Git usa a sessão autenticada do Chrome
+- Mais seguro e prático
+
+**Como usar:**
+1. Clique duplo em `PUSH_COM_CHROME.bat`
+2. Uma janela preta (CMD) vai abrir
+3. Chrome abrirá automaticamente
+4. Se não estiver logado, faça login com sua conta GitHub
+5. Feche o Chrome quando terminar
+6. O script continuará e fará o push
+
+---
+
+### Opção 2: COM POWERSHELL
+Arquivo: `push-github-chrome.ps1`
+
+**Como usar:**
+1. Abra PowerShell como Administrador
+2. Execute:
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+   cd "C:\Users\Clinica\Desktop\= Lucas Tavares =\Automação 2\zenfisio-manager"
+   .\push-github-chrome.ps1
+   ```
+
+---
+
+### Opção 3: SCRIPT SIMPLES ANTERIOR
+Arquivo: `PUSH_GITHUB_FINAL.bat`
+
+**O que faz:**
+- Push direto sem abrir Chrome
+- Usa credenciais do sistema
+- Pode pedir Token do GitHub
+
+---
+
+## 🔐 Se Pedir Autenticação
+
+### Com Token (Recomendado):
+1. Vá para: https://github.com/settings/tokens
+2. Clique "Generate new token" → "Generate new token (classic)"
+3. Configure:
+   - **Name:** `Zenfisio Auto Gerenciamento`
+   - **Expiration:** 90 days
+   - **Scopes:** Selecione apenas `repo` (full control)
+4. Clique **Generate token**
+5. **COPIE O TOKEN** (aparece só uma vez!)
+6. Quando git pedir "Password", cole o token
+
+### Com Usuário e Senha:
+1. Digite seu usuário GitHub
+2. Digite sua senha (não aparece enquanto digita)
+
+---
+
+## 🎯 Próximos Passos
+
+✅ **Depois que fizer o push com sucesso:**
+1. Acesse: https://github.com/Necromante96Official/ZenfisioAutoGerenciamento
+2. Verifique se todos os arquivos estão lá
+3. Confirme que o README.md aparece
+4. Pronto para compartilhar! 🎉
+
+---
+
+## ❓ Problemas?
+
+Se receber erro, pode ser:
+- ❌ Sem conexão internet → Verifique WiFi/Internet
+- ❌ Repositório não existe → Crie em https://github.com/new
+- ❌ Sem credenciais → Use Token em vez de senha
+- ❌ Sem permissão → Verifique se você é owner do repositório
+
+---
+
+## 📞 Resumo Rápido
+
+**Versão:** 1.0.0.6
+**Repositório:** https://github.com/Necromante96Official/ZenfisioAutoGerenciamento
+**Branch:** main
+**Arquivos:** 50+ (CSS, JS, HTML, Assets, Docs)
+
+---
+
+**RECOMENDADO: Clique duplo em `PUSH_COM_CHROME.bat` 🎯**
