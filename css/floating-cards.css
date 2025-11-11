@@ -1,0 +1,638 @@
+/**
+ * FLOATING-CARDS.CSS
+ * Estilos para cards flutuantes de detalhes
+ */
+
+.floating-card {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.floating-card.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.floating-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    cursor: pointer;
+}
+
+.floating-card-content {
+    position: relative;
+    background: #fff;
+    width: 95%;
+    max-width: 1000px;
+    height: 90vh;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    box-shadow: -10px -5px 40px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.35s cubic-bezier(0.23, 1, 0.320, 1);
+    margin: 0;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.floating-card.active .floating-card-overlay {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.floating-card-header {
+    background: linear-gradient(135deg, #2fbe8f 0%, #1fa070 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.floating-card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    opacity: 0.95;
+    letter-spacing: 0.5px;
+}
+
+.floating-card-header h4 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.floating-card-date {
+    font-size: 13px;
+    opacity: 0.9;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+
+.floating-card-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.floating-card-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.floating-card-close:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+.floating-card-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.floating-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* Scrollbar customizado */
+.floating-card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.floating-card-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.floating-card-body::-webkit-scrollbar-thumb {
+    background: #2fbe8f;
+    border-radius: 3px;
+}
+
+.floating-card-body::-webkit-scrollbar-thumb:hover {
+    background: #1fa070;
+}
+
+.floating-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #2fbe8f;
+    min-height: fit-content;
+}
+
+.floating-section h5 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.floating-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    background: white;
+    border-radius: 10px;
+    border: 2px solid #2fbe8f;
+    text-align: center;
+    gap: 6px;
+}
+
+.floating-stat-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.floating-stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2fbe8f;
+}
+
+.floating-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.floating-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: white;
+    border-radius: 8px;
+    border-left: 3px solid #2fbe8f;
+    transition: all 0.2s ease;
+}
+
+.floating-list-item:hover {
+    background: #f0f0f0;
+    transform: translateX(4px);
+}
+
+.floating-list-item span {
+    font-size: 13px;
+    color: #1a1a1a;
+    font-weight: 500;
+}
+
+.badge {
+    background: #2fbe8f;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.floating-procedures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+.procedure-tag {
+    background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+    color: #2fbe8f;
+    padding: 10px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #2fbe8f;
+    text-align: center;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* Analytics Row - Para Análises Completas */
+.analytics-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.analytics-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+    border-radius: 10px;
+    border: 2px solid #2fbe8f;
+    text-align: center;
+}
+
+.analytics-label {
+    font-size: 11px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.analytics-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2fbe8f;
+}
+
+/* Period Box */
+.period-box {
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #2fbe8f;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.period-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.period-row:last-child {
+    border-bottom: none;
+}
+
+.period-label {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 13px;
+}
+
+.period-value {
+    color: #2fbe8f;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Professionals Box */
+.professionals-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.professional-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #2fbe8f;
+    transition: all 0.2s ease;
+}
+
+.professional-row:hover {
+    background: #f0f0f0;
+    transform: translateX(4px);
+}
+
+.prof-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 13px;
+}
+
+.prof-stats {
+    background: #2fbe8f;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* History Box */
+.history-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.history-box::-webkit-scrollbar {
+    width: 4px;
+}
+
+.history-box::-webkit-scrollbar-thumb {
+    background: #2fbe8f;
+    border-radius: 2px;
+}
+
+.history-row {
+    display: grid;
+    grid-template-columns: 80px 70px 150px 1fr;
+    gap: 12px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #2fbe8f;
+    align-items: center;
+    font-size: 12px;
+    animation: slideInLeft 0.4s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.history-col-date {
+    color: #2fbe8f;
+    font-weight: 600;
+}
+
+.history-col-time {
+    color: #999;
+    font-weight: 500;
+}
+
+.history-col-fisio {
+    color: #1a1a1a;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.history-col-proc {
+    color: #666;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.floating-attendance-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.floating-attendance-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.floating-attendance-list::-webkit-scrollbar-thumb {
+    background: #2fbe8f;
+    border-radius: 2px;
+}
+
+.attendance-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border-left: 3px solid #2fbe8f;
+    font-size: 12px;
+}
+
+.attendance-date {
+    color: #2fbe8f;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.attendance-time {
+    color: #999;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.attendance-fisio {
+    color: #1a1a1a;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Responsivo */
+@media (max-width: 1200px) {
+    .floating-card-content {
+        max-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-card {
+        padding-right: 10px;
+        align-items: center;
+    }
+
+    .floating-card-content {
+        width: 100%;
+        max-width: 100%;
+        height: 95vh;
+        max-height: 95vh;
+        border-radius: 16px;
+    }
+
+    .floating-card-header {
+        border-radius: 16px 16px 0 0;
+    }
+
+    .floating-card-header h3 {
+        font-size: 16px;
+        padding-right: 40px;
+    }
+
+    .floating-card-header h4 {
+        font-size: 18px;
+        padding-right: 40px;
+    }
+
+    .floating-card-header h3 {
+        font-size: 16px;
+    }
+
+    .floating-card-header h4 {
+        font-size: 18px;
+    }
+
+    .floating-card-body {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .floating-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .floating-list {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-procedures {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .floating-attendance-list {
+        grid-template-columns: 1fr;
+    }
+
+    .history-row {
+        grid-template-columns: 70px 60px 120px 1fr;
+        gap: 8px;
+        padding: 8px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-card {
+        padding-right: 0;
+        align-items: center;
+    }
+
+    .floating-card-content {
+        height: 95vh;
+        max-height: 95vh;
+        border-radius: 16px;
+        width: 100%;
+    }
+
+    .floating-card-header {
+        padding: 14px;
+        border-radius: 16px 16px 0 0;
+        gap: 10px;
+    }
+
+    .floating-card-header h3 {
+        font-size: 14px;
+        opacity: 0.95;
+    }
+
+    .floating-card-header h4 {
+        font-size: 16px;
+    }
+
+    .floating-card-close {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+        top: 12px;
+        right: 12px;
+    }
+
+    .floating-card-body {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .floating-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-list {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-procedures {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-attendance-list {
+        grid-template-columns: 1fr;
+    }
+
+    .attendance-item {
+        grid-template-columns: 70px 50px 1fr;
+        gap: 8px;
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+}

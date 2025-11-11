@@ -1,0 +1,17 @@
+[user]
+    email = gerenciamento@zenfisio.local
+    name = Zenfisio Auto Gerenciamento
+
+[core]
+    editor = notepad
+    autocrlf = true
+    safecrlf = false
+
+[credential]
+    helper = manager-core
+
+[url "https://github.com/"]
+    insteadOf = git://github.com/
+
+[init]
+    defaultBranch = main

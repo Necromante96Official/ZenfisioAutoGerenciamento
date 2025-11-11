@@ -1,0 +1,340 @@
+/**
+ * Financial Analyzer - Processa dados financeiros e gera análises
+ */
+
+class FinancialAnalyzer {
+    constructor(records = []) {
+        this.records = records;
+        this.analysis = {};
+    }
+
+    /**
+     * Normaliza nome para agrupamento consistente
+     */
+    _normalizeName(name) {
+        if (!name || typeof name !== 'string') return '';
+        return name.trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    /**
+     * Executa análise completa
+     */
+    analyze() {
+        // Os records já vêm filtrados de FinancialIntegration (getConfirmedRecords)
+        // Não precisa filtrar novamente
+        
+        this.analysis = {
+            summary: this._generateSummary(),
+            byDate: this._analyzeByDate(),
+            bySpecialty: this._analyzeBySpecialty(),
+            byProfessional: this._analyzeByProfessional(),
+            byPatient: this._analyzeByPatient()
+        };
+
+        return this.analysis;
+    }
+
+    /**
+     * Valida record financeiro (não utilizado - validation feita no parser)
+     * REMOVIDO: Função não é utilizada no processo de análise
+     */
+
+    /**
+     * Gera resumo geral
+     */
+    _generateSummary() {
+        const totalAtendimentos = this.records.length;
+        const pagantes = this.records.filter(r => !this._isIsento(r.convenio));
+        const isentos = this.records.filter(r => this._isIsento(r.convenio));
+        const receitaTotal = this.records.reduce((sum, r) => sum + (r.valor || 0), 0);
+
+        return {
+            totalAtendimentos,
+            totalPagantes: pagantes.length,
+            totalIsentos: isentos.length,
+            receitaTotal: receitaTotal.toFixed(2),
+            ticketMedio: totalAtendimentos > 0 ? (receitaTotal / totalAtendimentos).toFixed(2) : 0
+        };
+    }
+
+    /**
+     * Analisa registros por data de processamento
+     */
+    _analyzeByDate() {
+        const dateMap = {};
+
+        this.records.forEach(record => {
+            // Garante que dataProcessamento seja preenchida, nunca fica "Data não informada"
+            let dataProcessamento = record.dataProcessamento;
+            
+            // Se não tiver data, usa data do mês/ano ou data atual
+            if (!dataProcessamento || dataProcessamento === 'Data não informada') {
+                if (record.mes && record.ano) {
+                    // Tenta formatar com mês/ano disponíveis
+                    const dia = '01';
+                    const mes = String(record.mes).padStart(2, '0');
+                    const ano = record.ano;
+                    dataProcessamento = `${dia}/${mes}/${ano}`;
+                } else {
+                    // Usa data atual como fallback
+                    const hoje = new Date();
+                    const dia = String(hoje.getDate()).padStart(2, '0');
+                    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+                    const ano = hoje.getFullYear();
+                    dataProcessamento = `${dia}/${mes}/${ano}`;
+                }
+            }
+            
+            if (!dateMap[dataProcessamento]) {
+                dateMap[dataProcessamento] = {
+                    data: dataProcessamento,
+                    mes: record.mes || new Date().getMonth() + 1,
+                    ano: record.ano || new Date().getFullYear(),
+                    atendimentos: 0,
+                    pagantes: 0,
+                    isentos: 0,
+                    receita: 0,
+                    registros: []
+                };
+            }
+
+            dateMap[dataProcessamento].atendimentos++;
+            dateMap[dataProcessamento].receita += record.valor || 0;
+            dateMap[dataProcessamento].registros.push(record);
+
+            if (this._isIsento(record.convenio)) {
+                dateMap[dataProcessamento].isentos++;
+            } else {
+                dateMap[dataProcessamento].pagantes++;
+            }
+        });
+
+        // Ordena por data (ano, depois mês, depois dia)
+        return Object.values(dateMap).sort((a, b) => {
+            if (a.ano !== b.ano) return b.ano - a.ano;
+            if (a.mes !== b.mes) return b.mes - a.mes;
+            
+            // Extrai dia da data formatada DD/MM/YYYY
+            const diaA = parseInt(a.data.split('/')[0]);
+            const diaB = parseInt(b.data.split('/')[0]);
+            return diaB - diaA;
+        });
+    }
+
+    /**
+     * Analisa por especialidade
+     */
+    _analyzeBySpecialty() {
+        const specialties = {};
+
+        this.records.forEach(record => {
+            const specialty = this._extractSpecialty(record.procedimentos);
+            
+            if (!specialties[specialty]) {
+                specialties[specialty] = {
+                    nome: specialty,
+                    atendimentos: 0,
+                    pagantes: 0,
+                    isentos: 0,
+                    receita: 0
+                };
+            }
+
+            specialties[specialty].atendimentos++;
+            specialties[specialty].receita += record.valor || 0;
+
+            if (this._isIsento(record.convenio)) {
+                specialties[specialty].isentos++;
+            } else {
+                specialties[specialty].pagantes++;
+            }
+        });
+
+        return Object.values(specialties).sort((a, b) => b.atendimentos - a.atendimentos);
+    }
+
+    /**
+     * Analisa por profissional
+     */
+    _analyzeByProfessional() {
+        const professionals = {};
+
+        this.records.forEach(record => {
+            // Normaliza nome do profissional para evitar duplicatas por espaços/maiúsculas
+            const proNormalized = this._normalizeName(record.fisioterapeuta);
+            const proDisplay = record.fisioterapeuta; // Original para exibição
+
+            if (!professionals[proNormalized]) {
+                professionals[proNormalized] = {
+                    nome: proDisplay,
+                    nomeNormalizado: proNormalized,
+                    atendimentos: 0,
+                    pagantes: 0,
+                    isentos: 0,
+                    receita: 0,
+                    pacientes: new Set(),
+                    especialidades: new Set()
+                };
+            }
+
+            professionals[proNormalized].atendimentos++;
+            professionals[proNormalized].receita += record.valor || 0;
+            const pacienteNormalized = this._normalizeName(record.paciente);
+            professionals[proNormalized].pacientes.add(pacienteNormalized);
+            professionals[proNormalized].especialidades.add(this._extractSpecialty(record.procedimentos));
+
+            if (this._isIsento(record.convenio)) {
+                professionals[proNormalized].isentos++;
+            } else {
+                professionals[proNormalized].pagantes++;
+            }
+        });
+
+        return Object.values(professionals)
+            .map(p => ({
+                ...p,
+                pacientesUnicos: p.pacientes.size,
+                especialidades: Array.from(p.especialidades).join(', ')
+            }))
+            .sort((a, b) => b.atendimentos - a.atendimentos);
+    }
+
+    /**
+     * Analisa por paciente (isento vs particular)
+     */
+    _analyzeByPatient() {
+        const isentos = [];
+        const particulares = [];
+
+        this.records.forEach(record => {
+            // Normaliza nome do paciente
+            const pacienteNormalizado = this._normalizeName(record.paciente);
+            
+            const patientEntry = {
+                nome: record.paciente,
+                nomeNormalizado: pacienteNormalizado,
+                celular: record.celular || '-',
+                fisioterapeuta: record.fisioterapeuta,
+                especialidade: this._extractSpecialty(record.procedimentos),
+                procedimentos: record.procedimentos,
+                atendimentos: 1,
+                valor: record.valor || 0
+            };
+
+            if (this._isIsento(record.convenio)) {
+                isentos.push(patientEntry);
+            } else {
+                particulares.push(patientEntry);
+            }
+        });
+
+        // Agrupa por paciente
+        const groupedIsentos = this._groupPatients(isentos);
+        const groupedParticulares = this._groupPatients(particulares);
+
+        return {
+            isentos: groupedIsentos.sort((a, b) => b.atendimentos - a.atendimentos),
+            particulares: groupedParticulares.sort((a, b) => b.valor - a.valor)
+        };
+    }
+
+    /**
+     * Agrupa pacientes por nome (usa nome normalizado para agrupamento)
+     */
+    _groupPatients(patients) {
+        const grouped = {};
+
+        patients.forEach(p => {
+            // Usa nome normalizado como chave
+            const key = p.nomeNormalizado || this._normalizeName(p.nome);
+            
+            if (!grouped[key]) {
+                grouped[key] = { ...p };
+            } else {
+                grouped[key].atendimentos++;
+                grouped[key].valor += p.valor;
+            }
+        });
+
+        return Object.values(grouped);
+    }
+
+    /**
+     * Extrai especialidade do procedimento
+     */
+    _extractSpecialty(procedimentos) {
+        if (!procedimentos) return 'Geral';
+        
+        const specialties = {
+            'postura': 'Educação Postural',
+            'dor crônica': 'Dor Crônica',
+            'ortopedia': 'Ortopedia',
+            'neurologia': 'Neurologia',
+            'traumatologia': 'Traumatologia',
+            'respiratória': 'Fisioterapia Respiratória',
+            'desportiva': 'Fisioterapia Desportiva'
+        };
+
+        for (let [key, specialty] of Object.entries(specialties)) {
+            if (procedimentos.toLowerCase().includes(key)) {
+                return specialty;
+            }
+        }
+
+        return 'Geral';
+    }
+
+    /**
+     * Determina se é isento
+     * Retorna true se contém "isento" na descrição
+     * Retorna false para particular ou convênio
+     */
+    _isIsento(convenio) {
+        if (!convenio) return false;
+        const lower = convenio.toLowerCase().trim();
+        // Isento = contém palavra "isento"
+        return lower.includes('isento');
+    }
+
+    /**
+     * Retorna dados de análise
+     */
+    getAnalysis() {
+        return this.analysis;
+    }
+
+    /**
+     * Retorna resumo
+     */
+    getSummary() {
+        return this.analysis.summary || {};
+    }
+
+    /**
+     * Retorna análise por data
+     */
+    getByDate() {
+        return this.analysis.byDate || [];
+    }
+
+    /**
+     * Retorna análise por especialidade
+     */
+    getSpecialties() {
+        return this.analysis.bySpecialty || [];
+    }
+
+    /**
+     * Retorna análise por profissional
+     */
+    getProfessionals() {
+        return this.analysis.byProfessional || [];
+    }
+
+    /**
+     * Retorna análise por paciente
+     */
+    getPatients() {
+        return this.analysis.byPatient || { isentos: [], particulares: [] };
+    }
+}
