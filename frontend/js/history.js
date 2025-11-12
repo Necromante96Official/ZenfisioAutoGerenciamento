@@ -45,6 +45,39 @@ class HistoryManager {
     getVersions() {
         return [
             {
+                version: '1.0.0.8',
+                date: '12 de novembro de 2025',
+                title: 'Sistema de Sincronização Automática (60s) + Botão de Refresh Premium',
+                features: [
+                    '✨ Sistema de sincronização automática a cada 60 segundos (1 minuto)',
+                    '✨ Botão de refresh visualmente destacado com gradiente verde premium',
+                    'Animação dinâmica com efeito pulse e rotate suave',
+                    'Notificação visual ao usuário quando dados são atualizados',
+                    'Rastreamento inteligente de sincronizações em data-sync.js',
+                    'Validação de "frescor" dos dados (idade máxima configurável)',
+                    'Relatório de status de sincronização consultável no console',
+                    'Detecção automática de mudanças ao adicionar dados',
+                    'Métodos reloadData() em financial-integration.js e evolucoes-integration.js',
+                    'Botão 🔄 posicionado ao lado do seletor de tema no header',
+                    'Animação @keyframes spin-smooth para rotação fluida',
+                    'Animação @keyframes pulse-glow para efeito de brilho',
+                    'Animação @keyframes bounce-refresh para feedback visual',
+                    'Container header-actions com flexbox para alinhamento perfeito',
+                    'Classe refresh-btn com estados: hover, active, refreshing',
+                    'Gradiente linear verde (#2fbe8f a #1a9970) no botão',
+                    'Escala visual de 1.08x ao passar o mouse (hover)',
+                    'Escala visual reduzida ao clicar (active)',
+                    'Box-shadow dinâmico com cor verde transparente',
+                    'Interface mantém consistência visual com tema do sistema',
+                    'Sistema funciona sem perder foco ou interromper navegação',
+                    'localStorage sincronizado corretamente com UI',
+                    'Suporte a temas light e dark para botão',
+                    'Transições suaves com cubic-bezier personalizado',
+                    'Sem erros de compilação (0 erros encontrados)',
+                    'Totalmente funcional e pronto para produção'
+                ]
+            },
+            {
                 version: '1.0.0.7',
                 date: '11 de novembro de 2025',
                 title: 'Export/Import v2 Completo + Melhorias Finais',

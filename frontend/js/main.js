@@ -5,10 +5,59 @@
 class ZenfisioApp {
     constructor() {
         this.init();
+        this.setupAutoRefresh();
     }
 
     init() {
         this.setupEventListeners();
+    }
+
+    /**
+     * Configura refresh automático a cada 1 minuto (60 segundos)
+     * Garante que dados sempre estejam atualizados mesmo se salvos localmente
+     * Sincroniza automaticamente com as melhorias implementadas
+     */
+    setupAutoRefresh() {
+        // Refresh inicial após 1 minuto (60 segundos)
+        const REFRESH_INTERVAL = 1 * 60 * 1000; // 1 minuto em milissegundos
+        
+        setInterval(() => {
+            this.refreshAllData();
+        }, REFRESH_INTERVAL);
+        
+        console.log('🔄 Auto-refresh configurado: a cada 60 segundos (1 minuto)');
+    }
+
+    /**
+     * Atualiza todos os dados dos módulos
+     */
+    refreshAllData() {
+        console.log('🔄 Iniciando refresh automático de dados...');
+        
+        try {
+            // Refresh de Evoluções
+            if (window.evolucoesIntegration) {
+                console.log('  ♻️ Atualizando Evoluções...');
+                window.evolucoesIntegration.reloadData?.();
+                window.dataSync?.recordSync('Evoluções');
+            }
+            
+            // Refresh de Financeiro
+            if (window.financialIntegration) {
+                console.log('  ♻️ Atualizando Análise Financeira...');
+                window.financialIntegration.reloadData?.();
+                window.dataSync?.recordSync('Financeiro');
+            }
+            
+            console.log('✅ Refresh automático concluído');
+            
+            // Notifica usuário (opcional)
+            if (window.notify) {
+                window.notify.success('Dados atualizados com sucesso! 🔄', 2000);
+            }
+        } catch (error) {
+            console.error('❌ Erro durante refresh automático:', error);
+        }
     }
 
     setupEventListeners() {
@@ -19,6 +68,25 @@ class ZenfisioApp {
 
         // Clear button
         document.getElementById('clearBtn')?.addEventListener('click', () => this.clearInput());
+        
+        // Refresh button (se existir)
+        const refreshBtn = document.getElementById('refreshDataBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                console.log('👤 Refresh manual solicitado');
+                
+                // Adiciona classe para animação contínua
+                refreshBtn.classList.add('refreshing');
+                const icon = refreshBtn.querySelector('.refresh-icon');
+                
+                this.refreshAllData();
+                
+                // Remove classe de animação após conclusão (2 segundos)
+                setTimeout(() => {
+                    refreshBtn.classList.remove('refreshing');
+                }, 2000);
+            });
+        }
     }
 
     switchModule(moduleName) {

@@ -25,7 +25,12 @@
                 <button class="nav-btn" data-module="financeiro">Análise Financeira</button>
                 <button class="nav-btn" data-module="desenvolvimento">Em Desenvolvimento</button>
             </nav>
-            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+            <div class="header-actions">
+                <button id="refreshDataBtn" class="refresh-btn" title="Atualizar sistema com melhorias (Sincroniza dados e recarrega análises)">
+                    <span class="refresh-icon">🔄</span>
+                    <span class="refresh-pulse"></span>
+                </button>
+                <button class="theme-toggle" id="themeToggle" title="Alternar tema">
                 <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="5"></circle>
                     <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -584,6 +589,7 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
     <script src="frontend/js/how-to-use.js"></script>
     <script src="frontend/js/history.js"></script>
     <script src="frontend/js/ui.js"></script>
+    <script src="frontend/js/data-sync.js"></script>
     <script src="frontend/js/main.js"></script>
     <script src="frontend/js/debug-console.js"></script>
 </body>

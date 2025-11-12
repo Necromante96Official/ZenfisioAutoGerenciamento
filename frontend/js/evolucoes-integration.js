@@ -338,6 +338,20 @@ class EvolucoesIntegration {
         console.log('📊 Dados exportados para análise financeira');
         return dados;
     }
+
+    /**
+     * Recarrega dados de evoluções do localStorage
+     * Usado para refresh automático garantir que dados sempre estejam atualizados
+     */
+    reloadData() {
+        try {
+            console.log('🔄 EvolucoesIntegration: Recarregando dados...');
+            this.loadSavedData();
+            console.log('✅ EvolucoesIntegration: Dados recarregados com sucesso');
+        } catch (error) {
+            console.error('❌ Erro ao recarregar dados de evoluções:', error);
+        }
+    }
 }
 
 // Inicializa quando o DOM estiver pronto

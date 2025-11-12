@@ -167,6 +167,20 @@ class FinancialIntegration {
     getPatients() {
         return this.analyzer.getPatients();
     }
+
+    /**
+     * Recarrega dados financeiros do localStorage
+     * Usado para refresh automático garantir que dados sempre estejam atualizados
+     */
+    reloadData() {
+        try {
+            console.log('🔄 FinancialIntegration: Recarregando dados...');
+            this.loadSavedData();
+            console.log('✅ FinancialIntegration: Dados recarregados com sucesso');
+        } catch (error) {
+            console.error('❌ Erro ao recarregar dados financeiros:', error);
+        }
+    }
 }
 
 // Initialize on document load

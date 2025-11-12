@@ -123,7 +123,7 @@ class DataManager {
     exportData() {
         try {
             const exportData = {
-                version: '1.0.0.6',
+                version: '1.0.0.8',
                 exportDate: new Date().toISOString(),
                 data: this.data,
                 metadata: {
