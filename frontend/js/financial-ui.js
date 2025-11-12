@@ -95,9 +95,6 @@ class FinancialUI {
                 case 'especialidades':
                     activeTab.innerHTML = this._renderSpecialties(this.data.bySpecialty || []);
                     break;
-                case 'profissionais':
-                    activeTab.innerHTML = this._renderProfessionals(this.data.byProfessional || []);
-                    break;
                 case 'pacientes':
                     activeTab.innerHTML = this._renderPatients(this.data.byPatient || { isentos: [], particulares: [] });
                     break;
@@ -119,7 +116,6 @@ class FinancialUI {
                 summary: {},
                 byDate: [],
                 bySpecialty: [],
-                byProfessional: [],
                 byPatient: { isentos: [], particulares: [] }
             };
         }
@@ -127,15 +123,13 @@ class FinancialUI {
         const summary = this.data.summary || {};
         const byDate = this.data.byDate || [];
         const bySpecialty = this.data.bySpecialty || [];
-        const byProfessional = this.data.byProfessional || [];
         const byPatient = this.data.byPatient || { isentos: [], particulares: [] };
 
         // Debug
         console.log('📋 _generateHTML() com dados:', {
             summary: summary,
             byDateCount: byDate.length,
-            bySpecialtyCount: bySpecialty.length,
-            byProfessionalCount: byProfessional.length
+            bySpecialtyCount: bySpecialty.length
         });
 
         return `
@@ -190,9 +184,6 @@ class FinancialUI {
                         <button class="financial-tab-btn" data-tab="especialidades">
                             🎯 Especialidades
                         </button>
-                        <button class="financial-tab-btn" data-tab="profissionais">
-                            👨‍⚕️ Profissionais
-                        </button>
                         <button class="financial-tab-btn" data-tab="pacientes">
                             👥 Pacientes
                         </button>
@@ -212,11 +203,6 @@ class FinancialUI {
                     <!-- Especialidades Tab -->
                     <div class="financial-tab-pane" id="especialidades">
                         ${this._renderSpecialties(bySpecialty)}
-                    </div>
-
-                    <!-- Profissionais Tab -->
-                    <div class="financial-tab-pane" id="profissionais">
-                        ${this._renderProfessionals(byProfessional)}
                     </div>
 
                     <!-- Pacientes Tab -->
@@ -317,108 +303,81 @@ class FinancialUI {
     }
 
     /**
-     * Renderiza seção de profissionais
-     */
-    _renderProfessionals(professionals) {
-        if (!professionals || professionals.length === 0) {
-            return `<div class="empty-state">
-                <div class="empty-state-icon">🔍</div>
-                <div class="empty-state-title">Nenhum profissional encontrado</div>
-            </div>`;
-        }
-
-        return `
-            <div class="financial-list">
-                ${professionals.map((p, idx) => `
-                    <div class="financial-item" style="animation-delay: ${idx * 0.05}s">
-                        <div class="item-header">
-                            <div class="item-title">${p.nome}</div>
-                            <div class="item-badge">${p.atendimentos} Atendimento${p.atendimentos !== 1 ? 's' : ''}</div>
-                        </div>
-                        <div class="item-info">
-                            <span class="info-tag">👥 ${p.pacientesUnicos} pacientes</span>
-                            <span class="info-tag">🎯 ${p.especialidades}</span>
-                        </div>
-                        <div class="item-stats">
-                            <div class="stat">
-                                <span class="stat-label">Pagantes:</span>
-                                <span class="stat-value">${p.pagantes}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Isentos:</span>
-                                <span class="stat-value">${p.isentos}</span>
-                            </div>
-                            <div class="stat highlight">
-                                <span class="stat-label">Receita:</span>
-                                <span class="stat-value">R$ ${this._formatValue(p.receita.toFixed(2))}</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    /**
-     * Renderiza seção de pacientes (lado a lado)
+     * Renderiza seção de pacientes (lado a lado com busca)
      */
     _renderPatients(byPatient) {
         const isentos = byPatient.isentos || [];
         const particulares = byPatient.particulares || [];
-        const maxHeight = Math.max(isentos.length, particulares.length);
 
         return `
             <div class="patients-container">
-                <div class="patients-column">
-                    <div class="patients-header">
-                        <div class="patients-title">🛡️ Isentos</div>
-                        <div class="patients-count">${isentos.length}</div>
-                    </div>
-                    <div class="patients-list">
-                        ${isentos.length > 0 ? isentos.map((p, idx) => `
-                            <div class="patient-item isento" style="animation-delay: ${idx * 0.03}s">
-                                <div class="patient-name">${p.nome}</div>
-                                <div class="patient-info">
-                                    <span class="info-item">📞 ${p.celular}</span>
-                                </div>
-                                <div class="patient-procedure">
-                                    <strong>Procedimento:</strong> ${FinancialAnalyzer.formatarProcedimento(p.procedimentos)}
-                                </div>
-                                <div class="patient-meta">
-                                    <span class="meta-tag">Fisio: ${p.fisioterapeuta}</span>
-                                </div>
-                                <div class="patient-stats">
-                                    <span class="stat-badge">${p.atendimentos} Atendimento${p.atendimentos !== 1 ? 's' : ''}</span>
-                                </div>
-                            </div>
-                        `).join('') : '<div class="empty-message">Nenhum paciente isento</div>'}
-                    </div>
+                <!-- Search Input -->
+                <div class="patients-search-container">
+                    <input type="text" 
+                           id="patientsSearchInput" 
+                           class="patients-search-input" 
+                           placeholder="🔍 Buscar pacientes..." 
+                           style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;">
                 </div>
 
-                <div class="patients-column">
-                    <div class="patients-header">
-                        <div class="patients-title">💰 Particulares</div>
-                        <div class="patients-count">${particulares.length}</div>
+                <div class="patients-columns-wrapper">
+                    <!-- Isentos Column -->
+                    <div class="patients-column">
+                        <div class="patients-header">
+                            <div class="patients-title">🛡️ Isentos</div>
+                            <div class="patients-count">${isentos.length}</div>
+                        </div>
+                        <div class="patients-list" id="isentosList">
+                            ${isentos.length > 0 ? isentos.map((p, idx) => `
+                                <div class="patient-item isento patient-searchable" 
+                                     data-name="${p.nome.toLowerCase()}" 
+                                     style="animation-delay: ${idx * 0.03}s">
+                                    <div class="patient-name">${p.nome}</div>
+                                    <div class="patient-info">
+                                        <span class="info-item">📞 ${p.celular}</span>
+                                    </div>
+                                    <div class="patient-procedure">
+                                        <strong>Procedimento:</strong> ${FinancialAnalyzer.formatarProcedimento(p.procedimentos)}
+                                    </div>
+                                    <div class="patient-meta">
+                                        <span class="meta-tag">Fisio: ${p.fisioterapeuta}</span>
+                                    </div>
+                                    <div class="patient-stats">
+                                        <span class="stat-badge">${p.atendimentos} Atendimento${p.atendimentos !== 1 ? 's' : ''}</span>
+                                    </div>
+                                </div>
+                            `).join('') : '<div class="empty-message">Nenhum paciente isento</div>'}
+                        </div>
                     </div>
-                    <div class="patients-list">
-                        ${particulares.length > 0 ? particulares.map((p, idx) => `
-                            <div class="patient-item particular" style="animation-delay: ${idx * 0.03}s">
-                                <div class="patient-name">${p.nome}</div>
-                                <div class="patient-info">
-                                    <span class="info-item">📞 ${p.celular}</span>
+
+                    <!-- Particulares Column -->
+                    <div class="patients-column">
+                        <div class="patients-header">
+                            <div class="patients-title">💰 Particulares</div>
+                            <div class="patients-count">${particulares.length}</div>
+                        </div>
+                        <div class="patients-list" id="particularesList">
+                            ${particulares.length > 0 ? particulares.map((p, idx) => `
+                                <div class="patient-item particular patient-searchable" 
+                                     data-name="${p.nome.toLowerCase()}" 
+                                     style="animation-delay: ${idx * 0.03}s">
+                                    <div class="patient-name">${p.nome}</div>
+                                    <div class="patient-info">
+                                        <span class="info-item">📞 ${p.celular}</span>
+                                    </div>
+                                    <div class="patient-procedure">
+                                        <strong>Procedimento:</strong> ${FinancialAnalyzer.formatarProcedimento(p.procedimentos)}
+                                    </div>
+                                    <div class="patient-meta">
+                                        <span class="meta-tag">Fisio: ${p.fisioterapeuta}</span>
+                                    </div>
+                                    <div class="patient-stats">
+                                        <span class="stat-badge">${p.atendimentos} Atendimento${p.atendimentos !== 1 ? 's' : ''}</span>
+                                        <span class="value-badge">R$ ${this._formatValue(p.valor.toFixed(2))}</span>
+                                    </div>
                                 </div>
-                                <div class="patient-procedure">
-                                    <strong>Procedimento:</strong> ${FinancialAnalyzer.formatarProcedimento(p.procedimentos)}
-                                </div>
-                                <div class="patient-meta">
-                                    <span class="meta-tag">Fisio: ${p.fisioterapeuta}</span>
-                                </div>
-                                <div class="patient-stats">
-                                    <span class="stat-badge">${p.atendimentos} Atendimento${p.atendimentos !== 1 ? 's' : ''}</span>
-                                    <span class="value-badge">R$ ${this._formatValue(p.valor.toFixed(2))}</span>
-                                </div>
-                            </div>
-                        `).join('') : '<div class="empty-message">Nenhum paciente particular</div>'}
+                            `).join('') : '<div class="empty-message">Nenhum paciente particular</div>'}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -426,7 +385,7 @@ class FinancialUI {
     }
 
     /**
-     * Renderiza registros detalhados com status
+     * Renderiza registros detalhados com status, busca e filtros
      */
     _renderDetailedRecords(records) {
         if (!records || records.length === 0) {
@@ -437,7 +396,10 @@ class FinancialUI {
             </div>`;
         }
 
-        // Agrupa por status para melhor visualização
+        // Extrai status únicos e ordena
+        const statuses = [...new Set(records.map(r => r.status || 'Sem Status'))].sort();
+        
+        // Agrupa por status e ordena registros dentro de cada grupo por data (DESC)
         const porStatus = {};
         records.forEach(record => {
             const status = record.status || 'Sem Status';
@@ -447,48 +409,99 @@ class FinancialUI {
             porStatus[status].push(record);
         });
 
+        // Ordena registros dentro de cada status por data (descendente)
+        Object.keys(porStatus).forEach(status => {
+            porStatus[status].sort((a, b) => {
+                const dataA = this._parseDate(a.dataProcessamento || a.dataAtendimento || '');
+                const dataB = this._parseDate(b.dataProcessamento || b.dataAtendimento || '');
+                return dataB.getTime() - dataA.getTime();
+            });
+        });
+
         return `
             <div class="financial-detailed-records">
-                ${Object.entries(porStatus).map(([status, regs]) => `
-                    <div class="records-group">
-                        <div class="records-group-header">
-                            <h4>${this._getStatusIcon(status)} ${status}</h4>
-                            <span class="records-count">${regs.length} registro${regs.length !== 1 ? 's' : ''}</span>
-                        </div>
-                        <div class="records-table">
-                            <table class="detailed-table">
-                                <thead>
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Horário</th>
-                                        <th>Fisioterapeuta</th>
-                                        <th>Paciente</th>
-                                        <th>Convênio</th>
-                                        <th>Procedimento/Especialidade</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${regs.map((r, idx) => `
-                                        <tr style="animation-delay: ${idx * 0.02}s">
-                                            <td>${r.dataProcessamento || r.dataAtendimento || '-'}</td>
-                                            <td>${r.horario || '-'}</td>
-                                            <td>${r.fisioterapeuta || '-'}</td>
-                                            <td>${r.paciente || '-'}</td>
-                                            <td>${r.convenio || '-'}</td>
-                                            <td class="procedure-cell">
-                                                <div class="procedure-text">${FinancialAnalyzer.formatarProcedimento(r.procedimentos)}</div>
-                                            </td>
-                                            <td class="value-cell">R$ ${this._formatValue(r.valor || 0)}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
+                <!-- Filtros e Busca -->
+                <div class="records-controls">
+                    <input type="text" 
+                           id="recordsSearchInput" 
+                           class="records-search-input" 
+                           placeholder="🔍 Buscar por paciente, fisio ou procedimento..." 
+                           style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <button class="status-filter-btn active" data-status="all" style="padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; background: #f0f0f0;">
+                            📊 Todos (${records.length})
+                        </button>
+                        ${statuses.map(status => `
+                            <button class="status-filter-btn" data-status="${status}" style="padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                                ${this._getStatusIcon(status)} ${status} (${porStatus[status].length})
+                            </button>
+                        `).join('')}
                     </div>
-                `).join('')}
+                </div>
+
+                <!-- Tabelas por Status -->
+                <div class="records-groups-container">
+                    ${Object.entries(porStatus).map(([status, regs]) => `
+                        <div class="records-group" data-status="${status}">
+                            <div class="records-group-header">
+                                <h4>${this._getStatusIcon(status)} ${status}</h4>
+                                <span class="records-count">${regs.length} registro${regs.length !== 1 ? 's' : ''}</span>
+                            </div>
+                            <div class="records-table">
+                                <table class="detailed-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Fisioterapeuta</th>
+                                            <th>Paciente</th>
+                                            <th>Convênio</th>
+                                            <th>Procedimento</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${regs.map((r, idx) => {
+                                            const paciente = r.paciente || '-';
+                                            const fisio = r.fisioterapeuta || '-';
+                                            const procedimento = FinancialAnalyzer.formatarProcedimento(r.procedimentos);
+                                            return `
+                                                <tr class="record-row searchable-record"
+                                                    data-search="${paciente.toLowerCase()}|${fisio.toLowerCase()}|${procedimento.toLowerCase()}|${r.convenio?.toLowerCase() || ''}"
+                                                    style="animation-delay: ${idx * 0.02}s">
+                                                    <td>${r.dataProcessamento || r.dataAtendimento || '-'}</td>
+                                                    <td>${r.horario || '-'}</td>
+                                                    <td>${fisio}</td>
+                                                    <td class="patient-cell">${paciente}</td>
+                                                    <td class="convenio-cell">${r.convenio || '-'}</td>
+                                                    <td class="procedure-cell">
+                                                        <div class="procedure-text">${procedimento}</div>
+                                                    </td>
+                                                    <td class="value-cell">R$ ${this._formatValue(r.valor || 0)}</td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
             </div>
         `;
+    }
+
+    /**
+     * Converte string de data DD/MM/YYYY para Date
+     */
+    _parseDate(dateStr) {
+        if (!dateStr || dateStr === '-') return new Date(0);
+        const parts = dateStr.split('/');
+        if (parts.length === 3) {
+            return new Date(parts[2], parseInt(parts[1]) - 1, parts[0]);
+        }
+        return new Date(0);
     }
 
     /**
@@ -553,10 +566,73 @@ class FinancialUI {
      * Attach event listeners
      */
     _attachEventListeners() {
-        // Conecta o botão de filtrar (mesmo que desabilitado, mantém compatibilidade)
+        // Conecta o botão de filtrar
         const filterBtn = document.getElementById('openFinanceiroFilterBtn');
         if (filterBtn) {
             filterBtn.addEventListener('click', () => this.openFilterModal());
+        }
+
+        // Listener de busca para pacientes
+        const searchInput = document.getElementById('patientsSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const patientItems = document.querySelectorAll('.patient-searchable');
+                
+                patientItems.forEach(item => {
+                    const patientName = item.getAttribute('data-name');
+                    if (patientName.includes(searchTerm) || searchTerm === '') {
+                        item.style.display = '';
+                        item.style.opacity = '1';
+                    } else {
+                        item.style.display = 'none';
+                        item.style.opacity = '0';
+                    }
+                });
+            });
+        }
+
+        // Listeners para filtro por status em registros
+        const statusBtns = document.querySelectorAll('.status-filter-btn');
+        statusBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const selectedStatus = btn.getAttribute('data-status');
+                
+                // Atualiza botões ativos
+                statusBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                btn.style.background = '#e0e0e0';
+                
+                // Mostra/oculta grupos de registros
+                const groups = document.querySelectorAll('.records-group');
+                groups.forEach(group => {
+                    if (selectedStatus === 'all') {
+                        group.style.display = '';
+                    } else {
+                        group.style.display = group.getAttribute('data-status') === selectedStatus ? '' : 'none';
+                    }
+                });
+            });
+        });
+
+        // Listener de busca para registros detalhados
+        const recordsSearch = document.getElementById('recordsSearchInput');
+        if (recordsSearch) {
+            recordsSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const recordRows = document.querySelectorAll('.searchable-record');
+                
+                recordRows.forEach(row => {
+                    const searchData = row.getAttribute('data-search');
+                    if (searchData.includes(searchTerm) || searchTerm === '') {
+                        row.style.display = '';
+                        row.style.opacity = '1';
+                    } else {
+                        row.style.display = 'none';
+                        row.style.opacity = '0';
+                    }
+                });
+            });
         }
     }
 }

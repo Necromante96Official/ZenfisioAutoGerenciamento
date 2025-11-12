@@ -66,8 +66,8 @@ class FinancialAnalyzer {
         // Não precisa filtrar novamente
         
         // DEBUG: Conta isentos vs particulares
-        const isentosCount = this.records.filter(r => this._isIsento(r.convenio)).length;
-        const pagantesCount = this.records.filter(r => !this._isIsento(r.convenio)).length;
+        const isentosCount = this.records.filter(r => this._isIsento(r.convenio, r.procedimentos)).length;
+        const pagantesCount = this.records.filter(r => !this._isIsento(r.convenio, r.procedimentos)).length;
         console.log(`📊 Análise: ${isentosCount} isentos + ${pagantesCount} pagantes = ${this.records.length} total`);
         
         // DEBUG: Mostra exemplos de convênios encontrados
@@ -95,8 +95,8 @@ class FinancialAnalyzer {
      */
     _generateSummary() {
         const totalAtendimentos = this.records.length;
-        const pagantes = this.records.filter(r => !this._isIsento(r.convenio));
-        const isentos = this.records.filter(r => this._isIsento(r.convenio));
+        const pagantes = this.records.filter(r => !this._isIsento(r.convenio, r.procedimentos));
+        const isentos = this.records.filter(r => this._isIsento(r.convenio, r.procedimentos));
         const receitaTotal = this.records.reduce((sum, r) => sum + (r.valor || 0), 0);
 
         return {
@@ -153,7 +153,7 @@ class FinancialAnalyzer {
             dateMap[dataProcessamento].receita += record.valor || 0;
             dateMap[dataProcessamento].registros.push(record);
 
-            if (this._isIsento(record.convenio)) {
+            if (this._isIsento(record.convenio, record.procedimentos)) {
                 dateMap[dataProcessamento].isentos++;
             } else {
                 dateMap[dataProcessamento].pagantes++;
@@ -194,7 +194,8 @@ class FinancialAnalyzer {
             specialties[specialty].atendimentos++;
             specialties[specialty].receita += record.valor || 0;
 
-            if (this._isIsento(record.convenio)) {
+            // SMART: Passa tanto convenio quanto procedimentos para melhor detecção
+            if (this._isIsento(record.convenio, record.procedimentos)) {
                 specialties[specialty].isentos++;
             } else {
                 specialties[specialty].pagantes++;
@@ -234,7 +235,7 @@ class FinancialAnalyzer {
             professionals[proNormalized].pacientes.add(pacienteNormalized);
             professionals[proNormalized].especialidades.add(this._extractSpecialty(record.procedimentos));
 
-            if (this._isIsento(record.convenio)) {
+            if (this._isIsento(record.convenio, record.procedimentos)) {
                 professionals[proNormalized].isentos++;
             } else {
                 professionals[proNormalized].pagantes++;
@@ -260,7 +261,7 @@ class FinancialAnalyzer {
         this.records.forEach(record => {
             // Normaliza nome do paciente
             const pacienteNormalizado = this._normalizeName(record.paciente);
-            const isIsento = this._isIsento(record.convenio);
+            const isIsento = this._isIsento(record.convenio, record.procedimentos);
             
             // DEBUG: Mostra classificação
             console.log(`   Paciente: ${record.paciente} | Convênio: "${record.convenio}" | Isento: ${isIsento}`);
@@ -327,40 +328,44 @@ class FinancialAnalyzer {
 
     /**
      * Determina se é isento
-     * Retorna true se:
-     * - Contém "isento" (explícito)
-     * - Contém "particular" = FALSE (é pagante)
-     * - Convênio vazio ou indefinido = FALSE (provavelmente particular)
-     * Retorna false para convênios específicos
+     * SMART: Verifica convenio E procedimentos para detectar isento
      */
-    _isIsento(convenio) {
-        if (!convenio) return false; // Se vazio, não é isento
+    _isIsento(convenio, procedimentos = '') {
+        if (!convenio && !procedimentos) return false;
         
-        const lower = convenio.toLowerCase().trim();
+        const convLower = convenio ? convenio.toLowerCase().trim() : '';
         
-        // Se contém "isento" explicitamente, é isento
-        if (lower.includes('isento')) {
+        // 1. Se convenio contém "isento", é isento
+        if (convLower.includes('isento')) {
             return true;
         }
         
-        // Se contém "particular", NÃO é isento (é pagante)
-        if (lower.includes('particular')) {
+        // 2. Se convenio contém "particular", NÃO é isento
+        if (convLower.includes('particular')) {
             return false;
         }
         
-        // Se contém palavras de convênio conhecidas, é pagante (não isento)
+        // 3. Se contém convênio conhecido, NÃO é isento
         const convêniosComuns = [
             'unimed', 'sulamerica', 'bradesco', 'amil', 'hapvida', 'seguros',
             'vivo', 'claro', 'oi', 'tim', 'copasa', 'cabesp', 'funcef',
-            'convênio', 'empresa', 'convenio', 'operadora', 'plano'
+            'convênio', 'empresa', 'operadora', 'plano'
         ];
         
-        if (convêniosComuns.some(conv => lower.includes(conv))) {
-            return false; // É convênio, não isento
+        if (convêniosComuns.some(conv => convLower.includes(conv))) {
+            return false;
         }
         
-        // Se chegou aqui, considera como NÃO isento (particular)
-        // Pois "isento" deve ser explícito para ser reconhecido
+        // 4. NOVO: Verifica se "isento" está no PROCEDIMENTO (ao final)
+        if (procedimentos) {
+            const procLower = procedimentos.toLowerCase().trim();
+            // Se termina com "isento" ou contém "isento" no final
+            if (procLower.endsWith('isento') || procLower.match(/\s+isento\s*$/)) {
+                return true; // É ISENTO mesmo que convenio seja vazio
+            }
+        }
+        
+        // Padrão: não isento
         return false;
     }
 
