@@ -21,7 +21,8 @@ class DataManager {
         this.backendClearEndpoint = '/api/state/clear';
         this.initAutoSave();
         this.loadData();
-        this.syncFromServer();
+        // NÃO sincronizar do servidor no constructor - apenas usar localStorage como fonte local
+        // O backend é apenas backup para recuperação em caso de perda de dados
     }
 
     /**
@@ -114,7 +115,7 @@ class DataManager {
         
         console.log(`💾 DataManager.addFinanceiro() - Acumulando dados`);
         console.log(`   - Novos registros: ${records.length}`);
-        console.log(`   - Registros antigos: ${this.data.financeiro_records?.length || 0}`);
+        console.log(`   - Registros antigos já no storage: ${this.data.financeiro_records?.length || 0}`);
         
         // Atualiza análise (esta é sempre recalculada com dados acumulados)
         this.data.financeiro = {
@@ -131,10 +132,11 @@ class DataManager {
             records = analysis.records;
         }
         
-        // 🔑 CRUCIAL: Usa os records passados diretamente (já contém acúmulo de FinancialIntegration)
+        // 🔑 CRUCIAL: ACUMULA records (já vem combinado de FinancialIntegration)
+        // Usa os records passados diretamente - já contêm acúmulo de FinancialIntegration
         this.data.financeiro_records = Array.isArray(records) ? records : [];
         
-        console.log(`   - Total acumulado: ${this.data.financeiro_records.length}`);
+        console.log(`   - Total acumulado agora: ${this.data.financeiro_records.length}`);
         
         this.saveData();
         return true;
@@ -393,3 +395,4 @@ document.addEventListener('DOMContentLoaded', () => {
     dataManager = new DataManager();
     window.dataManager = dataManager;
 });
+ 
