@@ -11,7 +11,7 @@ class DebugConsole {
         setTimeout(() => {
             console.log('🔴 Verificando objetos globais:');
             console.log('� window.evolucoesIntegration:', typeof window.evolucoesIntegration);
-            console.log('� window.FinancialIntegration:', typeof window.FinancialIntegration);
+            console.log('🔍 window.financialIntegration:', typeof window.financialIntegration);
             console.log('� window.dataManager:', typeof window.dataManager);
             
             // Intercepta o processamento

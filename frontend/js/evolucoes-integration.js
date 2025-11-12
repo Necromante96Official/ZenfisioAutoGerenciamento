@@ -160,7 +160,7 @@ class EvolucoesIntegration {
             // Cria lista combinada de TODOS os registros para análise financeira
             const todosParaFinanceiro = [...comPresenca, ...semPresenca];
             
-            if (todosParaFinanceiro.length > 0 && window.FinancialIntegration) {
+            if (todosParaFinanceiro.length > 0 && window.financialIntegration) {
                 try {
                     // Cria um novo parser para processar apenas os registros novos
                     // sem acumular com dados anteriores
@@ -209,21 +209,21 @@ class EvolucoesIntegration {
 
                         // Renderiza na UI com registros validados
                         // Verifica se FinancialIntegration e sua UI estão inicializadas
-                        if (window.FinancialIntegration && window.FinancialIntegration.ui) {
-                            window.FinancialIntegration.ui.render(analysis, recordsValidados);
+                        if (window.financialIntegration && window.financialIntegration.ui) {
+                            window.financialIntegration.ui.render(analysis, recordsValidados);
                             console.log(`✅ Análise Financeira renderizada com sucesso`);
                         } else {
                             // Se não estiver renderizado, tenta renderizar manualmente
                             const financialModule = document.getElementById('financeiro');
                             if (financialModule) {
                                 // Cria UI se necessário
-                                if (!window.FinancialIntegration) {
-                                    window.FinancialIntegration = {};
+                                if (!window.financialIntegration) {
+                                    window.financialIntegration = {};
                                 }
-                                if (!window.FinancialIntegration.ui) {
-                                    window.FinancialIntegration.ui = new FinancialUI();
+                                if (!window.financialIntegration.ui) {
+                                    window.financialIntegration.ui = new FinancialUI();
                                 }
-                                window.FinancialIntegration.ui.render(analysis, recordsValidados);
+                                window.financialIntegration.ui.render(analysis, recordsValidados);
                                 console.log(`✅ Análise Financeira renderizada com sucesso (inicialização automática)`);
                             } else {
                                 console.warn('⚠️ Container #financeiro não encontrado para renderização');

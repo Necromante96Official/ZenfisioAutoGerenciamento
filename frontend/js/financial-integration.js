@@ -185,5 +185,5 @@ class FinancialIntegration {
 
 // Initialize on document load
 document.addEventListener('DOMContentLoaded', () => {
-    window.FinancialIntegration = new FinancialIntegration();
+    window.financialIntegration = new FinancialIntegration();
 });

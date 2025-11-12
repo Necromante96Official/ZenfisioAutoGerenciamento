@@ -86,10 +86,10 @@ class DataSync {
     setupSyncListeners() {
         // Listener para mudanças em Evoluções
         if (window.dataManager) {
-            const originalAddEvolucion = window.dataManager.addEvolucion?.bind(window.dataManager);
-            if (originalAddEvolucion) {
-                window.dataManager.addEvolucion = function(...args) {
-                    const result = originalAddEvolucion(...args);
+            const originalAddEvolucoes = window.dataManager.addEvolucoes?.bind(window.dataManager);
+            if (originalAddEvolucoes) {
+                window.dataManager.addEvolucoes = function(...args) {
+                    const result = originalAddEvolucoes(...args);
                     window.dataSync?.recordSync('Evoluções');
                     return result;
                 };

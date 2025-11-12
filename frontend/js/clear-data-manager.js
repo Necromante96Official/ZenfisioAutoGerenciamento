@@ -141,13 +141,13 @@ class ClearDataManager {
             }
 
             // 2. Limpa Financial Integration
-            if (window.FinancialIntegration) {
+            if (window.financialIntegration) {
                 // Reseta parser
-                window.FinancialIntegration.parser.records = [];
+                window.financialIntegration.parser.records = [];
                 console.log('✅ Financial Parser limpo');
 
                 // Reseta analyzer
-                window.FinancialIntegration.analyzer = new FinancialAnalyzer();
+                window.financialIntegration.analyzer = new FinancialAnalyzer();
                 console.log('✅ Financial Analyzer limpo');
 
                 // Limpa UI

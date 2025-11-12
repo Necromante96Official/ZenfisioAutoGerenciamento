@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Botão de filtro para Financeiro
         if (e.target.id === 'openFinanceiroFilterBtn') {
-            if (window.FinancialIntegration && window.FinancialIntegration.ui) {
-                window.FinancialIntegration.ui.openFilterModal();
+            if (window.financialIntegration && window.financialIntegration.ui) {
+                window.financialIntegration.ui.openFilterModal();
             }
         }
     });

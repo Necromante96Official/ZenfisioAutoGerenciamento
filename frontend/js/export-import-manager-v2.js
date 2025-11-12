@@ -636,8 +636,8 @@ class ExportImportManagerV2 {
                         console.log(`✅ ${records.length} registros financeiros restaurados`);
 
                         // Recarrega na interface
-                        if (window.FinancialIntegration?.ui) {
-                            window.FinancialIntegration.ui.render(analysis, records);
+                        if (window.financialIntegration?.ui) {
+                            window.financialIntegration.ui.render(analysis, records);
                         }
                     }
 
