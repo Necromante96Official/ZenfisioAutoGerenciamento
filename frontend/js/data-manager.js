@@ -12,12 +12,16 @@ class DataManager {
         this.autoSaveInterval = 10000; // 10 segundos
         this.data = {
             evolucoes: [],
-            financeiro: [],
+            financeiro: {},
             financeiro_records: [],
             timestamp: null
         };
+        this.isSyncing = false;
+        this.backendStateEndpoint = '/api/state';
+        this.backendClearEndpoint = '/api/state/clear';
         this.initAutoSave();
         this.loadData();
+        this.syncFromServer();
     }
 
     /**
@@ -25,7 +29,7 @@ class DataManager {
      */
     initAutoSave() {
         setInterval(() => {
-            this.saveData();
+            this.saveData().catch((error) => console.warn('Auto-save falhou:', error));
         }, this.autoSaveInterval);
 
         // Salva ao sair da página
@@ -35,16 +39,29 @@ class DataManager {
     }
 
     /**
-     * Salva dados no localStorage
+     * Salva dados no localStorage e persiste no backend
      */
-    saveData() {
+    async saveData(options = {}) {
+        const { remote = true, silent = false, preserveTimestamp = false } = options;
+
         try {
-            this.data.timestamp = new Date().toISOString();
-            const json = JSON.stringify(this.data);
-            localStorage.setItem(this.storageKey, json);
-            console.log('✅ Dados salvos automaticamente');
+            if (!preserveTimestamp) {
+                this.data.timestamp = new Date().toISOString();
+            }
+            this.saveLocalSnapshot();
+
+            if (!silent) {
+                console.log('✅ Dados salvos automaticamente');
+            }
+
+            if (remote) {
+                await this.syncToServer();
+            }
+
+            return true;
         } catch (error) {
             console.error('Erro ao salvar dados:', error);
+            return false;
         }
     }
 
@@ -55,18 +72,14 @@ class DataManager {
         try {
             const json = localStorage.getItem(this.storageKey);
             if (json) {
-                this.data = JSON.parse(json);
+                const parsed = JSON.parse(json);
+                this.data = this.normalizeState(parsed);
                 console.log('✅ Dados carregados do armazenamento');
                 return true;
             }
         } catch (error) {
             console.error('Erro ao carregar dados:', error);
-            this.data = {
-                evolucoes: [],
-                financeiro: [],
-                financeiro_records: [],
-                timestamp: null
-            };
+            this.data = this.normalizeState({});
         }
         return false;
     }
@@ -212,24 +225,21 @@ class DataManager {
     /**
      * Limpa dados financeiros (mantém evoluções)
      */
-    clearFinanceiroData() {
+    async clearFinanceiroData() {
         this.data.financeiro = {};
         this.data.financeiro_records = [];
-        this.saveData();
+        await this.saveData();
         console.log('🧹 Dados financeiros limpos');
     }
 
     /**
      * Limpa dados
      */
-    clearData() {
-        this.data = {
-            evolucoes: [],
-            financeiro: [],
-            timestamp: null
-        };
+    async clearData() {
+        this.data = this.normalizeState({ evolucoes: [], financeiro: {}, financeiro_records: [], timestamp: null });
         localStorage.removeItem(this.storageKey);
         console.log('✅ Dados limpos');
+        await this.clearRemoteState();
     }
 
     /**
@@ -270,6 +280,109 @@ class DataManager {
             lastSave: this.data.timestamp,
             storageSize: new Blob([JSON.stringify(this.data)]).size + ' bytes'
         };
+    }
+
+    /**
+     * Normaliza estrutura de dados para evitar campos ausentes
+     */
+    normalizeState(state) {
+        return {
+            evolucoes: Array.isArray(state?.evolucoes) ? state.evolucoes : [],
+            financeiro: state?.financeiro || {},
+            financeiro_records: Array.isArray(state?.financeiro_records) ? state.financeiro_records : [],
+            timestamp: state?.timestamp || null
+        };
+    }
+
+    /**
+     * Persiste snapshot local sem sincronizar com backend
+     */
+    saveLocalSnapshot() {
+        try {
+            const json = JSON.stringify(this.data);
+            localStorage.setItem(this.storageKey, json);
+        } catch (error) {
+            console.warn('⚠️ Não foi possível salvar dados localmente:', error);
+        }
+    }
+
+    /**
+     * Envia estado atual para o backend
+     */
+    async syncToServer() {
+        try {
+            const response = await fetch(this.backendStateEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ state: this.data })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const payload = await response.json();
+            if (!payload.success) {
+                throw new Error(payload.message || 'Falha ao sincronizar estado no backend');
+            }
+        } catch (error) {
+            console.warn('⚠️ Não foi possível sincronizar com o backend:', error);
+        }
+    }
+
+    /**
+     * Carrega estado persistido no backend e aplica se estiver mais atual
+     */
+    async syncFromServer() {
+        try {
+            const response = await fetch(this.backendStateEndpoint);
+            if (!response.ok) {
+                return;
+            }
+
+            const payload = await response.json();
+            if (!payload.success || !payload.state) {
+                return;
+            }
+
+            const remoteState = this.normalizeState(payload.state);
+            const remoteTime = this.parseTimestamp(remoteState.timestamp);
+            const localTime = this.parseTimestamp(this.data.timestamp);
+
+            if (remoteTime > localTime) {
+                this.data = remoteState;
+                await this.saveData({ remote: false, silent: true, preserveTimestamp: true });
+                console.log('☁️ Dados sincronizados a partir do backend');
+            }
+        } catch (error) {
+            console.warn('⚠️ Falha ao carregar estado do backend:', error);
+        }
+    }
+
+    /**
+     * Converte timestamp em epoch para comparação
+     */
+    parseTimestamp(value) {
+        if (!value) {
+            return 0;
+        }
+
+        const time = new Date(value).getTime();
+        return Number.isNaN(time) ? 0 : time;
+    }
+
+    /**
+     * Remove estado persistido no backend
+     */
+    async clearRemoteState() {
+        try {
+            const response = await fetch(this.backendClearEndpoint, { method: 'POST' });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+        } catch (error) {
+            console.warn('⚠️ Não foi possível limpar o estado persistido:', error);
+        }
     }
 }
 

@@ -25,6 +25,21 @@ app_data = {
 
 data_store = DataStore()
 
+
+def _update_app_data_from_state(state: dict) -> None:
+    """Hydrate in-memory cache using persisted state"""
+    if not isinstance(state, dict):
+        return
+
+    evolucoes = state.get('evolucoes')
+    financeiro_records = state.get('financeiro_records')
+
+    if isinstance(evolucoes, list):
+        app_data['organizacional'] = evolucoes
+
+    if isinstance(financeiro_records, list):
+        app_data['financeiro'] = financeiro_records
+
 @api_bp.route('/parse', methods=['POST'])
 def parse_data():
     """Parse incoming data"""
@@ -160,6 +175,71 @@ def list_sessions():
 
     except Exception as e:
         logger.error(f"Erro ao listar sessões: {str(e)}", exc_info=True)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@api_bp.route('/state', methods=['GET'])
+def get_state():
+    """Return latest persisted application state"""
+    try:
+        state = data_store.load_state()
+
+        if state:
+            _update_app_data_from_state(state)
+
+        return jsonify({
+            'success': True,
+            'state': state
+        })
+
+    except Exception as e:
+        logger.error(f"Erro ao carregar estado: {str(e)}", exc_info=True)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@api_bp.route('/state', methods=['POST'])
+def save_state():
+    """Persist current application state"""
+    try:
+        payload = request.get_json() or {}
+        state = payload.get('state')
+
+        if not isinstance(state, dict):
+            return jsonify({'success': False, 'message': 'Estado inválido para salvamento'}), 400
+
+        filepath = data_store.save_state(state)
+        _update_app_data_from_state(state)
+
+        logger.info(f"Estado da aplicação salvo em: {filepath}")
+
+        return jsonify({
+            'success': True,
+            'message': 'Estado salvo com sucesso',
+            'filename': os.path.basename(filepath)
+        })
+
+    except Exception as e:
+        logger.error(f"Erro ao salvar estado: {str(e)}", exc_info=True)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@api_bp.route('/state/clear', methods=['POST'])
+def clear_state():
+    """Remove persisted application state"""
+    try:
+        data_store.clear_state()
+        app_data['financeiro'] = []
+        app_data['organizacional'] = []
+
+        logger.info("Estado persistido removido")
+
+        return jsonify({
+            'success': True,
+            'message': 'Estado limpo com sucesso'
+        })
+
+    except Exception as e:
+        logger.error(f"Erro ao limpar estado: {str(e)}", exc_info=True)
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @api_bp.route('/health', methods=['GET'])
