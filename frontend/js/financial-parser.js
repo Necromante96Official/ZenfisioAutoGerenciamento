@@ -118,12 +118,18 @@ class FinancialParser {
     }
 
     /**
-     * Filtra apenas registros com "Presença confirmada"
+     * Filtra registros confirmados
+     * Aceita qualquer status preenchido como válido
+     * NOTA: v1.0.0.9 usa getValidRecords() que é mais flexível
      */
     getConfirmedRecords() {
-        return this.records.filter(r => 
-            r.status && r.status.toLowerCase().includes('presença confirmada')
-        );
+        // Se não tem status, qualquer registro com dados principais é considerado válido
+        return this.records.filter(r => {
+            const temDados = (r.fisioterapeuta && r.fisioterapeuta.trim()) || 
+                           (r.paciente && r.paciente.trim());
+            // Aceita se tem dados E (tem status OU é um registro válido)
+            return temDados && r.status;
+        });
     }
 
     /**
@@ -139,6 +145,7 @@ class FinancialParser {
     /**
      * Retorna registros validados
      * Valida que pelo menos os campos principais estejam preenchidos
+     * NOTA: NÃO requer status, apenas dados principais (fisio OU paciente)
      */
     getValidRecords() {
         return this.records.filter(r => {
@@ -146,13 +153,8 @@ class FinancialParser {
             const temDadosPrincipais = (r.fisioterapeuta && r.fisioterapeuta.trim()) || 
                                        (r.paciente && r.paciente.trim());
             
-            // Requer que tenha status válido
-            const temStatus = r.status && r.status.trim();
-            
-            // Requer que tenha algum valor ou informação
-            const temConteudo = temDadosPrincipais && temStatus;
-            
-            return temConteudo;
+            // Aceita registro se tem dados principais (status é opcional)
+            return temDadosPrincipais;
         });
     }
 

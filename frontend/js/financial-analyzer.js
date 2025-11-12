@@ -44,11 +44,11 @@ class FinancialAnalyzer {
         const primeira = partes[0];
         const resto = partes.slice(1).join(' ');
         
-        // Monta a string formatada
+        // Monta a string formatada - SEM MARCAÇÕES (plain text)
         let resultado = `${primeira}:`;
         
         if (resto) {
-            resultado += ` *${resto}*`;
+            resultado += ` ${resto}`;
         }
         
         if (frequencia) {
@@ -402,11 +402,11 @@ class FinancialAnalyzer {
         const primeira = partes[0];
         const resto = partes.slice(1).join(' ');
         
-        // Monta a string formatada
+        // Monta a string formatada - SEM TAGS HTML (seguro para data-attributes)
         let resultado = `${primeira}:`;
         
         if (resto) {
-            resultado += ` <strong>${resto}</strong>`;
+            resultado += ` ${resto}`;
         }
         
         if (frequencia) {
