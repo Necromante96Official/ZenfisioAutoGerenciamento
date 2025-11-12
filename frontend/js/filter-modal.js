@@ -106,38 +106,30 @@ class FilterModal {
                         <div class="filter-modal-section">
                             <h3 class="filter-modal-title">🔍 Filtros Específicos</h3>
                             
-                            <!-- Paciente - Mostrado apenas se houver dados -->
+                            <!-- Paciente - Dropdown com opções -->
                             ${filters.pacientes && filters.pacientes.length > 0 ? `
                             <div class="filter-modal-group">
                                 <label>Paciente</label>
-                                <input type="text" id="filter-${this.type}-paciente" 
-                                       placeholder="Digite o nome..." value="${active.paciente || ''}" 
-                                       class="filter-modal-input">
+                                <select id="filter-${this.type}-paciente" class="filter-modal-select">
+                                    <option value="">Selecione um paciente</option>
+                                    ${filters.pacientes.map(p => `<option value="${p}" ${active.paciente === p.toLowerCase() ? 'selected' : ''}>${p}</option>`).join('')}
+                                </select>
                             </div>
                             ` : ''}
 
-                            <!-- Fisioterapeuta - Mostrado apenas se houver dados -->
+                            <!-- Fisioterapeuta - Dropdown com opções -->
                             ${filters.fisioterapeutas && filters.fisioterapeutas.length > 0 ? `
                             <div class="filter-modal-group">
                                 <label>Fisioterapeuta</label>
-                                <input type="text" id="filter-${this.type}-fisioterapeuta" 
-                                       placeholder="Digite o nome..." value="${active.fisioterapeuta || ''}" 
-                                       class="filter-modal-input">
+                                <select id="filter-${this.type}-fisioterapeuta" class="filter-modal-select">
+                                    <option value="">Selecione um fisioterapeuta</option>
+                                    ${filters.fisioterapeutas.map(f => `<option value="${f}" ${active.fisioterapeuta === f.toLowerCase() ? 'selected' : ''}>${f}</option>`).join('')}
+                                </select>
                             </div>
                             ` : ''}
 
                             <!-- Status - Mostrado apenas se houver dados e for Evoluções -->
                             <!-- REMOVIDO: Status não é necessário para Evoluções -->
-
-                            <!-- Procedimentos - Mostrado apenas se houver dados -->
-                            ${filters.procedimentos && filters.procedimentos.length > 0 ? `
-                            <div class="filter-modal-group">
-                                <label>Procedimentos</label>
-                                <input type="text" id="filter-${this.type}-procedimentos" 
-                                       placeholder="Digite o procedimento..." value="${active.procedimentos || ''}" 
-                                       class="filter-modal-input">
-                            </div>
-                            ` : ''}
 
                             <!-- Convênio - REMOVIDO: Não é necessário para Evoluções -->
                         </div>
@@ -188,11 +180,9 @@ class FilterModal {
         document.getElementById(`${prefix}-ano`)?.addEventListener('change', () => this._updateFilters());
 
         // Texto
-        document.getElementById(`${prefix}-paciente`)?.addEventListener('input', () => this._updateFilters());
-        document.getElementById(`${prefix}-fisioterapeuta`)?.addEventListener('input', () => this._updateFilters());
+        document.getElementById(`${prefix}-paciente`)?.addEventListener('change', () => this._updateFilters());
+        document.getElementById(`${prefix}-fisioterapeuta`)?.addEventListener('change', () => this._updateFilters());
         document.getElementById(`${prefix}-status`)?.addEventListener('change', () => this._updateFilters());
-        document.getElementById(`${prefix}-procedimentos`)?.addEventListener('input', () => this._updateFilters());
-        document.getElementById(`${prefix}-convenio`)?.addEventListener('change', () => this._updateFilters());
 
         // Botões
         document.getElementById(`filter-modal-close-${this.type}`)?.addEventListener('click', () => this.close());
@@ -206,8 +196,6 @@ class FilterModal {
             document.getElementById(`${prefix}-paciente`)?.value && (document.getElementById(`${prefix}-paciente`).value = '');
             document.getElementById(`${prefix}-fisioterapeuta`)?.value && (document.getElementById(`${prefix}-fisioterapeuta`).value = '');
             document.getElementById(`${prefix}-status`)?.value && (document.getElementById(`${prefix}-status`).value = '');
-            document.getElementById(`${prefix}-procedimentos`)?.value && (document.getElementById(`${prefix}-procedimentos`).value = '');
-            document.getElementById(`${prefix}-convenio`)?.value && (document.getElementById(`${prefix}-convenio`).value = '');
 
             // Limpa filtros no system
             this.filterSystem.clearFilter();
@@ -218,6 +206,12 @@ class FilterModal {
             if (this.onFilter) {
                 const filtered = this.filterSystem.getFilteredData();
                 this.onFilter(filtered);
+                
+                // Salva filtro no localStorage para evoluções
+                if (this.type === 'evolucoes' && window.evolucoesUI) {
+                    window.evolucoesUI.saveFilterToLocalStorage();
+                }
+                
                 if (window.notify) {
                     window.notify.success('Filtros aplicados com sucesso!', 2000);
                 }
@@ -245,8 +239,6 @@ class FilterModal {
         const paciente = document.getElementById(`${prefix}-paciente`)?.value || '';
         const fisioterapeuta = document.getElementById(`${prefix}-fisioterapeuta`)?.value || '';
         const status = document.getElementById(`${prefix}-status`)?.value || '';
-        const procedimentos = document.getElementById(`${prefix}-procedimentos`)?.value || '';
-        const convenio = document.getElementById(`${prefix}-convenio`)?.value || '';
 
         // Aplica filtros
         this.filterSystem.setDateFilter(
@@ -258,8 +250,6 @@ class FilterModal {
         this.filterSystem.setTextFilter('paciente', paciente);
         this.filterSystem.setTextFilter('fisioterapeuta', fisioterapeuta);
         this.filterSystem.setTextFilter('status', status);
-        this.filterSystem.setTextFilter('procedimentos', procedimentos);
-        this.filterSystem.setTextFilter('convenio', convenio);
 
         this._updateCount();
     }

@@ -388,11 +388,13 @@ class FinancialUI {
                                 const paciente = r.paciente || '-';
                                 const fisio = r.fisioterapeuta || '-';
                                 const procedimento = FinancialAnalyzer.formatarProcedimento(r.procedimentos);
+                                // Formata horário: se tiver valor, mostra; senão mostra '-'
+                                const horarioFormatado = r.horario ? `⏰ ${r.horario}` : '-';
                                 return `
                                     <tr class="record-row"
                                         style="animation-delay: ${idx * 0.02}s">
                                         <td>${r.dataProcessamento || r.dataAtendimento || '-'}</td>
-                                        <td>${r.horario || '-'}</td>
+                                        <td>${horarioFormatado}</td>
                                         <td>${fisio}</td>
                                         <td class="patient-cell">${paciente}</td>
                                         <td class="convenio-cell">${r.convenio || '-'}</td>

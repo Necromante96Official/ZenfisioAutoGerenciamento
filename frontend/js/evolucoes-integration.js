@@ -24,6 +24,9 @@ class EvolucoesIntegration {
         // Cria a UI
         this.ui = new EvolucoesUI(this.analyzer);
 
+        // Expõe a UI globalmente para outros módulos
+        window.evolucoesUI = this.ui;
+
         // Carrega dados salvos
         this.loadSavedData();
 

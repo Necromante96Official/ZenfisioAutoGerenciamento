@@ -10,12 +10,19 @@ class EvolucoesUI {
         this.filterModal = null;
         this.filteredData = null;
         this.init();
+        this.restoreFilterFromLocalStorage();
     }
 
     init() {
         this.setupFilterModal();
         this.setupTabs();
         this.setupEventListeners();
+        this.setupAutoSave();  // Ativa auto-save a cada 5 segundos
+        
+        // Salva estado antes de descarregar a página
+        window.addEventListener('beforeunload', () => {
+            this.savePageState();
+        });
     }
 
     /**
@@ -84,6 +91,15 @@ class EvolucoesUI {
                 this.closeFloatingCard();
             }
         });
+
+        // Event listener para scroll (salva posição)
+        window.addEventListener('scroll', () => {
+            // Debounce para não salvar a cada pixel
+            clearTimeout(this._scrollTimeout);
+            this._scrollTimeout = setTimeout(() => {
+                this.savePageState();
+            }, 1000);
+        });
     }
 
     switchTab(tabName) {
@@ -107,6 +123,9 @@ class EvolucoesUI {
             tabContent.classList.add('active');
             this.renderTab(tabName);
         }
+
+        // Salva estado da aba ativa
+        this.savePageState();
     }
 
     renderTab(tabName) {
@@ -164,6 +183,11 @@ class EvolucoesUI {
         analyzer._atualizarIndices();
         
         const data = analyzer.getVisaoGeral();
+        
+        // Enriquece data com totalAtendimentos e totalPacientesUnicos para garantir filtros
+        data.totalAtendimentos = filteredData.length;
+        data.totalPacientesUnicos = analyzer.pacientes.size;
+        data.totalFisioterapeutasUnicos = analyzer.fisioterapeutas.size;
 
         let html = this.getStatsBar(data) + `
             <div class="visao-geral-container">
@@ -253,7 +277,11 @@ class EvolucoesUI {
             return;
         }
 
-        let html = this.getStatsBar({ totalPacientesUnicos: pacientes.length, totalAtendimentos: filteredData.length }) + `
+        let html = this.getStatsBar({ 
+            totalPacientesUnicos: pacientes.length, 
+            totalAtendimentos: filteredData.length,
+            totalFisioterapeutasUnicos: analyzer.fisioterapeutas.size 
+        }) + `
             <div class="patients-grid">
         `;
 
@@ -319,7 +347,11 @@ class EvolucoesUI {
             return;
         }
 
-        let html = this.getStatsBar({ totalFisioterapeutasUnicos: fisios.length, totalAtendimentos: filteredData.length }) + `
+        let html = this.getStatsBar({ 
+            totalFisioterapeutasUnicos: fisios.length, 
+            totalAtendimentos: filteredData.length,
+            totalPacientesUnicos: analyzer.pacientes.size 
+        }) + `
             <div class="therapists-grid">
         `;
 
@@ -378,6 +410,13 @@ class EvolucoesUI {
         analyzer.evolucoes = filteredData;
         analyzer._atualizarIndices();
         
+        // Adiciona stats bar com dados filtrados
+        const statsBar = this.getStatsBar({
+            totalAtendimentos: filteredData.length,
+            totalPacientesUnicos: analyzer.pacientes.size,
+            totalFisioterapeutasUnicos: analyzer.fisioterapeutas.size
+        });
+        
         const cronologia = analyzer.getCronologia();
         const datas = Object.keys(cronologia);
 
@@ -386,7 +425,7 @@ class EvolucoesUI {
             return;
         }
 
-        let html = `<div class="cronologia-timeline">`;
+        let html = statsBar + `<div class="cronologia-timeline">`;
 
         datas.forEach((data, dataIndex) => {
             html += `
@@ -431,15 +470,15 @@ class EvolucoesUI {
         return `
             <div class="stats-summary">
                 <div class="stat-box">
-                    <div class="stat-box-value">${data.totalAtendimentos || this.analyzer.evolucoes.length}</div>
+                    <div class="stat-box-value">${data.totalAtendimentos || 0}</div>
                     <div class="stat-box-label">Total de Atendimentos</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-box-value">${data.totalPacientesUnicos || data.pacientes?.length || this.analyzer.pacientes.size}</div>
+                    <div class="stat-box-value">${data.totalPacientesUnicos || 0}</div>
                     <div class="stat-box-label">Total de Pacientes</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-box-value">${data.totalFisioterapeutasUnicos || data.fisioterapeutas?.length || this.analyzer.fisioterapeutas.size}</div>
+                    <div class="stat-box-value">${data.totalFisioterapeutasUnicos || 0}</div>
                     <div class="stat-box-label">Fisioterapeutas</div>
                 </div>
             </div>
@@ -509,7 +548,9 @@ class EvolucoesUI {
         // Remove card anterior se existir
         this.closeFloatingCard();
 
-        const evolucoesPaciente = this.analyzer.evolucoes.filter(e => e.paciente === pacienteName);
+        // Usa dados filtrados
+        const filteredData = this.getFilteredData();
+        const evolucoesPaciente = filteredData.filter(e => e.paciente === pacienteName);
         
         if (evolucoesPaciente.length === 0) {
             window.notify.warning(`Nenhum atendimento encontrado para ${pacienteName}`);
@@ -642,7 +683,9 @@ class EvolucoesUI {
         // Remove card anterior se existir
         this.closeFloatingCard();
 
-        const evolucoesTherapist = this.analyzer.evolucoes.filter(e => e.fisioterapeuta === therapistName);
+        // Usa dados filtrados
+        const filteredData = this.getFilteredData();
+        const evolucoesTherapist = filteredData.filter(e => e.fisioterapeuta === therapistName);
         
         if (evolucoesTherapist.length === 0) {
             window.notify.warning(`Nenhum atendimento encontrado para ${therapistName}`);
@@ -752,6 +795,133 @@ class EvolucoesUI {
         setTimeout(() => {
             floatingCard.classList.add('active');
         }, 10);
+    }
+
+    /**
+     * Salva filtro atual no localStorage
+     */
+    saveFilterToLocalStorage() {
+        if (!this.filteredData || this.filteredData.length === 0) {
+            localStorage.removeItem('evolucoesFilteredData');
+            localStorage.removeItem('evolucoesActiveFilters');
+            return;
+        }
+
+        try {
+            // Salva dados filtrados
+            localStorage.setItem('evolucoesFilteredData', JSON.stringify(this.filteredData));
+            
+            // Salva filtros ativos (do FilterSystem)
+            if (this.filterModal && this.filterModal.filterSystem) {
+                const activeFilters = this.filterModal.filterSystem.getActiveFilters();
+                localStorage.setItem('evolucoesActiveFilters', JSON.stringify(activeFilters));
+            }
+            
+            // Salva aba ativa e posição
+            this.savePageState();
+            
+            console.log('💾 Filtros salvos no localStorage');
+        } catch (error) {
+            console.error('❌ Erro ao salvar filtros:', error);
+        }
+    }
+
+    /**
+     * Restaura filtro do localStorage ao carregar página
+     */
+    restoreFilterFromLocalStorage() {
+        try {
+            const savedFilteredData = localStorage.getItem('evolucoesFilteredData');
+            const savedActiveFilters = localStorage.getItem('evolucoesActiveFilters');
+            
+            if (savedFilteredData) {
+                this.filteredData = JSON.parse(savedFilteredData);
+                console.log('♻️ Filtro restaurado do localStorage:', this.filteredData.length, 'registros');
+                
+                // Re-renderiza a aba atual com dados filtrados
+                setTimeout(() => {
+                    this.renderAllTabs();
+                    if (window.notify) {
+                        window.notify.success('Tudo restaurado! 🔄', 2000);
+                    }
+                }, 500);
+            }
+            
+            // Restaura estado da página (aba, scroll)
+            this.restorePageState();
+        } catch (error) {
+            console.error('❌ Erro ao restaurar filtros:', error);
+            localStorage.removeItem('evolucoesFilteredData');
+            localStorage.removeItem('evolucoesActiveFilters');
+        }
+    }
+
+    /**
+     * Limpa filtros do localStorage
+     */
+    clearFilterFromLocalStorage() {
+        localStorage.removeItem('evolucoesFilteredData');
+        localStorage.removeItem('evolucoesActiveFilters');
+        this.filteredData = null;
+        console.log('🗑️ Filtros removidos do localStorage');
+    }
+
+    /**
+     * Salva o estado completo da página (aba, scroll, filtros)
+     */
+    savePageState() {
+        try {
+            const state = {
+                currentTab: this.currentTab,
+                scrollTop: window.scrollY || document.documentElement.scrollTop,
+                filteredData: this.filteredData,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('evolucoesPageState', JSON.stringify(state));
+            console.log('💾 Estado da página salvo:', state.currentTab, `(scroll: ${state.scrollTop}px)`);
+        } catch (error) {
+            console.error('❌ Erro ao salvar estado:', error);
+        }
+    }
+
+    /**
+     * Restaura o estado completo da página ao carregar
+     */
+    restorePageState() {
+        try {
+            const saved = localStorage.getItem('evolucoesPageState');
+            if (!saved) return;
+
+            const state = JSON.parse(saved);
+            
+            // Restaura aba ativa
+            if (state.currentTab) {
+                this.currentTab = state.currentTab;
+                setTimeout(() => this.switchTab(state.currentTab), 100);
+            }
+
+            // Restaura posição do scroll
+            if (state.scrollTop) {
+                setTimeout(() => {
+                    window.scrollTo(0, state.scrollTop);
+                    console.log('📍 Posição restaurada:', state.scrollTop, 'px');
+                }, 300);
+            }
+
+            console.log('♻️ Estado da página restaurado');
+        } catch (error) {
+            console.error('❌ Erro ao restaurar estado:', error);
+        }
+    }
+
+    /**
+     * Auto-save do estado a cada 5 segundos
+     */
+    setupAutoSave() {
+        setInterval(() => {
+            this.savePageState();
+        }, 5000);
+        console.log('⏱️ Auto-save ativado a cada 5 segundos');
     }
 }
 

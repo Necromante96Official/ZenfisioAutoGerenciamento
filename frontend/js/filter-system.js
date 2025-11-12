@@ -149,27 +149,23 @@ class FilterSystem {
                 if (this.activeFilters.ano !== null && ano !== this.activeFilters.ano) return false;
             }
 
-            // Filtro por paciente
-            if (this.activeFilters.paciente && 
-                !item.paciente?.toLowerCase().includes(this.activeFilters.paciente)) {
-                return false;
+            // Filtro por paciente (exato, com dropdown)
+            if (this.activeFilters.paciente) {
+                if (item.paciente?.toLowerCase() !== this.activeFilters.paciente) {
+                    return false;
+                }
             }
 
-            // Filtro por fisioterapeuta
-            if (this.activeFilters.fisioterapeuta && 
-                !item.fisioterapeuta?.toLowerCase().includes(this.activeFilters.fisioterapeuta)) {
-                return false;
+            // Filtro por fisioterapeuta (exato, com dropdown)
+            if (this.activeFilters.fisioterapeuta) {
+                if (item.fisioterapeuta?.toLowerCase() !== this.activeFilters.fisioterapeuta) {
+                    return false;
+                }
             }
 
             // Filtro por status
             if (this.activeFilters.status && 
                 !item.status?.toLowerCase().includes(this.activeFilters.status.toLowerCase())) {
-                return false;
-            }
-
-            // Filtro por procedimentos
-            if (this.activeFilters.procedimentos && 
-                !item.procedimentos?.toLowerCase().includes(this.activeFilters.procedimentos.toLowerCase())) {
                 return false;
             }
 

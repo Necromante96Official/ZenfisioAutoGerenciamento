@@ -13,19 +13,19 @@ class ZenfisioApp {
     }
 
     /**
-     * Configura refresh automático a cada 1 minuto (60 segundos)
+     * Configura refresh automático a cada 5 minutos (300 segundos)
      * Garante que dados sempre estejam atualizados mesmo se salvos localmente
      * Sincroniza automaticamente com as melhorias implementadas
      */
     setupAutoRefresh() {
-        // Refresh inicial após 1 minuto (60 segundos)
-        const REFRESH_INTERVAL = 1 * 60 * 1000; // 1 minuto em milissegundos
+        // Refresh inicial após 5 minutos (300 segundos)
+        const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutos em milissegundos
         
         setInterval(() => {
             this.refreshAllData();
         }, REFRESH_INTERVAL);
         
-        console.log('🔄 Auto-refresh configurado: a cada 60 segundos (1 minuto)');
+        console.log('🔄 Auto-refresh configurado: a cada 300 segundos (5 minutos)');
     }
 
     /**

@@ -207,7 +207,8 @@ class EvolucoesAnalyzer {
         const cronologiaAgrupada = {};
 
         this.cronologia.forEach(ev => {
-            const data = ev.periodo || `${String(ev.mes).padStart(2, '0')}/${ev.ano}`;
+            // Usa dataProcessamento que está no formato DD/MM/YYYY
+            const data = ev.dataProcessamento || ev.periodo || `${String(ev.mes).padStart(2, '0')}/${ev.ano}`;
             
             if (!cronologiaAgrupada[data]) {
                 cronologiaAgrupada[data] = [];
