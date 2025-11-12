@@ -262,7 +262,7 @@ class FinancialUI {
     }
 
     /**
-     * Renderiza seção de especialidades
+     * Renderiza seção de especialidades com filtros Isento/Particular
      */
     _renderSpecialties(specialties) {
         if (!specialties || specialties.length === 0) {
@@ -273,31 +273,50 @@ class FinancialUI {
         }
 
         return `
-            <div class="financial-list">
-                ${specialties.map((s, idx) => `
-                    <div class="financial-item" style="animation-delay: ${idx * 0.05}s">
-                        <div class="item-header">
-                            <div class="item-title">
-                                🎯 ${FinancialAnalyzer.formatarProcedimento(s.nome)}
+            <div class="specialties-container">
+                <!-- Filtros de Tipo -->
+                <div class="specialty-filters" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="type-filter-btn active" data-type="all" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); font-weight: 500; transition: all 0.2s ease;">
+                        📊 Todos (${specialties.length})
+                    </button>
+                    <button class="type-filter-btn" data-type="particulares" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
+                        💳 Particulares
+                    </button>
+                    <button class="type-filter-btn" data-type="isentos" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
+                        🛡️ Isentos
+                    </button>
+                </div>
+
+                <!-- Lista de Especialidades -->
+                <div class="financial-list">
+                    ${specialties.map((s, idx) => {
+                        const type = s.isentos > s.pagantes ? 'isentos' : 'particulares';
+                        return `
+                            <div class="financial-item specialty-item" data-type="${type}" style="animation-delay: ${idx * 0.05}s">
+                                <div class="item-header">
+                                    <div class="item-title">
+                                        🎯 ${FinancialAnalyzer.formatarProcedimento(s.nome)}
+                                    </div>
+                                    <div class="item-badge">${s.atendimentos} Atendimento${s.atendimentos !== 1 ? 's' : ''}</div>
+                                </div>
+                                <div class="item-stats">
+                                    <div class="stat">
+                                        <span class="stat-label">Particulares:</span>
+                                        <span class="stat-value">${s.pagantes}</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-label">Isentos:</span>
+                                        <span class="stat-value">${s.isentos}</span>
+                                    </div>
+                                    <div class="stat highlight">
+                                        <span class="stat-label">Receita:</span>
+                                        <span class="stat-value">R$ ${this._formatValue(s.receita.toFixed(2))}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="item-badge">${s.atendimentos} Atendimento${s.atendimentos !== 1 ? 's' : ''}</div>
-                        </div>
-                        <div class="item-stats">
-                            <div class="stat">
-                                <span class="stat-label">Pagantes:</span>
-                                <span class="stat-value">${s.pagantes}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Isentos:</span>
-                                <span class="stat-value">${s.isentos}</span>
-                            </div>
-                            <div class="stat highlight">
-                                <span class="stat-label">Receita:</span>
-                                <span class="stat-value">R$ ${this._formatValue(s.receita.toFixed(2))}</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
+                        `;
+                    }).join('')}
+                </div>
             </div>
         `;
     }
@@ -398,6 +417,14 @@ class FinancialUI {
         // Extrai status únicos e ordena
         const statuses = [...new Set(records.map(r => r.status || 'Sem Status'))].sort();
         
+        // Extrai dados únicos para filtros
+        const datas = [...new Set(records.map(r => r.dataProcessamento || r.dataAtendimento || '-'))].sort();
+        const horarios = [...new Set(records.map(r => r.horario || '-'))].sort();
+        const fisioterapeutas = [...new Set(records.map(r => r.fisioterapeuta || '-'))].sort();
+        const pacientes = [...new Set(records.map(r => r.paciente || '-'))].sort();
+        const convenios = [...new Set(records.map(r => r.convenio || '-'))].sort();
+        const procedimentos = [...new Set(records.map(r => FinancialAnalyzer.formatarProcedimento(r.procedimentos) || '-'))].sort();
+        
         // Agrupa por status e ordena registros dentro de cada grupo por data (DESC)
         const porStatus = {};
         records.forEach(record => {
@@ -437,6 +464,75 @@ class FinancialUI {
                             </button>
                         `).join('')}
                     </div>
+
+                    <!-- Filtros por Coluna -->
+                    <details style="margin-bottom: 15px;">
+                        <summary style="cursor: pointer; font-weight: 600; padding: 10px; background: rgba(47, 190, 143, 0.05); border-radius: 6px; margin-bottom: 10px;">
+                            🔎 Filtros Avançados (Data • Horário • Fisio • Paciente • Convênio • Procedimento • Valor)
+                        </summary>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 15px; background: rgba(47, 190, 143, 0.02); border-radius: 6px;">
+                            <!-- Filtro Data -->
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">📅 Data</label>
+                                <select class="column-filter-select" data-column="data" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary);">
+                                    <option value="">Todos</option>
+                                    ${datas.map(d => `<option value="${d}">${d}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <!-- Filtro Horário -->
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">⏰ Horário</label>
+                                <select class="column-filter-select" data-column="horario" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary);">
+                                    <option value="">Todos</option>
+                                    ${horarios.map(h => `<option value="${h}">${h}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <!-- Filtro Fisioterapeuta -->
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">👤 Fisioterapeuta</label>
+                                <select class="column-filter-select" data-column="fisioterapeuta" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary);">
+                                    <option value="">Todos</option>
+                                    ${fisioterapeutas.map(f => `<option value="${f}">${f}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <!-- Filtro Paciente -->
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">🏥 Paciente</label>
+                                <select class="column-filter-select" data-column="paciente" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary);">
+                                    <option value="">Todos</option>
+                                    ${pacientes.map(p => `<option value="${p}">${p}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <!-- Filtro Convênio -->
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">💳 Convênio</label>
+                                <select class="column-filter-select" data-column="convenio" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary);">
+                                    <option value="">Todos</option>
+                                    ${convenios.map(c => `<option value="${c}">${c}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <!-- Filtro Procedimento -->
+                            <div>
+                                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">🏥 Procedimento</label>
+                                <select class="column-filter-select" data-column="procedimento" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary); max-height: 100px; overflow-y: auto;">
+                                    <option value="">Todos</option>
+                                    ${procedimentos.map(p => `<option value="${p}">${p}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <!-- Limpar Filtros -->
+                            <div style="display: flex; align-items: flex-end;">
+                                <button id="clearAdvancedFilters" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.3); border-radius: 4px; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); cursor: pointer; font-weight: 600; transition: all 0.2s ease;">
+                                    ✨ Limpar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </details>
                 </div>
 
                 <!-- Tabelas por Status -->
@@ -465,15 +561,24 @@ class FinancialUI {
                                             const paciente = r.paciente || '-';
                                             const fisio = r.fisioterapeuta || '-';
                                             const procedimento = FinancialAnalyzer.formatarProcedimento(r.procedimentos);
+                                            const data = r.dataProcessamento || r.dataAtendimento || '-';
+                                            const horario = r.horario || '-';
+                                            const convenio = r.convenio || '-';
                                             return `
-                                                <tr class="record-row searchable-record"
-                                                    data-search="${paciente.toLowerCase()}|${fisio.toLowerCase()}|${procedimento.toLowerCase()}|${r.convenio?.toLowerCase() || ''}"
+                                                <tr class="record-row searchable-record column-filterable"
+                                                    data-search="${paciente.toLowerCase()}|${fisio.toLowerCase()}|${procedimento.toLowerCase()}|${convenio.toLowerCase()}"
+                                                    data-data="${data}"
+                                                    data-horario="${horario}"
+                                                    data-fisioterapeuta="${fisio.toLowerCase()}"
+                                                    data-paciente="${paciente.toLowerCase()}"
+                                                    data-convenio="${convenio.toLowerCase()}"
+                                                    data-procedimento="${procedimento.toLowerCase()}"
                                                     style="animation-delay: ${idx * 0.02}s">
-                                                    <td>${r.dataProcessamento || r.dataAtendimento || '-'}</td>
-                                                    <td>${r.horario || '-'}</td>
+                                                    <td>${data}</td>
+                                                    <td>${horario}</td>
                                                     <td>${fisio}</td>
                                                     <td class="patient-cell">${paciente}</td>
-                                                    <td class="convenio-cell">${r.convenio || '-'}</td>
+                                                    <td class="convenio-cell">${convenio}</td>
                                                     <td class="procedure-cell">
                                                         <div class="procedure-text">${procedimento}</div>
                                                     </td>
@@ -571,6 +676,42 @@ class FinancialUI {
             filterBtn.addEventListener('click', () => this.openFilterModal());
         }
 
+        // ========== FILTROS DE TIPO DE ESPECIALIDADES ==========
+        const typeFilterBtns = document.querySelectorAll('.type-filter-btn');
+        typeFilterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const selectedType = btn.getAttribute('data-type');
+                
+                // Atualiza botões ativos com estilo
+                typeFilterBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'transparent';
+                    b.style.borderColor = 'rgba(47, 190, 143, 0.2)';
+                });
+                btn.classList.add('active');
+                btn.style.background = 'rgba(47, 190, 143, 0.1)';
+                btn.style.borderColor = 'var(--accent-primary)';
+                
+                // Mostra/oculta especialidades por tipo
+                const specialtyItems = document.querySelectorAll('.specialty-item');
+                specialtyItems.forEach(item => {
+                    if (selectedType === 'all') {
+                        item.style.display = '';
+                        item.style.opacity = '1';
+                    } else {
+                        const itemType = item.getAttribute('data-type');
+                        if (itemType === selectedType) {
+                            item.style.display = '';
+                            item.style.opacity = '1';
+                        } else {
+                            item.style.display = 'none';
+                            item.style.opacity = '0';
+                        }
+                    }
+                });
+            });
+        });
+
         // Listener de busca para pacientes
         const searchInput = document.getElementById('patientsSearchInput');
         if (searchInput) {
@@ -638,5 +779,54 @@ class FinancialUI {
                 });
             });
         }
+
+        // ========== FILTROS POR COLUNA EM REGISTROS ==========
+        const columnFilters = document.querySelectorAll('.column-filter-select');
+        columnFilters.forEach(select => {
+            select.addEventListener('change', () => {
+                this._applyAdvancedFilters();
+            });
+        });
+
+        // Limpar filtros avançados
+        const clearFiltersBtn = document.getElementById('clearAdvancedFilters');
+        if (clearFiltersBtn) {
+            clearFiltersBtn.addEventListener('click', () => {
+                columnFilters.forEach(select => {
+                    select.value = '';
+                });
+                this._applyAdvancedFilters();
+            });
+        }
+    }
+
+    /**
+     * Aplica filtros avançados por coluna
+     */
+    _applyAdvancedFilters() {
+        const filters = {};
+        document.querySelectorAll('.column-filter-select').forEach(select => {
+            const column = select.getAttribute('data-column');
+            const value = select.value.toLowerCase();
+            if (value) {
+                filters[column] = value;
+            }
+        });
+
+        const recordRows = document.querySelectorAll('.column-filterable');
+        recordRows.forEach(row => {
+            let shouldShow = true;
+
+            // Aplica cada filtro
+            Object.entries(filters).forEach(([column, value]) => {
+                const rowValue = row.getAttribute(`data-${column}`)?.toLowerCase() || '';
+                if (!rowValue.includes(value)) {
+                    shouldShow = false;
+                }
+            });
+
+            row.style.display = shouldShow ? '' : 'none';
+            row.style.opacity = shouldShow ? '1' : '0';
+        });
     }
 }

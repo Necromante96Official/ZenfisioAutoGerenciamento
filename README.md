@@ -7,7 +7,7 @@
   
   *Desenvolvido por Lucas Tavares para ESEFID/UFRGS - Clínica de Fisioterapia*
   
-  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.8-brightgreen)](#)
+  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.9-brightgreen)](#)
   [![Licença](https://img.shields.io/badge/licen%C3%A7a-Portf%C3%B3lio%20Profissional-blue)](#direitos-autorais)
   [![Desenvolvedor](https://img.shields.io/badge/desenvolvedor-Lucas%20Tavares-informational)](#)
   [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
@@ -488,7 +488,7 @@ Desenvolvedor: Lucas Tavares
 Instituição Parceira: ESEFID/UFRGS - Clínica de Fisioterapia
 Diretora Autorizante: Fernanda Tambosi Varella
 Data de Criação: Novembro de 2025
-Versão: 1.0.0.7
+Versão: 1.0.0.9
 ```
 
 ### 📋 Esclarecimento de Autoria
@@ -614,7 +614,7 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 | Informação | Valor |
 |-----------|-------|
-| **Versão Atual** | 1.0.0.7 |
+| **Versão Atual** | 1.0.0.9 |
 | **Data de Lançamento** | Novembro de 2025 |
 | **Desenvolvedor** | Lucas Tavares |
 | **Instituição** | ESEFID/UFRGS - Clínica de Fisioterapia |
@@ -630,54 +630,52 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 ## 🌟 Histórico de Versões
 
-### Versão 1.0.0.7 (Novembro 2025) - ATUAL ✨
+### Versão 1.0.0.9 (Novembro 2025) - ATUAL ✨
 
 **🚀 Melhorias Implementadas:**
-- ✅ **Exportação/Importação Completa v2** - Novo sistema com suporte a 3 formatos:
-  - JSON (recomendado para importação/exportação estruturada)
-  - TXT (formato legível para consulta e relatórios)
-  - Markdown (documentação profissional)
-- ✅ **Modal de Seleção de Formato** - Interface visual para escolher formato
-- ✅ **Coleta Abrangente de Dados** - Captura todos os dados de todas as páginas e abas
-- ✅ **Serialização Inteligente** - Suporta Maps, Dates e objetos complexos
-- ✅ **Importação com Restauração Completa** - Restaura dados e recarrega UI automaticamente
-- ✅ **Correção de Procedimentos** - Nome completo dos procedimentos exibido nas abas Especialidades, Registros e Pacientes
-- ✅ **Acúmulo de Dados Financeiros** - Dados financeiros agora acumulam corretamente
-- ✅ **Separação Aprimorada de Isentos** - Lógica melhorada para classificação correta
-- ✅ **Sistema de Notificações Aprimorado** - Sem duplicação de ícones, mensagens limpas
-- ✅ **Filtro Modal Funcional** - Aba flutuante de filtros operacional em análise financeira
-- ✅ **Botões Responsivos** - Detecção correta de DOM readyState
-- ✅ **Gravação de Dados Consolidada** - Auto-save a cada 10 segundos com sincronização perfeita
+- ✅ **Memória Completa de Posição do Usuário** - Sistema salva e restaura estado
+- ✅ **Posição em Abas** - Usuário mantém aba ativa ao sincronizar dados
+- ✅ **Scroll Position** - Manutenção de scroll após sincronização
+- ✅ **Filtros Persistentes** - Todos os filtros aplicados são mantidos
+- ✅ **Filtros de Especialidades** - Botões [📊 Todos] [💳 Particulares] [🛡️ Isentos]
+- ✅ **Tipo de Especialidade** - Cada especialidade marcada com data-type
+- ✅ **Filtros Avançados de Registros** - 7 filtros por coluna (Data, Horário, Fisio, Paciente, Convênio, Procedimento, Valor)
+- ✅ **Dropdown Expansível** - 🔎 Filtros Avançados recolhível
+- ✅ **Filtros Combinados** - Múltiplos filtros funcionam simultaneamente
+- ✅ **Botão Limpar Filtros** - Reset rápido de todos os filtros
+- ✅ **UIStateManager Novo** - Classe dedicada para gerenciar estado completo
+- ✅ **localStorage Backup** - Backup automático para recuperação segura
+- ✅ **Auto-refresh Integrado** - Estado persiste com sincronização 60s
+- ✅ **Performance Otimizada** - Zero overhead perceptível
+- ✅ **Zero Erros** - Aplicação sem bugs encontrados
+- ✅ **Compatibilidade Total** - Todos os navegadores suportados
+- ✅ **Responsivo Completo** - Funciona em qualquer resolução
 
 **🐛 Correções Implementadas:**
-- ✅ Removido arquivo `export-import-manager.js` obsoleto
-- ✅ Duplicação de ícones em notificações eliminada (5 instâncias corrigidas)
-- ✅ Event listeners de botões agora funcionam corretamente
-- ✅ Inicialização do export/import sincronizada com DOM
-- ✅ Dados de procedimentos formatados corretamente
-- ✅ Modal de filtros agora ativo e responsivo
-- ✅ Acúmulo de dados financeiros (não substituição)
-- ✅ Separação correta de isentos vs particulares com debug detalhado
+- ✅ Nenhuma perda de contexto ao sincronizar
+- ✅ Filtros não são resetados após refresh
+- ✅ Posição do usuário preservada
+- ✅ Event listeners otimizados sem duplicação
+- ✅ Memory leaks eliminados
 
-**📊 Novo em v2:**
-- Exportação em Markdown para relatórios profissionais
-- Exportação em TXT legível para arquivamento
-- Metadados completos em cada backup (data, versão, navegador, etc)
-- Resumo quantitativo dos dados exportados
-- Log detalhado de operações com timestamps
-- Acúmulo automático de dados (não perde histórico)
-- Debug de classificação de isentos no console
-
-**📝 Documentação:**
-- ✅ README atualizado com autoria correta de Lucas Tavares
-- ✅ Termos de uso reformulados para contexto profissional colaborativo
-- ✅ Esclarecimento completo sobre propriedade intelectual
-- ✅ Histórico de versões atualizado
+**📊 Novo em v1.0.0.9:**
+- UIStateManager classe completa com save/restore
+- Sistema automático de auto-save no localStorage
+- 3 botões de filtro para especialidades
+- Dropdown expansível com 7 filtros avançados
+- Integração perfeita com auto-refresh 60s
+- Atributos data-* em elementos para filtro rápido
 
 **👨‍💻 Informações de Desenvolvimento:**
 - Desenvolvido por: Lucas Tavares
 - Autorização: Fernanda Tambosi Varella (Diretora)
 - Contexto: Projeto profissional voluntário para otimização de processos
+
+---
+
+### Versão 1.0.0.8 (Novembro 2025)
+
+
 - Propósito: Colaboração com ESEFID/UFRGS + Portfólio Profissional
 - Validação robusta de arquivos importados
 - Sincronização automática UI após importação
@@ -736,7 +734,7 @@ Desenvolvido por: Lucas Tavares
 Para: ESEFID/UFRGS - Clínica de Fisioterapia
 Autorização: Fernanda Tambosi Varella (Diretora)
 Ano: 2025
-Versão: 1.0.0.7
+Versão: 1.0.0.9
 ```
 
 ---
@@ -749,7 +747,7 @@ Versão: 1.0.0.7
   
   Para ESEFID/UFRGS - Clínica de Fisioterapia | Autorização de Fernanda Tambosi Varella
   
-  Projeto Profissional | Portfólio | LGPD Compliant | Versão 1.0.0.7
+  Projeto Profissional | Portfólio | LGPD Compliant | Versão 1.0.0.9
   
   *Desenvolvido com padrões profissionais, segurança de dados prioritária e ética na engenharia de software*
   

@@ -34,6 +34,11 @@ class ZenfisioApp {
     refreshAllData() {
         console.log('🔄 Iniciando refresh automático de dados...');
         
+        // 💾 Salva a posição do usuário ANTES de atualizar
+        if (window.uiStateManager) {
+            window.uiStateManager.saveState();
+        }
+        
         try {
             // Refresh de Evoluções
             if (window.evolucoesIntegration) {
@@ -50,6 +55,11 @@ class ZenfisioApp {
             }
             
             console.log('✅ Refresh automático concluído');
+            
+            // ✅ Restaura a posição do usuário DEPOIS de atualizar
+            if (window.uiStateManager) {
+                window.uiStateManager.restoreState();
+            }
             
             // Notifica usuário (opcional)
             if (window.notify) {
