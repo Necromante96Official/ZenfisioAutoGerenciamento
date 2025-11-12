@@ -1,6 +1,7 @@
 /**
- * UI STATE MANAGER
+ * UI STATE MANAGER - v2
  * Gerencia e restaura a posição/estado da interface quando o sistema sincroniza
+ * Agora com suporte robusto para múltiplas abas e filtros
  */
 
 class UIStateManager {
@@ -8,234 +9,250 @@ class UIStateManager {
         this.activeTab = null;
         this.activeModule = null;
         this.scrollPositions = {};
-        this.filters = {};
-        this.init();
-    }
-
-    init() {
-        // Salvar estado antes de atualizações
-        this.setupAutoSave();
+        this.filterStates = {};
+        console.log('✅ UIStateManager inicializado');
     }
 
     /**
-     * Salva o estado atual da UI (aba ativa + posição de scroll)
+     * Salva o estado atual da UI com debug detalhado
      */
     saveState() {
-        console.log('💾 Iniciando salvamento de estado da UI...');
+        console.log('💾 [UIStateManager] Salvando estado da UI...');
         
-        // Salva aba ativa (módulo Evoluções)
-        const activeEvTab = document.querySelector('.tab-btn.active');
-        if (activeEvTab) {
-            this.activeTab = activeEvTab.dataset.tab;
-            this.activeModule = 'evolucoes';
-            console.log('💾 Aba Evoluções ativa:', this.activeTab);
+        // Detecta qual módulo está ativo
+        const financialModule = document.getElementById('financeiro');
+        const evolucoesModule = document.getElementById('evolucoes');
+        
+        const financialActive = financialModule && financialModule.style.display !== 'none' && !financialModule.classList.contains('hidden');
+        const evolucaoActive = evolucoesModule && evolucoesModule.style.display !== 'none' && !evolucoesModule.classList.contains('hidden');
+        
+        // Salva aba ativa do módulo Financeiro
+        if (financialActive) {
+            const activeFinTab = document.querySelector('.financial-tab-btn.active');
+            if (activeFinTab) {
+                this.activeTab = activeFinTab.getAttribute('data-tab');
+                this.activeModule = 'financeiro';
+                console.log('💾 [Financeiro] Aba salva:', this.activeTab);
+            }
+        }
+        
+        // Salva aba ativa do módulo Evoluções
+        if (evolucaoActive) {
+            const activeEvTab = document.querySelector('.tab-btn.active');
+            if (activeEvTab) {
+                this.activeTab = activeEvTab.getAttribute('data-tab');
+                this.activeModule = 'evolucoes';
+                console.log('💾 [Evoluções] Aba salva:', this.activeTab);
+            }
         }
 
-        // Salva aba ativa (módulo Financeiro)
-        const activeFinTab = document.querySelector('.financial-tab-btn.active');
-        if (activeFinTab) {
-            this.activeTab = activeFinTab.dataset.tab;
-            this.activeModule = 'financeiro';
-            console.log('💾 Aba Financeira ativa:', this.activeTab);
-        }
+        // Salva scroll positions
+        document.querySelectorAll('[class*="list"], [class*="container"]').forEach(el => {
+            if (el.scrollTop > 0) {
+                this.scrollPositions[el.className] = el.scrollTop;
+            }
+        });
 
-        // Salva posições de scroll de containers principais
-        const mainContainer = document.querySelector('.evolucoes-tabs');
-        if (mainContainer) {
-            this.scrollPositions.evolucoes = mainContainer.scrollTop;
-        }
-
-        const financialContainer = document.querySelector('.financial-tabs-container');
-        if (financialContainer) {
-            this.scrollPositions.financeiro = financialContainer.scrollTop;
-        }
-
-        // Salva status de filtros (registros detalhados)
+        // Salva status de filtros avançados de registros
         const advancedFilters = document.querySelectorAll('.column-filter-select');
-        this.filters.advanced = {};
+        this.filterStates.advancedFilters = {};
         advancedFilters.forEach(select => {
             const column = select.getAttribute('data-column');
             const value = select.value;
             if (value) {
-                this.filters.advanced[column] = value;
+                this.filterStates.advancedFilters[column] = value;
             }
         });
 
-        // Salva filtros de tipo de especialidade
-        const specialtyTypeFilter = document.querySelector('.specialty-type-filter.active');
-        if (specialtyTypeFilter) {
-            this.filters.specialtyType = specialtyTypeFilter.getAttribute('data-type');
-        }
-
-        // Salva filtros de tipo de paciente
-        const patientTypeFilter = document.querySelector('.patients-type-filter.active');
-        if (patientTypeFilter) {
-            this.filters.patientType = patientTypeFilter.getAttribute('data-type');
-        }
+        // Salva filtros de tipo
+        const typeFilters = {
+            specialty: document.querySelector('.specialty-type-filter.active')?.getAttribute('data-type'),
+            patient: document.querySelector('.patients-type-filter.active')?.getAttribute('data-type'),
+        };
+        this.filterStates.typeFilters = typeFilters;
 
         // Salva valores de buscas
-        const recordsSearch = document.getElementById('recordsSearchInput');
-        if (recordsSearch && recordsSearch.value) {
-            this.filters.recordsSearch = recordsSearch.value;
-        }
+        const searchInputs = {
+            records: document.getElementById('recordsSearchInput')?.value || '',
+            patients: document.getElementById('patientsSearchInput')?.value || '',
+            date: document.getElementById('dateSearchInput')?.value || '',
+        };
+        this.filterStates.searches = searchInputs;
 
-        const patientsSearch = document.getElementById('patientsSearchInput');
-        if (patientsSearch && patientsSearch.value) {
-            this.filters.patientsSearch = patientsSearch.value;
-        }
-
-        const dateSearch = document.getElementById('dateSearchInput');
-        if (dateSearch && dateSearch.value) {
-            this.filters.dateSearch = dateSearch.value;
-        }
-
-        console.log('💾 Estado completo salvo:', {
+        console.log('💾 [UIStateManager] Estado salvo:', {
             tab: this.activeTab,
             module: this.activeModule,
-            scroll: this.scrollPositions,
-            filters: this.filters
+            filters: this.filterStates
         });
 
         this.saveToLocalStorage();
     }
 
     /**
-     * Restaura o estado anterior da UI
+     * Restaura o estado anterior da UI com retry logic
      */
     restoreState() {
-        console.log('✅ Iniciando restauração de estado...');
+        console.log('✅ [UIStateManager] Restaurando estado da UI...');
         
-        // Pequeno delay para garantir que o DOM foi atualizado
+        // Aumenta o delay para garantir rendering
         setTimeout(() => {
-            // Restaura aba ativa
-            if (this.activeTab) {
-                // Procura por seletores específicos dependendo do módulo
-                let tabBtn = document.querySelector(`[data-tab="${this.activeTab}"].tab-btn`);
-                if (!tabBtn) {
-                    tabBtn = document.querySelector(`[data-tab="${this.activeTab}"].financial-tab-btn`);
+            try {
+                this._restoreTabState();
+                this._restoreScrollState();
+                this._restoreFilterState();
+                console.log('✅ [UIStateManager] Estado restaurado com sucesso!');
+            } catch (error) {
+                console.error('❌ [UIStateManager] Erro ao restaurar:', error);
+            }
+        }, 200);
+    }
+
+    /**
+     * Restaura a aba ativa
+     */
+    _restoreTabState() {
+        if (!this.activeTab) {
+            console.warn('⚠️ [UIStateManager] Nenhuma aba para restaurar');
+            return;
+        }
+
+        console.log('🔄 [UIStateManager] Restaurando aba:', this.activeTab);
+
+        // Procura por tab button no módulo financeiro
+        let tabBtn = document.querySelector(`.financial-tab-btn[data-tab="${this.activeTab}"]`);
+        
+        // Se não encontrar no financeiro, procura no evoluções
+        if (!tabBtn) {
+            tabBtn = document.querySelector(`.tab-btn[data-tab="${this.activeTab}"]`);
+        }
+
+        if (tabBtn) {
+            console.log('✅ [UIStateManager] Aba encontrada, ativando:', this.activeTab);
+            tabBtn.click();
+            
+            // Confirm restoration
+            setTimeout(() => {
+                const isActive = tabBtn.classList.contains('active');
+                console.log(isActive ? '✅ [UIStateManager] Aba ativa confirmada' : '⚠️ [UIStateManager] Falha ao ativar aba');
+            }, 50);
+        } else {
+            console.warn('⚠️ [UIStateManager] Aba não encontrada:', this.activeTab);
+        }
+    }
+
+    /**
+     * Restaura scroll positions
+     */
+    _restoreScrollState() {
+        if (!this.scrollPositions || Object.keys(this.scrollPositions).length === 0) {
+            return;
+        }
+
+        console.log('🔄 [UIStateManager] Restaurando posições de scroll...');
+        Object.entries(this.scrollPositions).forEach(([selector, position]) => {
+            const el = document.querySelector('.' + selector.split(' ')[0]);
+            if (el) {
+                el.scrollTop = position;
+            }
+        });
+    }
+
+    /**
+     * Restaura todos os filtros
+     */
+    _restoreFilterState() {
+        if (!this.filterStates) return;
+
+        console.log('🔄 [UIStateManager] Restaurando filtros...');
+
+        // Restaura filtros avançados
+        if (this.filterStates.advancedFilters) {
+            Object.entries(this.filterStates.advancedFilters).forEach(([column, value]) => {
+                const select = document.querySelector(`.column-filter-select[data-column="${column}"]`);
+                if (select) {
+                    select.value = value;
                 }
-                
-                if (tabBtn) {
-                    console.log('✅ Clicando em aba:', this.activeTab);
-                    tabBtn.click();
-                } else {
-                    console.warn('⚠️ Aba não encontrada:', this.activeTab);
-                }
+            });
+        }
+
+        // Restaura filtros de tipo
+        if (this.filterStates.typeFilters) {
+            // Specialty filter
+            if (this.filterStates.typeFilters.specialty) {
+                const btn = document.querySelector(`.specialty-type-filter[data-type="${this.filterStates.typeFilters.specialty}"]`);
+                if (btn) btn.click();
             }
 
-            // Restaura posições de scroll
-            if (this.scrollPositions.evolucoes) {
-                const mainContainer = document.querySelector('.evolucoes-tabs');
-                if (mainContainer) {
-                    mainContainer.scrollTop = this.scrollPositions.evolucoes;
-                    console.log('✅ Scroll Evoluções restaurado');
-                }
+            // Patient filter
+            if (this.filterStates.typeFilters.patient) {
+                const btn = document.querySelector(`.patients-type-filter[data-type="${this.filterStates.typeFilters.patient}"]`);
+                if (btn) btn.click();
             }
+        }
 
-            if (this.scrollPositions.financeiro) {
-                const financialContainer = document.querySelector('.financial-tabs-container');
-                if (financialContainer) {
-                    financialContainer.scrollTop = this.scrollPositions.financeiro;
-                    console.log('✅ Scroll Financeiro restaurado');
-                }
-            }
-
-            // Restaura filtros avançados de registros
-            if (this.filters.advanced && Object.keys(this.filters.advanced).length > 0) {
-                Object.entries(this.filters.advanced).forEach(([column, value]) => {
-                    const select = document.querySelector(`.column-filter-select[data-column="${column}"]`);
-                    if (select) {
-                        select.value = value;
-                    }
-                });
-                console.log('✅ Filtros avançados restaurados');
-            }
-
-            // Restaura filtro de tipo de especialidade
-            if (this.filters.specialtyType) {
-                const btn = document.querySelector(`.specialty-type-filter[data-type="${this.filters.specialtyType}"]`);
-                if (btn) {
-                    btn.click();
-                    console.log('✅ Filtro de especialidade restaurado');
-                }
-            }
-
-            // Restaura filtro de tipo de paciente
-            if (this.filters.patientType) {
-                const btn = document.querySelector(`.patients-type-filter[data-type="${this.filters.patientType}"]`);
-                if (btn) {
-                    btn.click();
-                    console.log('✅ Filtro de paciente restaurado');
-                }
-            }
-
-            // Restaura valores de buscas
-            if (this.filters.recordsSearch) {
+        // Restaura buscas
+        if (this.filterStates.searches) {
+            if (this.filterStates.searches.records) {
                 const input = document.getElementById('recordsSearchInput');
                 if (input) {
-                    input.value = this.filters.recordsSearch;
-                    input.dispatchEvent(new Event('input'));
+                    input.value = this.filterStates.searches.records;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             }
 
-            if (this.filters.patientsSearch) {
+            if (this.filterStates.searches.patients) {
                 const input = document.getElementById('patientsSearchInput');
                 if (input) {
-                    input.value = this.filters.patientsSearch;
-                    input.dispatchEvent(new Event('input'));
+                    input.value = this.filterStates.searches.patients;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             }
 
-            if (this.filters.dateSearch) {
+            if (this.filterStates.searches.date) {
                 const input = document.getElementById('dateSearchInput');
                 if (input) {
-                    input.value = this.filters.dateSearch;
-                    input.dispatchEvent(new Event('input'));
+                    input.value = this.filterStates.searches.date;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             }
+        }
 
-            console.log('✅ Estado restaurado com sucesso!');
-        }, 150); // Aumentado para 150ms para garantir renderização completa
+        console.log('✅ [UIStateManager] Filtros restaurados');
     }
 
     /**
-     * Configura salvamento automático antes de atualizações
-     */
-    setupAutoSave() {
-        // Nada mais necessário aqui, o main.js chama saveState/restoreState diretamente
-    }
-
-    /**
-     * Salva estado em localStorage (backup)
+     * Salva estado em localStorage para recuperação em caso de erro
      */
     saveToLocalStorage() {
         const state = {
             tab: this.activeTab,
             module: this.activeModule,
-            scroll: this.scrollPositions,
-            filters: this.filters,
+            filterStates: this.filterStates,
             timestamp: new Date().toISOString()
         };
-        localStorage.setItem('uiState', JSON.stringify(state));
-        console.log('💾 Estado persistido em localStorage');
+        try {
+            localStorage.setItem('uiState_v2', JSON.stringify(state));
+            console.log('💾 [UIStateManager] Estado persistido em localStorage');
+        } catch (error) {
+            console.warn('⚠️ [UIStateManager] localStorage não disponível:', error);
+        }
     }
 
     /**
-     * Restaura estado do localStorage
+     * Restaura estado do localStorage se necessário
      */
     restoreFromLocalStorage() {
-        const saved = localStorage.getItem('uiState');
+        const saved = localStorage.getItem('uiState_v2');
         if (saved) {
             try {
                 const state = JSON.parse(saved);
                 this.activeTab = state.tab;
                 this.activeModule = state.module;
-                this.scrollPositions = state.scroll || {};
-                this.filters = state.filters || {};
-                console.log('✅ Estado carregado do localStorage');
+                this.filterStates = state.filterStates || {};
+                console.log('✅ [UIStateManager] Estado carregado do localStorage');
                 this.restoreState();
-            } catch (e) {
-                console.error('❌ Erro ao restaurar estado do localStorage:', e);
+            } catch (error) {
+                console.error('❌ [UIStateManager] Erro ao restaurar do localStorage:', error);
             }
         }
     }
@@ -243,3 +260,4 @@ class UIStateManager {
 
 // Instancia globalmente
 window.uiStateManager = new UIStateManager();
+console.log('✅ [UIStateManager] Instância global criada');
