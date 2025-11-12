@@ -126,21 +126,24 @@ class EvolucoesIntegration {
             }
 
             // NOVO: Separa dados por status para processamento dual-mode
-            // Aceita "Presença confirmada" OU "Atendido" como status válido
+            // APENAS "Presença confirmada" vai para Evoluções
+            // Todos os outros status vão para Análise Financeira
             const comPresenca = agendamentos.filter(a => {
                 if (!a.status) return false;
                 const statusLower = a.status.toLowerCase();
-                return statusLower.includes('presença confirmada') || statusLower.includes('atendido');
+                // APENAS "Presença confirmada" - sem "Atendido"
+                return statusLower.includes('presença confirmada');
             });
             const semPresenca = agendamentos.filter(a => {
                 if (!a.status) return true;
                 const statusLower = a.status.toLowerCase();
-                return !statusLower.includes('presença confirmada') && !statusLower.includes('atendido');
+                // Todos os outros status (Atendido, Cancelado, etc)
+                return !statusLower.includes('presença confirmada');
             });
 
             console.log(`📊 Separação por status:`);
-            console.log(`  ✅ Com "Presença confirmada" ou "Atendido": ${comPresenca.length}`);
-            console.log(`  💾 Com outros status: ${semPresenca.length}`);
+            console.log(`  ✅ Com "Presença confirmada": ${comPresenca.length}`);
+            console.log(`  💾 Com outros status (Financeiro): ${semPresenca.length}`);
 
             let resultadoEvolucoes = { sucesso: 0, ignoradas: 0 };
             let resultadoFinanceiro = 0;

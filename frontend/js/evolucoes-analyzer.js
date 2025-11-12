@@ -95,7 +95,9 @@ class EvolucoesAnalyzer {
             const paciente = this.pacientes.get(ev.paciente);
             paciente.atendimentos.push(ev);
             paciente.fisioterapeutas.add(ev.fisioterapeuta);
-            paciente.datas.add(ev.periodo || `${ev.mes}/${ev.ano}`);
+            // Usa dataProcessamento (DD/MM/YYYY) ou fallback para MM/YYYY
+            const dataPaciente = ev.dataProcessamento || `${String(ev.mes).padStart(2, '0')}/${ev.ano}`;
+            paciente.datas.add(dataPaciente);
             paciente.totalAtendimentos++;
 
             // Agrupa por fisioterapeuta
@@ -112,13 +114,18 @@ class EvolucoesAnalyzer {
             const fisio = this.fisioterapeutas.get(ev.fisioterapeuta);
             fisio.atendimentos.push(ev);
             fisio.pacientes.add(ev.paciente);
-            fisio.datas.add(ev.periodo || `${ev.mes}/${ev.ano}`);
+            // Usa dataProcessamento (DD/MM/YYYY) ou fallback para MM/YYYY
+            const dataFisio = ev.dataProcessamento || `${String(ev.mes).padStart(2, '0')}/${ev.ano}`;
+            fisio.datas.add(dataFisio);
             fisio.totalAtendimentos++;
             fisio.totalPacientes = fisio.pacientes.size;
 
             // Adiciona à cronologia
             this.cronologia.push(ev);
         });
+
+        // Debug: Log do tamanho dos conjuntos
+        console.log(`📊 Índices atualizados: ${this.pacientes.size} pacientes, ${this.fisioterapeutas.size} fisioterapeutas, ${this.cronologia.length} registros`);
 
         // Ordena cronologia por data
         this.cronologia.sort((a, b) => {

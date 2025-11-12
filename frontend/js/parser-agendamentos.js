@@ -48,9 +48,14 @@ class AgendamentoParser {
             const cleanLine = line.trim();
             if (!cleanLine) return; // Pula linhas vazias
 
-            // Horário
+            // Horário - Extrai APENAS HH:MM - HH:MM
             if (cleanLine.match(/^Horário:/i) || cleanLine.match(/^Horário\s*:/i)) {
-                agendamento.horario = cleanLine.replace(/^Horário\s*:\s*/i, '').trim();
+                let horarioCompleto = cleanLine.replace(/^Horário\s*:\s*/i, '').trim();
+                // Remove caracteres especiais extras (como ×, -, etc) que podem vir no início
+                horarioCompleto = horarioCompleto.replace(/^[×\-\s]+/, '').trim();
+                // Captura apenas a primeira ocorrência de HH:MM ou HH:MM - HH:MM
+                const horaMatch = horarioCompleto.match(/\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}|\d{1,2}:\d{2}/);
+                agendamento.horario = horaMatch ? horaMatch[0].trim() : horarioCompleto;
             }
 
             // Fisioterapeuta

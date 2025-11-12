@@ -378,42 +378,14 @@ class FinancialAnalyzer {
 
     /**
      * Método estático para formatar procedimento (acessível sem instância)
+     * AGORA: Retorna o NOME EXATO sem simplificações
      */
     static formatarProcedimento(procedimento) {
         if (!procedimento || typeof procedimento !== 'string') return '-';
         
-        let texto = procedimento.trim();
-        
-        // Padrão: "Atendimento Tipo 2x/3x semana" ou similares
-        // Separa a frequência (Ex: "2x semana", "3x semana", etc)
-        const frequenciaMatch = texto.match(/(\d+x\s+\w+)$/i);
-        let frequencia = '';
-        let base = texto;
-        
-        if (frequenciaMatch) {
-            frequencia = frequenciaMatch[1];
-            base = texto.substring(0, texto.lastIndexOf(frequenciaMatch[0])).trim();
-        }
-        
-        // Separa a primeira palavra (normalmente "Atendimento")
-        const partes = base.split(/\s+/);
-        if (partes.length === 0) return texto;
-        
-        const primeira = partes[0];
-        const resto = partes.slice(1).join(' ');
-        
-        // Monta a string formatada - SEM TAGS HTML (seguro para data-attributes)
-        let resultado = `${primeira}:`;
-        
-        if (resto) {
-            resultado += ` ${resto}`;
-        }
-        
-        if (frequencia) {
-            resultado += ` - ${frequencia}`;
-        }
-        
-        return resultado;
+        // Retorna o procedimento EXATO como está
+        // Sem simplificações, otimizações ou mudanças de formato
+        return procedimento.trim();
     }
 
     /**
