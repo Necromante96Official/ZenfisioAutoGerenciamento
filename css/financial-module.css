@@ -297,11 +297,19 @@
 
 /* Patients Container */
 .patients-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.patients-columns-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     height: 100%;
     overflow: hidden;
+    flex: 1;
 }
 
 .patients-column {
