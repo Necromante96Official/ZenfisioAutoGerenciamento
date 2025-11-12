@@ -311,17 +311,16 @@ class FinancialUI {
 
         return `
             <div class="patients-container">
-                <!-- Search Input -->
-                <div class="patients-search-container">
+                <!-- Search Input com tema padrão -->
+                <div style="margin-bottom: 20px;">
                     <input type="text" 
                            id="patientsSearchInput" 
-                           class="patients-search-input" 
-                           placeholder="🔍 Buscar pacientes..." 
-                           style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;">
+                           class="filter-input" 
+                           placeholder="🔍 Buscar pacientes...">
                 </div>
 
                 <div class="patients-columns-wrapper">
-                    <!-- Isentos Column -->
+                    <!-- Isentos Column (ESQUERDA) -->
                     <div class="patients-column">
                         <div class="patients-header">
                             <div class="patients-title">🛡️ Isentos</div>
@@ -350,7 +349,7 @@ class FinancialUI {
                         </div>
                     </div>
 
-                    <!-- Particulares Column -->
+                    <!-- Particulares Column (DIREITA) -->
                     <div class="patients-column">
                         <div class="patients-header">
                             <div class="patients-title">💰 Particulares</div>
@@ -420,20 +419,20 @@ class FinancialUI {
 
         return `
             <div class="financial-detailed-records">
-                <!-- Filtros e Busca -->
-                <div class="records-controls">
+                <!-- Filtros e Busca com tema padrão -->
+                <div class="records-controls" style="margin-bottom: 20px;">
                     <input type="text" 
                            id="recordsSearchInput" 
-                           class="records-search-input" 
+                           class="filter-input" 
                            placeholder="🔍 Buscar por paciente, fisio ou procedimento..." 
-                           style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                           style="width: 100%; margin-bottom: 15px;">
                     
                     <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                        <button class="status-filter-btn active" data-status="all" style="padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; background: #f0f0f0;">
+                        <button class="status-filter-btn active" data-status="all" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); font-weight: 500; transition: all 0.2s ease;">
                             📊 Todos (${records.length})
                         </button>
                         ${statuses.map(status => `
-                            <button class="status-filter-btn" data-status="${status}" style="padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                            <button class="status-filter-btn" data-status="${status}" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
                                 ${this._getStatusIcon(status)} ${status} (${porStatus[status].length})
                             </button>
                         `).join('')}
@@ -598,10 +597,15 @@ class FinancialUI {
             btn.addEventListener('click', () => {
                 const selectedStatus = btn.getAttribute('data-status');
                 
-                // Atualiza botões ativos
-                statusBtns.forEach(b => b.classList.remove('active'));
+                // Atualiza botões ativos com estilo
+                statusBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'transparent';
+                    b.style.borderColor = 'rgba(47, 190, 143, 0.2)';
+                });
                 btn.classList.add('active');
-                btn.style.background = '#e0e0e0';
+                btn.style.background = 'rgba(47, 190, 143, 0.1)';
+                btn.style.borderColor = 'var(--accent-primary)';
                 
                 // Mostra/oculta grupos de registros
                 const groups = document.querySelectorAll('.records-group');
