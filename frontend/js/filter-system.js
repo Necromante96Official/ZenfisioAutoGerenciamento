@@ -46,6 +46,7 @@ class FilterSystem {
 
     /**
      * Extrai opções únicas para cada filtro
+     * Remove opções vazias ou sem sentido
      */
     _extractFilterOptions() {
         const options = {
@@ -57,11 +58,20 @@ class FilterSystem {
         };
 
         this.originalData.forEach(item => {
-            if (item.paciente) options.pacientes.add(item.paciente);
-            if (item.fisioterapeuta) options.fisioterapeutas.add(item.fisioterapeuta);
-            if (item.status) options.status.add(item.status);
-            if (item.procedimentos) options.procedimentos.add(item.procedimentos);
-            if (item.convenio) {
+            // Extrai apenas valores válidos (não vazios, não undefined)
+            if (item.paciente && item.paciente.trim()) {
+                options.pacientes.add(item.paciente.trim());
+            }
+            if (item.fisioterapeuta && item.fisioterapeuta.trim()) {
+                options.fisioterapeutas.add(item.fisioterapeuta.trim());
+            }
+            if (item.status && item.status.trim()) {
+                options.status.add(item.status.trim());
+            }
+            if (item.procedimentos && item.procedimentos.trim()) {
+                options.procedimentos.add(item.procedimentos.trim());
+            }
+            if (item.convenio && item.convenio.trim()) {
                 // Categoriza como Particular ou Isento
                 const tipo = item.convenio.toLowerCase().includes('isento') ? 'Isento' : 'Particular';
                 options.convenios.add(tipo);
@@ -69,12 +79,14 @@ class FilterSystem {
         });
 
         this.filterOptions = {
-            pacientes: Array.from(options.pacientes).sort(),
-            fisioterapeutas: Array.from(options.fisioterapeutas).sort(),
-            status: Array.from(options.status).sort(),
-            procedimentos: Array.from(options.procedimentos).sort(),
-            convenios: Array.from(options.convenios).sort()
+            pacientes: Array.from(options.pacientes).sort().filter(p => p.length > 0),
+            fisioterapeutas: Array.from(options.fisioterapeutas).sort().filter(f => f.length > 0),
+            status: Array.from(options.status).sort().filter(s => s.length > 0),
+            procedimentos: Array.from(options.procedimentos).sort().filter(p => p.length > 0),
+            convenios: Array.from(options.convenios).sort().filter(c => c.length > 0)
         };
+
+        console.log('📋 Filtros extraídos:', this.filterOptions);
     }
 
     /**
