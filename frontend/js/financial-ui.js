@@ -231,32 +231,78 @@ class FinancialUI {
             </div>`;
         }
 
+        // Extrai dados únicos para filtros
+        const pacientes = [...new Set(dates.map(d => d.pacientes || []).flat())].sort();
+        const fisioterapeutas = [...new Set(dates.map(d => d.fisioterapeutas || []).flat())].sort();
+
         return `
-            <div class="financial-list">
-                ${dates.map((d, idx) => `
-                    <div class="financial-item date-item" style="animation-delay: ${idx * 0.05}s">
-                        <div class="item-header">
-                            <div class="item-title">
-                                📅 ${d.data}
-                            </div>
-                            <div class="item-badge">${d.atendimentos} Atendimento${d.atendimentos !== 1 ? 's' : ''}</div>
+            <div class="financial-by-date">
+                <!-- Filtros de Busca e Tipo -->
+                <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-direction: column;">
+                    <input type="text" 
+                           id="dateSearchInput" 
+                           class="filter-input" 
+                           placeholder="🔍 Buscar por data, receita, paciente ou fisioterapeuta..." 
+                           style="width: 100%; padding: 10px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                    
+                    <!-- Filtros por tipo -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 10px; background: rgba(47, 190, 143, 0.02); border-radius: 6px;">
+                        <!-- Filtro Paciente -->
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">👥 Paciente</label>
+                            <select class="date-filter-select" data-column="paciente" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary);">
+                                <option value="">Todos</option>
+                                ${pacientes.map(p => `<option value="${p.toLowerCase()}">${p}</option>`).join('')}
+                            </select>
                         </div>
-                        <div class="item-stats">
-                            <div class="stat">
-                                <span class="stat-label">Pagantes:</span>
-                                <span class="stat-value">${d.pagantes}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Isentos:</span>
-                                <span class="stat-value">${d.isentos}</span>
-                            </div>
-                            <div class="stat highlight">
-                                <span class="stat-label">Receita:</span>
-                                <span class="stat-value">R$ ${this._formatValue(d.receita.toFixed(2))}</span>
-                            </div>
+
+                        <!-- Filtro Fisioterapeuta -->
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-secondary);">👤 Fisioterapeuta</label>
+                            <select class="date-filter-select" data-column="fisioterapeuta" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary);">
+                                <option value="">Todos</option>
+                                ${fisioterapeutas.map(f => `<option value="${f.toLowerCase()}">${f}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <!-- Botão Limpar -->
+                        <div style="display: flex; align-items: flex-end;">
+                            <button id="clearDateFilters" style="width: 100%; padding: 6px; border: 1px solid rgba(47, 190, 143, 0.3); border-radius: 4px; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); cursor: pointer; font-weight: 600; transition: all 0.2s ease;">
+                                ✨ Limpar
+                            </button>
                         </div>
                     </div>
-                `).join('')}
+                </div>
+
+                <!-- Lista de Datas -->
+                <div class="financial-list">
+                    ${dates.map((d, idx) => `
+                        <div class="financial-item date-item searchable-date-item" 
+                             data-search="${(d.data || '').toLowerCase()}|${(d.pacientes || []).join('|').toLowerCase()}|${(d.fisioterapeutas || []).join('|').toLowerCase()}"
+                             style="animation-delay: ${idx * 0.05}s">
+                            <div class="item-header">
+                                <div class="item-title">
+                                    📅 ${d.data}
+                                </div>
+                                <div class="item-badge">${d.atendimentos} Atendimento${d.atendimentos !== 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="item-stats">
+                                <div class="stat">
+                                    <span class="stat-label">Pagantes:</span>
+                                    <span class="stat-value">${d.pagantes}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Isentos:</span>
+                                    <span class="stat-value">${d.isentos}</span>
+                                </div>
+                                <div class="stat highlight">
+                                    <span class="stat-label">Receita:</span>
+                                    <span class="stat-value">R$ ${this._formatValue(d.receita.toFixed(2))}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
             </div>
         `;
     }
@@ -276,13 +322,13 @@ class FinancialUI {
             <div class="specialties-container">
                 <!-- Filtros de Tipo -->
                 <div class="specialty-filters" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="type-filter-btn active" data-type="all" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); font-weight: 500; transition: all 0.2s ease;">
-                        📊 Todos (${specialties.length})
+                    <button class="specialty-type-filter active" data-type="all" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); font-weight: 500; transition: all 0.2s ease;">
+                        📊 Todas (${specialties.length})
                     </button>
-                    <button class="type-filter-btn" data-type="particulares" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
+                    <button class="specialty-type-filter" data-type="particulares" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
                         💳 Particulares
                     </button>
-                    <button class="type-filter-btn" data-type="isentos" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
+                    <button class="specialty-type-filter" data-type="isentos" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
                         🛡️ Isentos
                     </button>
                 </div>
@@ -290,23 +336,37 @@ class FinancialUI {
                 <!-- Lista de Especialidades -->
                 <div class="financial-list">
                     ${specialties.map((s, idx) => {
-                        const type = s.isentos > s.pagantes ? 'isentos' : 'particulares';
+                        // Determina tipo com lógica melhorada
+                        let type = 'particulares';
+                        if (s.isentos > s.pagantes) {
+                            type = 'isentos';
+                        } else if (s.isentos === s.pagantes && s.isentos > 0) {
+                            type = 'misto';
+                        }
+                        
+                        // Formata o nome do procedimento corretamente
+                        let nomeProcedimento = s.nome || 'Procedimento Desconhecido';
+                        if (nomeProcedimento === 'Geral' || nomeProcedimento.includes('Geral')) {
+                            nomeProcedimento = 'Atendimento Geral';
+                        }
+                        nomeProcedimento = FinancialAnalyzer.formatarProcedimento(nomeProcedimento);
+                        
                         return `
-                            <div class="financial-item specialty-item" data-type="${type}" style="animation-delay: ${idx * 0.05}s">
+                            <div class="financial-item specialty-item" data-specialty-type="${type}" style="animation-delay: ${idx * 0.05}s">
                                 <div class="item-header">
                                     <div class="item-title">
-                                        🎯 ${FinancialAnalyzer.formatarProcedimento(s.nome)}
+                                        🎯 ${nomeProcedimento}
                                     </div>
                                     <div class="item-badge">${s.atendimentos} Atendimento${s.atendimentos !== 1 ? 's' : ''}</div>
                                 </div>
                                 <div class="item-stats">
                                     <div class="stat">
                                         <span class="stat-label">Particulares:</span>
-                                        <span class="stat-value">${s.pagantes}</span>
+                                        <span class="stat-value" style="color: ${s.pagantes > s.isentos ? 'var(--accent-primary)' : 'rgba(47, 190, 143, 0.6)'}">${s.pagantes}</span>
                                     </div>
                                     <div class="stat">
                                         <span class="stat-label">Isentos:</span>
-                                        <span class="stat-value">${s.isentos}</span>
+                                        <span class="stat-value" style="color: ${s.isentos > s.pagantes ? 'var(--accent-primary)' : 'rgba(47, 190, 143, 0.6)'}">${s.isentos}</span>
                                     </div>
                                     <div class="stat highlight">
                                         <span class="stat-label">Receita:</span>
@@ -330,12 +390,26 @@ class FinancialUI {
 
         return `
             <div class="patients-container">
-                <!-- Search Input com tema padrão -->
-                <div style="margin-bottom: 20px;">
+                <!-- Filtros de Busca e Tipo -->
+                <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-direction: column;">
                     <input type="text" 
                            id="patientsSearchInput" 
                            class="filter-input" 
-                           placeholder="🔍 Buscar pacientes...">
+                           placeholder="🔍 Buscar por nome, telefone, fisioterapeuta ou procedimento..." 
+                           style="width: 100%; padding: 10px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                    
+                    <!-- Botões de filtro por tipo -->
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="patients-type-filter active" data-type="all" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); font-weight: 500; transition: all 0.2s ease;">
+                            👥 Todos (${isentos.length + particulares.length})
+                        </button>
+                        <button class="patients-type-filter" data-type="isento" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
+                            🛡️ Isentos (${isentos.length})
+                        </button>
+                        <button class="patients-type-filter" data-type="particular" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
+                            💳 Particulares (${particulares.length})
+                        </button>
+                    </div>
                 </div>
 
                 <div class="patients-columns-wrapper">
@@ -348,7 +422,9 @@ class FinancialUI {
                         <div class="patients-list" id="isentosList">
                             ${isentos.length > 0 ? isentos.map((p, idx) => `
                                 <div class="patient-item isento patient-searchable" 
-                                     data-name="${p.nome.toLowerCase()}" 
+                                     data-type="isento"
+                                     data-name="${p.nome.toLowerCase()}"
+                                     data-search="${p.nome.toLowerCase()}|${p.celular.toLowerCase()}|${p.fisioterapeuta.toLowerCase()}|${FinancialAnalyzer.formatarProcedimento(p.procedimentos).toLowerCase()}"
                                      style="animation-delay: ${idx * 0.03}s">
                                     <div class="patient-name">${p.nome}</div>
                                     <div class="patient-info">
@@ -377,7 +453,9 @@ class FinancialUI {
                         <div class="patients-list" id="particularesList">
                             ${particulares.length > 0 ? particulares.map((p, idx) => `
                                 <div class="patient-item particular patient-searchable" 
-                                     data-name="${p.nome.toLowerCase()}" 
+                                     data-type="particular"
+                                     data-name="${p.nome.toLowerCase()}"
+                                     data-search="${p.nome.toLowerCase()}|${p.celular.toLowerCase()}|${p.fisioterapeuta.toLowerCase()}|${FinancialAnalyzer.formatarProcedimento(p.procedimentos).toLowerCase()}"
                                      style="animation-delay: ${idx * 0.03}s">
                                     <div class="patient-name">${p.nome}</div>
                                     <div class="patient-info">
@@ -451,19 +529,8 @@ class FinancialUI {
                     <input type="text" 
                            id="recordsSearchInput" 
                            class="filter-input" 
-                           placeholder="🔍 Buscar por paciente, fisio ou procedimento..." 
+                           placeholder="🔍 Buscar por paciente, fisio, procedimento, data, horário ou convênio..." 
                            style="width: 100%; margin-bottom: 15px;">
-                    
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                        <button class="status-filter-btn active" data-status="all" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: rgba(47, 190, 143, 0.1); color: var(--text-primary); font-weight: 500; transition: all 0.2s ease;">
-                            📊 Todos (${records.length})
-                        </button>
-                        ${statuses.map(status => `
-                            <button class="status-filter-btn" data-status="${status}" style="padding: 8px 16px; border: 1px solid rgba(47, 190, 143, 0.2); border-radius: 6px; cursor: pointer; background: transparent; color: var(--text-primary); transition: all 0.2s ease;">
-                                ${this._getStatusIcon(status)} ${status} (${porStatus[status].length})
-                            </button>
-                        `).join('')}
-                    </div>
 
                     <!-- Filtros por Coluna -->
                     <details style="margin-bottom: 15px;">
@@ -677,7 +744,7 @@ class FinancialUI {
         }
 
         // ========== FILTROS DE TIPO DE ESPECIALIDADES ==========
-        const typeFilterBtns = document.querySelectorAll('.type-filter-btn');
+        const typeFilterBtns = document.querySelectorAll('.type-filter-btn, .specialty-type-filter');
         typeFilterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const selectedType = btn.getAttribute('data-type');
@@ -699,7 +766,7 @@ class FinancialUI {
                         item.style.display = '';
                         item.style.opacity = '1';
                     } else {
-                        const itemType = item.getAttribute('data-type');
+                        const itemType = item.getAttribute('data-specialty-type');
                         if (itemType === selectedType) {
                             item.style.display = '';
                             item.style.opacity = '1';
@@ -715,20 +782,48 @@ class FinancialUI {
         // Listener de busca para pacientes
         const searchInput = document.getElementById('patientsSearchInput');
         if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const patientItems = document.querySelectorAll('.patient-searchable');
-                
-                patientItems.forEach(item => {
-                    const patientName = item.getAttribute('data-name');
-                    if (patientName.includes(searchTerm) || searchTerm === '') {
-                        item.style.display = '';
-                        item.style.opacity = '1';
-                    } else {
-                        item.style.display = 'none';
-                        item.style.opacity = '0';
-                    }
+            searchInput.addEventListener('input', () => this._applyPatientFilters());
+        }
+
+        // Listeners para botões de filtro por tipo de paciente
+        const patientTypeFilters = document.querySelectorAll('.patients-type-filter');
+        patientTypeFilters.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove classe active de todos
+                patientTypeFilters.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'transparent';
+                    b.style.borderColor = 'rgba(47, 190, 143, 0.2)';
                 });
+                // Adiciona classe active ao botão clicado
+                btn.classList.add('active');
+                btn.style.background = 'rgba(47, 190, 143, 0.1)';
+                btn.style.borderColor = 'var(--accent-primary)';
+                
+                // Aplica filtros
+                this._applyPatientFilters();
+            });
+        });
+
+        // ========== FILTROS DE DATA ==========
+        const dateSearch = document.getElementById('dateSearchInput');
+        if (dateSearch) {
+            dateSearch.addEventListener('input', () => this._applyDateFilters());
+        }
+
+        const dateFilterSelects = document.querySelectorAll('.date-filter-select');
+        dateFilterSelects.forEach(select => {
+            select.addEventListener('change', () => this._applyDateFilters());
+        });
+
+        const clearDateFiltersBtn = document.getElementById('clearDateFilters');
+        if (clearDateFiltersBtn) {
+            clearDateFiltersBtn.addEventListener('click', () => {
+                dateFilterSelects.forEach(select => {
+                    select.value = '';
+                });
+                if (dateSearch) dateSearch.value = '';
+                this._applyDateFilters();
             });
         }
 
@@ -768,8 +863,18 @@ class FinancialUI {
                 const recordRows = document.querySelectorAll('.searchable-record');
                 
                 recordRows.forEach(row => {
-                    const searchData = row.getAttribute('data-search');
-                    if (searchData.includes(searchTerm) || searchTerm === '') {
+                    // Busca em múltiplos campos de dados
+                    const searchData = row.getAttribute('data-search') || '';
+                    const data = row.getAttribute('data-data') || '';
+                    const horario = row.getAttribute('data-horario') || '';
+                    const fisio = row.getAttribute('data-fisioterapeuta') || '';
+                    const paciente = row.getAttribute('data-paciente') || '';
+                    const convenio = row.getAttribute('data-convenio') || '';
+                    const procedimento = row.getAttribute('data-procedimento') || '';
+                    
+                    const combinedSearch = `${searchData}|${data}|${horario}|${fisio}|${paciente}|${convenio}|${procedimento}`;
+                    
+                    if (combinedSearch.includes(searchTerm) || searchTerm === '') {
                         row.style.display = '';
                         row.style.opacity = '1';
                     } else {
@@ -798,6 +903,74 @@ class FinancialUI {
                 this._applyAdvancedFilters();
             });
         }
+    }
+
+    /**
+     * Aplica filtros combinados na aba de pacientes (busca + tipo)
+     */
+    _applyPatientFilters() {
+        const searchInput = document.getElementById('patientsSearchInput');
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        
+        const activeTypeBtn = document.querySelector('.patients-type-filter.active');
+        const selectedType = activeTypeBtn ? activeTypeBtn.getAttribute('data-type') : 'all';
+        
+        const patientItems = document.querySelectorAll('.patient-searchable');
+        
+        patientItems.forEach(item => {
+            const itemType = item.getAttribute('data-type');
+            const searchData = item.getAttribute('data-search') || '';
+            const name = item.getAttribute('data-name') || '';
+            
+            // Verifica se corresponde ao filtro de tipo
+            const typeMatch = selectedType === 'all' || itemType === selectedType;
+            
+            // Verifica se corresponde à busca (múltiplos campos)
+            const searchMatch = searchData.includes(searchTerm) || name.includes(searchTerm) || searchTerm === '';
+            
+            if (typeMatch && searchMatch) {
+                item.style.display = '';
+                item.style.opacity = '1';
+            } else {
+                item.style.display = 'none';
+                item.style.opacity = '0';
+            }
+        });
+    }
+
+    /**
+     * Aplica filtros combinados na aba de datas (busca + filtros)
+     */
+    _applyDateFilters() {
+        const searchInput = document.getElementById('dateSearchInput');
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        
+        const pacienteFilter = document.querySelector('.date-filter-select[data-column="paciente"]');
+        const fisioterapeutaFilter = document.querySelector('.date-filter-select[data-column="fisioterapeuta"]');
+        
+        const pacienteValue = pacienteFilter ? pacienteFilter.value.toLowerCase() : '';
+        const fisioterapeutaValue = fisioterapeutaFilter ? fisioterapeutaFilter.value.toLowerCase() : '';
+        
+        const dateItems = document.querySelectorAll('.searchable-date-item');
+        
+        dateItems.forEach(item => {
+            const searchData = item.getAttribute('data-search') || '';
+            
+            // Verifica se corresponde à busca
+            const searchMatch = searchData.includes(searchTerm) || searchTerm === '';
+            
+            // Verifica filtros de paciente e fisioterapeuta
+            const pacienteMatch = pacienteValue === '' || searchData.includes(pacienteValue);
+            const fisioterapeutaMatch = fisioterapeutaValue === '' || searchData.includes(fisioterapeutaValue);
+            
+            if (searchMatch && pacienteMatch && fisioterapeutaMatch) {
+                item.style.display = '';
+                item.style.opacity = '1';
+            } else {
+                item.style.display = 'none';
+                item.style.opacity = '0';
+            }
+        });
     }
 
     /**
