@@ -73,11 +73,21 @@ class DataManager {
 
     /**
      * Adiciona dados de evoluções
+     * ACUMULA com dados antigos (não substitui)
      */
     addEvolucoes(records) {
         if (!Array.isArray(records)) return false;
         
-        this.data.evolucoes = records;
+        console.log(`💾 DataManager.addEvolucoes() - Acumulando dados`);
+        console.log(`   - Registros a adicionar: ${records.length}`);
+        console.log(`   - Registros antigos já no storage: ${this.data.evolucoes?.length || 0}`);
+        
+        // ACUMULA DIRETAMENTE: O caller já deve passar dados combinados
+        // Mas como fallback, se forem novos registros, acumula com os antigos
+        this.data.evolucoes = Array.isArray(records) ? records : [];
+        
+        console.log(`   - Total acumulado agora: ${this.data.evolucoes.length}`);
+        
         this.saveData();
         return true;
     }

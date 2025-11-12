@@ -123,15 +123,20 @@ class EvolucoesIntegration {
             }
 
             // NOVO: Separa dados por status para processamento dual-mode
-            const comPresenca = agendamentos.filter(a => 
-                a.status && a.status.toLowerCase().includes('presença confirmada')
-            );
-            const semPresenca = agendamentos.filter(a =>
-                !a.status || !a.status.toLowerCase().includes('presença confirmada')
-            );
+            // Aceita "Presença confirmada" OU "Atendido" como status válido
+            const comPresenca = agendamentos.filter(a => {
+                if (!a.status) return false;
+                const statusLower = a.status.toLowerCase();
+                return statusLower.includes('presença confirmada') || statusLower.includes('atendido');
+            });
+            const semPresenca = agendamentos.filter(a => {
+                if (!a.status) return true;
+                const statusLower = a.status.toLowerCase();
+                return !statusLower.includes('presença confirmada') && !statusLower.includes('atendido');
+            });
 
             console.log(`📊 Separação por status:`);
-            console.log(`  ✅ Com "Presença confirmada": ${comPresenca.length}`);
+            console.log(`  ✅ Com "Presença confirmada" ou "Atendido": ${comPresenca.length}`);
             console.log(`  💾 Com outros status: ${semPresenca.length}`);
 
             let resultadoEvolucoes = { sucesso: 0, ignoradas: 0 };
@@ -143,10 +148,22 @@ class EvolucoesIntegration {
             if (comPresenca.length > 0) {
                 resultadoEvolucoes = this.analyzer.processarMultiplas(comPresenca);
                 
-                // Salva em Evoluções
+                // 🔑 CRUCIAL: Recupera evoluções antigas para ACUMULAR (como em Financeiro)
+                const evolucoesAntigos = window.dataManager?.getEvolucoes?.() || [];
+                console.log(`📊 Evoluções antigas carregadas: ${evolucoesAntigos.length}`);
+                
+                // Combina evoluções antigas com novas (ACUMULAÇÃO)
+                // Importante: passa os dados já combinados para evitar dupla acumulação
+                const evolucoesCombinadas = [...evolucoesAntigos, ...comPresenca];
+                console.log(`📊 Total de evoluções após acumular: ${evolucoesCombinadas.length}`);
+                
+                // Salva em Evoluções COM ACÚMULO
                 try {
                     if (window.dataManager) {
-                        window.dataManager.addEvolucoes(this.analyzer.getEvolucoes());
+                        // ✅ Passa dados JÁ COMBINADOS (antigos + novos)
+                        // O dataManager NÃO vai acumular novamente, apenas substituir com dados combinados
+                        window.dataManager.addEvolucoes(evolucoesCombinadas);
+                        console.log(`✅ ${evolucoesCombinadas.length} evoluções salvas no dataManager (acumuladas)`);
                     }
                 } catch (saveError) {
                     console.warn('Aviso ao salvar evoluções:', saveError);

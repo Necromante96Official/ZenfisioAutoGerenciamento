@@ -7,6 +7,49 @@ class FinancialUI {
         this.container = null;
         this.data = {};
         this.originalRecords = [];
+        this._initializeModuleListener();
+    }
+
+    /**
+     * Escuta quando o módulo fica visível e reinicializa tabs
+     */
+    _initializeModuleListener() {
+        // Aguarda o DOM estar pronto
+        const setupListener = () => {
+            const financeiroModule = document.getElementById('financeiro');
+            if (!financeiroModule) {
+                setTimeout(setupListener, 100);
+                return;
+            }
+
+            // Observer para detectar quando o módulo fica visível
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        const target = mutation.target;
+                        // Se o módulo ficou ativo e tem dados, reinicializa tabs
+                        if (target.classList.contains('active') && target.id === 'financeiro' && this.data) {
+                            console.log('🔄 Módulo Financeiro ficou visível, reinicializando tabs...');
+                            setTimeout(() => {
+                                this._setupTabs();
+                                this._attachEventListeners();
+                            }, 50);
+                        }
+                    }
+                });
+            });
+
+            // Inicia observação
+            observer.observe(financeiroModule, { attributes: true, attributeFilter: ['class'] });
+            console.log('✅ Observer de módulo Financeiro iniciado');
+        };
+
+        // Executa quando DOM estiver pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupListener);
+        } else {
+            setupListener();
+        }
     }
 
     /**
@@ -102,6 +145,11 @@ class FinancialUI {
 
                 <!-- Tabs Navigation -->
                 <div class="financial-tabs-container">
+                    <!-- Action Button - À Esquerda -->
+                    <button id="clearFinanceiroDataBtn" class="action-btn" title="Limpar dados de análise financeira" style="background-color: #dc3545;">
+                        🗑️ Limpar Financeiro
+                    </button>
+
                     <div class="financial-tabs">
                         <button class="financial-tab-btn active" data-tab="datas">
                             📅 Por Data
@@ -381,10 +429,19 @@ class FinancialUI {
         const tabButtons = document.querySelectorAll('.financial-tab-btn');
         const tabPanes = document.querySelectorAll('.financial-tab-pane');
 
+        console.log(`📑 _setupTabs(): Encontrados ${tabButtons.length} botões e ${tabPanes.length} panes`);
+
+        if (tabButtons.length === 0 || tabPanes.length === 0) {
+            console.warn('⚠️ Nenhum tab botão ou pane encontrado');
+            return;
+        }
+
         tabButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const tabName = btn.getAttribute('data-tab');
+
+                console.log(`📑 Aba clicada: ${tabName}`);
 
                 // Remove active de todos
                 tabButtons.forEach(b => b.classList.remove('active'));
@@ -392,9 +449,17 @@ class FinancialUI {
 
                 // Adiciona active ao atual
                 btn.classList.add('active');
-                document.getElementById(tabName).classList.add('active');
+                const targetPane = document.getElementById(tabName);
+                if (targetPane) {
+                    targetPane.classList.add('active');
+                    console.log(`✅ Aba ${tabName} ativada`);
+                } else {
+                    console.error(`❌ Pane com ID ${tabName} não encontrado`);
+                }
             });
         });
+
+        console.log('✅ Tabs inicializadas com sucesso');
     }
 
     /**
