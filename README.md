@@ -3,12 +3,13 @@
   
   # Auto Gerenciamento Zenfisio
   
-  **Sistema Proprietário de Gerenciamento de Dados e Análise Financeira**
+  **Sistema de Gerenciamento de Dados e Análise Financeira**
   
-  *Uso Exclusivo: Zenfisio - Clínica de Fisioterapia*
+  *Desenvolvido por Lucas Tavares para ESEFID/UFRGS - Clínica de Fisioterapia*
   
   [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.7-brightgreen)](#)
-  [![Licença](https://img.shields.io/badge/licen%C3%A7a-Proprietária%20Zenfisio-blue)](#direitos-autorais)
+  [![Licença](https://img.shields.io/badge/licen%C3%A7a-Portf%C3%B3lio%20Profissional-blue)](#direitos-autorais)
+  [![Desenvolvedor](https://img.shields.io/badge/desenvolvedor-Lucas%20Tavares-informational)](#)
   [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
   
 </div>
@@ -33,11 +34,34 @@
 
 ## 🎯 Sobre o Projeto
 
-**Auto Gerenciamento Zenfisio** é um sistema web proprietário desenvolvido exclusivamente para uso interno na Clínica Zenfisio de Fisioterapia. O sistema automatiza o processamento de dados de pacientes, análise de evoluções pendentes e fornece insights financeiros detalhados através de uma interface moderna e responsiva.
+**Auto Gerenciamento Zenfisio** é um sistema web desenvolvido por **Lucas Tavares** como projeto profissional para a **Clínica de Fisioterapia ESEFID/UFRGS**, sob autorização direta de **Fernanda Tambosi Varella**, Diretora da Clínica.
 
-Desenvolvido com tecnologias vanilla JavaScript, HTML5 e CSS3, oferece uma experiência de uso leve, rápida e confiável, otimizada para os fluxos operacionais específicos da clínica.
+### 📌 Contexto e Motivação
 
-⚠️ **INFORMAÇÃO IMPORTANTE**: Este software é de propriedade exclusiva da Zenfisio e seu acesso e uso são restritos ao pessoal autorizado da clínica.
+O projeto foi desenvolvido para **resolver deficiências operacionais** na análise de dados da clínica, que historicamente era realizada através de **planilhas Excel** com fórmulas obsoletas. O sistema proposto:
+
+- ✅ Automatiza o processamento de dados de pacientes
+- ✅ Fornece análises financeiras precisas e em tempo real
+- ✅ Substitui fluxos manuais por processamento semi-automático
+- ✅ Mantém compatibilidade com fluxos existentes (não abolindo Excel)
+- ✅ Oferece interface moderna e responsiva
+
+### 👤 Autoria e Propósito
+
+- **Desenvolvedor**: GameDev Necromante96Official (Lucas Tavares Mattos)
+- **Autorização**: Fernanda Tambosi Varella (Diretora - ESEFID/UFRGS)
+- **Propósito Original**: Otimização de processos internos da clínica
+- **Propósito Secundário**: Inclusão em portfólio profissional do desenvolvedor
+
+**Importante**: Este é um trabalho **voluntário e profissional** do desenvolvedor para o ambiente de trabalho, **não vinculado a contratação formal**, mas realizado com total permissão e apoio da administração da clínica para fins de colaboração técnica e desenvolvimento profissional contínuo.
+
+### 🔧 Características Técnicas
+
+Desenvolvido com tecnologias vanilla **JavaScript, HTML5 e CSS3**, oferece:
+- 🚀 Experiência leve e rápida
+- 🔒 Confiabilidade aprimorada
+- 📊 Interface moderna e responsiva
+- 💾 Armazenamento 100% local (sem servidor externo)
 
 ---
 
@@ -346,122 +370,179 @@ Diálogos elegantes e responsivos que:
 
 ## 📜 Termos de Uso
 
-### 1. Licença Proprietária Exclusiva
+### 1. Licença de Uso Profissional Colaborativo
 
-Este software é propriedade intelectual da **Zenfisio - Clínica de Fisioterapia** e fornecido sob licença proprietária personalizada restritiva. 
+Este software é fornecido sob **licença exclusiva de uso colaborativo** para a **ESEFID/UFRGS - Clínica de Fisioterapia**, com permissão expressa de **Fernanda Tambosi Varella** (Diretora).
 
-**Usuários Autorizados:**
-- ✅ Apenas funcionários da Zenfisio com autorização expressa
-- ✅ Acesso limitado ao horário de funcionamento comercial
-- ✅ Uso exclusivamente para operações internas da clínica
+**Natureza do Acordo:**
+- ✅ Colaboração profissional e voluntária
+- ✅ Desenvolvimento para otimização de processos internos
+- ✅ Objetivo simultâneo: manutenção de portfólio profissional
+- ✅ Nenhuma relação formal de emprego ou contratação
 
-### 2. Direitos Concedidos
+### 2. Direitos do Desenvolvedor
 
-Os usuários autorizados têm direito de:
-- ✅ Usar o software exclusivamente na clínica Zenfisio
-- ✅ Processar e gerenciar dados de pacientes da clínica
-- ✅ Fazer backup dos dados para recuperação
-- ✅ Utilizar em ambiente local da clínica
+O desenvolvedor (Lucas Tavares) mantém:
 
-### 3. Restrições Absolutas
+- ✅ Propriedade intelectual completa do código
+- ✅ Direito de incluir o projeto em portfólio profissional
+- ✅ Direito de usar como case study em entrevistas e processos seletivos
+- ✅ Direito de descrever o projeto publicamente em redes profissionais (LinkedIn, GitHub, etc)
+- ✅ Direito de solicitar menção/crédito quando apropriado
+- ✅ Direito de pausar ou descontinuar manutenção com aviso prévio
+
+### 3. Direitos da Instituição (ESEFID/UFRGS)
+
+A instituição possui direitos de:
+
+- ✅ Usar o sistema para operações internas exclusivamente
+- ✅ Processar dados de pacientes em segurança
+- ✅ Realizar backups e exportações de dados
+- ✅ Solicitar ajustes e melhorias técnicas
+- ✅ Acessar o suporte técnico do desenvolvedor conforme disponibilidade
+- ✅ Continuar usando versões anteriores se desejar
+
+### 4. Restrições Absolutas para a Instituição
 
 **Terminantemente Proibido:**
-- ❌ Copiar, clonar ou redistribuir o software
-- ❌ Acessar, modificar ou visualizar o código-fonte sem autorização
-- ❌ Utilizar em outras clínicas ou organizações
-- ❌ Criar versões derivadas ou modificadas
-- ❌ Vender, licenciar ou comercializar de qualquer forma
-- ❌ Compartilhar acesso com pessoas não autorizadas
-- ❌ Remover ou modificar avisos de copyright e propriedade
+
+- ❌ Compartilhar o sistema com outras clínicas ou instituições
+- ❌ Copiar, clonar ou duplicar o código
+- ❌ Modificar o código sem consentimento do desenvolvedor
+- ❌ Reivindicar propriedade ou autoria do código
+- ❌ Vender, licenciar ou comercializar o sistema
+- ❌ Usar como base para produto comercial próprio
+- ❌ Remover ou modificar créditos do desenvolvedor
 - ❌ Realizar engenharia reversa ou decomposição
-- ❌ Utilizar para fins competitivos
 
-### 4. Proteção de Dados
+### 5. Proteção de Dados e Privacidade
 
-- 🔒 Todos os dados são armazenados **exclusivamente localmente** em sua máquina
+- 🔒 Todos os dados são armazenados **exclusivamente localmente**
 - 🔒 Nenhuma informação é transmitida para servidores externos
-- 🔒 Dados de pacientes são confidenciais e protegidos por LGPD
-- 🔒 Responsabilidade total da clínica pela segurança dos dados
-- 🔒 Backups devem ser realizados regularmente pela clínica
-
-### 5. Conformidade Legal
-
-- Este software está em conformidade com a LGPD (Lei Geral de Proteção de Dados)
-- Dados pessoais de pacientes são tratados conforme legislação vigente
-- A clínica é responsável pela privacidade e segurança dos dados
-- Uso deve estar de acordo com normas do Conselho Federal de Fisioterapia
+- 🔒 Dados de pacientes são protegidos conforme **LGPD**
+- 🔒 A ESEFID/UFRGS é responsável pela segurança dos dados armazenados
+- 🔒 Desenvolvedor não tem acesso aos dados da clínica
+- 🔒 Backups devem ser gerenciados pela instituição
 
 ### 6. Suporte Técnico
 
-- Suporte técnico disponível exclusivamente para usuários autorizados
-- Reportar bugs através de canais internos autorizados
-- Melhorias solicitadas pelos responsáveis da clínica
+**O suporte técnico é fornecido:**
 
-### 7. Limitação de Responsabilidade
+- ✅ Conforme disponibilidade do desenvolvedor
+- ✅ Para correção de bugs e problemas críticos
+- ✅ Para melhorias solicitadas pela direção da clínica
+- ✅ Gratuitamente como parte do acordo colaborativo
+- ✅ Via comunicação direta com Lucas Tavares
 
-Este software é fornecido "COMO ESTÁ". A Zenfisio não se responsabiliza por:
+**O suporte NÃO inclui:**
+
+- ❌ Treinamento formal de usuários (beyond basic)
+- ❌ Garantia de resposta em tempo real
+- ❌ Disponibilidade 24/7
+- ❌ Desenvolvimento de funcionalidades sob demanda não acordadas
+
+### 7. Manutenção e Atualizações
+
+- 📝 Novas versões serão lançadas conforme necessário
+- 📝 Melhorias serão implementadas mediante discussão com direção
+- 📝 Versões antigas continuarão funcionando sem suporte ativo
+- 📝 Breaking changes serão evitados quando possível
+- 📝 Documentação será mantida e atualizada
+
+### 8. Limite de Responsabilidade
+
+Este software é fornecido "COMO ESTÁ". O desenvolvedor não se responsabiliza por:
+
 - Perda ou corrupção de dados (recomenda-se backup regular)
 - Interrupções ou indisponibilidade do serviço
 - Danos diretos, indiretos ou consequentes
-- Uso indevido por pessoas não autorizadas
-- Falhas de segurança causadas por negligência do usuário
+- Falhas causadas por uso indevido
+- Problemas de segurança por negligência da instituição
+- Incompatibilidades com sistemas externos
 
-### 8. Encerramento de Acesso
+### 9. Encerramento de Acesso
 
-A Zenfisio reserva-se o direito de:
-- Revogar acesso a qualquer momento
-- Encerrar uso do software sem aviso prévio
-- Alterar funcionalidades e termos conforme necessário
-- Investigar violações de uso e tomar ações legais
+O desenvolvedor reserva-se o direito de:
+
+- Descontinuar o projeto com notificação prévia (mínimo 1 mês)
+- Pausar suporte técnico em caso de violação dos termos
+- Investigar e tomar ações em caso de violação de propriedade intelectual
+- Recuperar cópias do código se necessário para fins legais
+
+### 10. Conformidade com Legislação
+
+- ✅ Desenvolvido em conformidade com **LGPD** (Lei Geral de Proteção de Dados)
+- ✅ Atende normas do **Conselho Federal de Fisioterapia**
+- ✅ Respeita legislação brasileira de direitos autorais (**Lei 9.610/98**)
+- ✅ Compatível com regulamentações da UFRGS
 
 ---
 
-## ©️ Direitos Autorais e Propriedade
+## ©️ Direitos Autorais e Propriedade Intelectual
 
 ```
 © 2025 - Auto Gerenciamento Zenfisio
-TODOS OS DIREITOS RESERVADOS
+DIREITOS DE DESENVOLVIMENTO PROFISSIONAL RESERVADOS
 
-Zenfisio - Clínica de Fisioterapia
-Desenvolvido por: GameDev Necromante96Official
+Desenvolvedor: Lucas Tavares
+Instituição Parceira: ESEFID/UFRGS - Clínica de Fisioterapia
+Diretora Autorizante: Fernanda Tambosi Varella
 Data de Criação: Novembro de 2025
 Versão: 1.0.0.7
 ```
 
-### Propriedade Intelectual Exclusiva
+### 📋 Esclarecimento de Autoria
 
-- **Logo e Marca Registrada**: Zenfisio™ é marca registrada e propriedade da clínica
-- **Código-fonte**: Protegido por copyright © 2025 - Propriedade exclusiva da Zenfisio
-- **Arquivos de Sistema**: Todos os direitos reservados
-- **Documentação**: Propriedade intelectual da Zenfisio
-- **Dados e Estruturas**: Desenvolvimento customizado para a clínica
+- **Propriedade Intelectual do Código**: © 2025 Lucas Tavares
+- **Desenvolvimento**: 100% realizado por Lucas Tavares
+- **Arquitetura e Lógica**: Design original de Lucas Tavares
+- **Autorização de Uso**: Concedida pela administração da ESEFID/UFRGS
+- **Contextualização Profissional**: Projeto voluntário para fins colaborativos e portfólio profissional
 
-### Avisos Legais Importantes
+### 🏛️ Status Legal
 
-⚠️ **Este software é de propriedade exclusiva da Zenfisio e não pode ser:**
+Este é um **projeto profissional voluntário** desenvolvido por Lucas Tavares, onde:
 
-- Copiado ou duplicado de qualquer forma
-- Compartilhado com terceiros
-- Utilizado em outra organização
-- Modificado ou adaptado sem autorização expressa
-- Submetido a engenharia reversa
-- Redistribuído ou vendido
+✅ **O desenvolvedor mantém direitos intelectuais** sobre o código e arquitetura
+✅ **A ESEFID/UFRGS** possui direitos de uso interno exclusivo
+✅ **Fernanda Tambosi Varella** autorizou pessoalmente o desenvolvimento
+✅ **Nenhuma contratação formal** foi estabelecida
+✅ **O projeto é incluído** no portfólio profissional do desenvolvedor
 
-### Conformidade Regulatória
+### 📝 Uso da Instituição
 
-- Sistema desenvolvido em conformidade com a **LGPD** (Lei Geral de Proteção de Dados)
-- Atende normas do **Conselho Federal de Fisioterapia**
-- Implementa segurança e privacidade de dados de pacientes
-- Data: Novembro de 2025
+A ESEFID/UFRGS e seus funcionários autorizados podem:
 
-### Proteção Legal
+- ✅ Usar o sistema para operações internas da clínica
+- ✅ Processar dados e análises de pacientes
+- ✅ Fazer backups e exportações de dados
+- ✅ Solicitar melhorias e correções ao desenvolvedor
+- ✅ Continuar usando o sistema enquanto for mantido
 
-Qualquer violação dos direitos autorais ou termos de uso resultará em ações legais conforme previsto na legislação brasileira, incluindo:
+A instituição **não pode**:
 
-- Ações civis por danos morais e materiais
-- Ações criminais conforme Lei 9.610/98 (Lei de Direitos Autorais)
-- Bloqueio de acesso ao software
-- Multas e penalidades conforme legislação aplicável
+- ❌ Copiar ou clonar o código para terceiros
+- ❌ Vender ou comercializar o sistema
+- ❌ Modificar ou adaptar sem consentimento do desenvolvedor
+- ❌ Reivindicar propriedade do código
+- ❌ Compartilhar com outras clínicas ou instituições
+
+### 🔗 Portfólio Profissional
+
+Este projeto é apresentado como:
+
+- **Portfolio**: Demonstra expertise em desenvolvimento full-stack
+- **Case Study**: Solução real de problemas operacionais
+- **Referência Profissional**: Validação de competências técnicas
+- **Contribuição Social**: Otimização para instituição pública (UFRGS)
+
+### ⚖️ Conformidade Legal
+
+- Sistema desenvolvido em conformidade com **LGPD** (Lei Geral de Proteção de Dados)
+- Dados pessoais de pacientes são tratados conforme legislação
+- A ESEFID/UFRGS é responsável pela segurança dos dados
+- Nenhum dado é transmitido para servidores externos
+- Todos os dados são armazenados **exclusivamente localmente** na instituição
 
 ---
 
@@ -471,32 +552,43 @@ Qualquer violação dos direitos autorais ou termos de uso resultará em ações
 
 Para reportar problemas técnicos:
 
-1. Entre em contato com a administração da clínica
+1. Entre em contato com Lucas Tavares (Desenvolvedor)
 2. Descreva claramente o problema encontrado
 3. Forneça informações sobre quando ocorreu
 4. Mencione qual módulo estava sendo utilizado
+5. Inclua passos para reproduzir o problema (se possível)
 
 ### Solicitações de Melhoria
 
 Sugestões de melhorias são bem-vindas e devem ser:
 
-- Reportadas para a administração da clínica
+- Reportadas para o desenvolvedor (Lucas Tavares)
 - Documentadas com descrição clara do benefício
-- Analisadas pela equipe responsável
+- Analisadas quanto à viabilidade técnica
 - Implementadas conforme prioridade da clínica
+- Discutidas com a direção (Fernanda Tambosi Varella)
 
 ### Contato Responsável
 
-- **Administração da Clínica**: Contatar diretamente
-- **Desenvolvedor**: Lucas Tavares (autorizado apenas para assuntos técnicos)
-- **Organização**: Zenfisio - Clínica de Fisioterapia
+- **Desenvolvedor**: Lucas Tavares
+- **Email/Contato**: +55 51 98650-6459
+- **Instituição**: ESEFID/UFRGS - Clínica de Fisioterapia
+- **Diretora**: Fernanda Tambosi Varella
+
+### Processo de Suporte
+
+1. **Reporte do Problema**: Descrição clara do issue
+2. **Análise**: Desenvolvedor avalia e reproduz o problema
+3. **Solução**: Correção é implementada e testada
+4. **Implementação**: Nova versão é disponibilizada
+5. **Feedback**: Confirmação de que o problema foi resolvido
 
 ---
 
-## 🗺️ Plano de Evolução
+## 🗺️ Plano de Evolução (Roadmap)
 
 ### Versão 1.1.0 (Prevista para Q1 2025)
-- [ ] Integração com banco de dados seguro
+- [ ] Integração com banco de dados local (SQLite)
 - [ ] Autenticação multi-usuário com permissões
 - [ ] Geração de relatórios em PDF
 - [ ] Agendamento integrado de atendimentos
@@ -507,13 +599,13 @@ Sugestões de melhorias são bem-vindas e devem ser:
 - [ ] Notificações em tempo real
 - [ ] Integração com WhatsApp Business
 - [ ] SMS automático para confirmação
-- [ ] Backup automático em nuvem segura
+- [ ] Backup automático em armazenamento local criptografado
 
 ### Versão 2.0.0 (Futuro - 2025/2026)
 - [ ] Analytics avançado com IA
-- [ ] Dashboard executivo com KPIs
+- [ ] Dashboard executivo com KPIs customizáveis
 - [ ] Gestão de estoque e equipamentos
-- [ ] Integração contábil
+- [ ] Integração contábil avançada
 - [ ] API interna para sistemas parceiros
 
 ---
@@ -524,6 +616,8 @@ Sugestões de melhorias são bem-vindas e devem ser:
 |-----------|-------|
 | **Versão Atual** | 1.0.0.7 |
 | **Data de Lançamento** | Novembro de 2025 |
+| **Desenvolvedor** | Lucas Tavares |
+| **Instituição** | ESEFID/UFRGS - Clínica de Fisioterapia |
 | **Ano de Desenvolvimento** | 2025 |
 | **Linhas de Código** | 15.000+ |
 | **Módulos Principais** | 2 (Evoluções, Financeiro) |
@@ -548,6 +642,8 @@ Sugestões de melhorias são bem-vindas e devem ser:
 - ✅ **Serialização Inteligente** - Suporta Maps, Dates e objetos complexos
 - ✅ **Importação com Restauração Completa** - Restaura dados e recarrega UI automaticamente
 - ✅ **Correção de Procedimentos** - Nome completo dos procedimentos exibido nas abas Especialidades, Registros e Pacientes
+- ✅ **Acúmulo de Dados Financeiros** - Dados financeiros agora acumulam corretamente
+- ✅ **Separação Aprimorada de Isentos** - Lógica melhorada para classificação correta
 - ✅ **Sistema de Notificações Aprimorado** - Sem duplicação de ícones, mensagens limpas
 - ✅ **Filtro Modal Funcional** - Aba flutuante de filtros operacional em análise financeira
 - ✅ **Botões Responsivos** - Detecção correta de DOM readyState
@@ -560,6 +656,8 @@ Sugestões de melhorias são bem-vindas e devem ser:
 - ✅ Inicialização do export/import sincronizada com DOM
 - ✅ Dados de procedimentos formatados corretamente
 - ✅ Modal de filtros agora ativo e responsivo
+- ✅ Acúmulo de dados financeiros (não substituição)
+- ✅ Separação correta de isentos vs particulares com debug detalhado
 
 **📊 Novo em v2:**
 - Exportação em Markdown para relatórios profissionais
@@ -567,6 +665,20 @@ Sugestões de melhorias são bem-vindas e devem ser:
 - Metadados completos em cada backup (data, versão, navegador, etc)
 - Resumo quantitativo dos dados exportados
 - Log detalhado de operações com timestamps
+- Acúmulo automático de dados (não perde histórico)
+- Debug de classificação de isentos no console
+
+**📝 Documentação:**
+- ✅ README atualizado com autoria correta de Lucas Tavares
+- ✅ Termos de uso reformulados para contexto profissional colaborativo
+- ✅ Esclarecimento completo sobre propriedade intelectual
+- ✅ Histórico de versões atualizado
+
+**👨‍💻 Informações de Desenvolvimento:**
+- Desenvolvido por: Lucas Tavares
+- Autorização: Fernanda Tambosi Varella (Diretora)
+- Contexto: Projeto profissional voluntário para otimização de processos
+- Propósito: Colaboração com ESEFID/UFRGS + Portfólio Profissional
 - Validação robusta de arquivos importados
 - Sincronização automática UI após importação
 
@@ -585,7 +697,7 @@ Sugestões de melhorias são bem-vindas e devem ser:
 - ✅ Documentação completa (README.md)
 - ✅ Estrutura modular e escalável
 - ✅ Botões de filtro e limpeza posicionados corretamente
-- ✅ Termos de uso específicos para Zenfisio
+- ✅ Termos de uso específicos para instituição
 
 **🐛 Correções Implementadas:**
 - ✅ Renderização correta de dados do Financeiro
@@ -603,21 +715,29 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 ## 📞 Informações Importantes
 
-### Avisos Críticos
+### Avisos Recomendados
 
-⚠️ **LEITURA OBRIGATÓRIA:**
+⚠️ **LEITURA IMPORTANTE:**
 
-1. Este software é **propriedade exclusiva da Zenfisio**
-2. **Acesso restrito** a funcionários autorizados apenas
-3. **Proibido compartilhar** com qualquer pessoa fora da clínica
-4. **Proibido copiar ou clonar** o código em qualquer circunstância
-5. **Dados de pacientes são confidenciais** - LGPD compliance obrigatório
-6. **Backup regular é essencial** para evitar perda de dados
-7. **Suporte técnico exclusivo** para funcionários da clínica
+1. Este software foi desenvolvido por **Lucas Tavares**
+2. Direitos intelectuais **pertencem ao desenvolvedor**
+3. ESEFID/UFRGS tem direitos de **uso exclusivo interno**
+4. Projeto está incluído **no portfólio profissional do desenvolvedor**
+5. Dados de pacientes são **confidenciais - LGPD compliance obrigatório**
+6. Backup regular é **essencial** para evitar perda de dados
+7. Suporte técnico disponível **conforme acordado com desenvolvedor**
 
-### Contato para Dúvidas
+### Atribuição e Créditos
 
-Qualquer dúvida sobre uso, licença ou termos deve ser esclarecida com a administração da Clínica Zenfisio antes de utilizar o sistema.
+Ao mencionar ou usar este sistema, é recomendado:
+
+```
+Desenvolvido por: Lucas Tavares
+Para: ESEFID/UFRGS - Clínica de Fisioterapia
+Autorização: Fernanda Tambosi Varella (Diretora)
+Ano: 2025
+Versão: 1.0.0.7
+```
 
 ---
 
@@ -625,11 +745,13 @@ Qualquer dúvida sobre uso, licença ou termos deve ser esclarecida com a admini
   
   **Auto Gerenciamento Zenfisio**
   
-  Sistema Proprietário © 2025 - Zenfisio Clínica de Fisioterapia
+  Desenvolvido por Lucas Tavares © 2025
   
-  Todos os direitos reservados | LGPD Compliant | Versão 1.0.0.7
+  Para ESEFID/UFRGS - Clínica de Fisioterapia | Autorização de Fernanda Tambosi Varella
   
-  *Desenvolvido com padrões profissionais e segurança de dados prioritária*
+  Projeto Profissional | Portfólio | LGPD Compliant | Versão 1.0.0.7
+  
+  *Desenvolvido com padrões profissionais, segurança de dados prioritária e ética na engenharia de software*
   
   [⬆ Voltar ao Topo](#auto-gerenciamento-zenfisio)
   
