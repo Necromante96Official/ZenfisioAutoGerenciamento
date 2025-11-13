@@ -33,6 +33,15 @@ class SchedulesIntegration {
                 if (savedSchedules && (savedSchedules.compareceram?.length > 0 || savedSchedules.faltaram?.length > 0)) {
                     console.log(`✅ Dados de agendamentos salvos encontrados. Carregando...`);
                     this.analyzer.restaurarDados(savedSchedules);
+                    // Se o DateManager estiver ativo, prioriza a data selecionada pelo usuário
+                    if (window.dateManager) {
+                        const currentDate = window.dateManager.getDate();
+                        const dia = String(currentDate.getDate()).padStart(2, '0');
+                        const mes = String(currentDate.getMonth() + 1).padStart(2, '0');
+                        const ano = currentDate.getFullYear();
+                        this.analyzer.data = `${dia}/${mes}/${ano}`;
+                        console.log(`   - analyzer.data sobrescrito pela data do dateManager: ${this.analyzer.data}`);
+                    }
                     console.log(`✅ Agendamentos carregados: ${savedSchedules.compareceram?.length || 0} compareceram, ${savedSchedules.faltaram?.length || 0} faltaram`);
                     dadosCarregados = true;
                 }
