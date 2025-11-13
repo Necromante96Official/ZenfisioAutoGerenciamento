@@ -7,7 +7,7 @@
   
   *Desenvolvido por Lucas Tavares para ESEFID/UFRGS - Clínica de Fisioterapia*
   
-  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.0-brightgreen)](#)
+  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.1-brightgreen)](#)
   [![Licença](https://img.shields.io/badge/licen%C3%A7a-Portf%C3%B3lio%20Profissional-blue)](#direitos-autorais)
   [![Desenvolvedor](https://img.shields.io/badge/desenvolvedor-Lucas%20Tavares-informational)](#)
   [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
@@ -301,6 +301,109 @@ Diálogos elegantes e responsivos que:
 - Suportam tema claro/escuro
 - Incluem atalhos de teclado (ESC para cancelar)
 
+### 🎨 Sistema de Modais Padronizados (v1.1.1)
+
+O sistema possui 3 modais principais que foram completamente padronizados com paleta de cores consistente e layout horizontal uniforme:
+
+#### Características Comuns dos Modais
+
+**Design Consistente:**
+- 🎯 **Layout Horizontal** - Header na esquerda (180px min-width), conteúdo em grid 2 colunas na direita
+- 🎯 **Cores do Sistema** - Utilizam CSS Variables (`--bg-primary`, `--bg-secondary`, `--text-primary`, etc)
+- 🎯 **Gradiente Verde** - Header com gradiente linear de `#2fbe8f` a `#1a9970` (Verde Zenfisio)
+- 🎯 **Tema Escuro** - Fundo `#0f0f0f` (`--bg-primary`), corpo `#1a1a1a` (`--bg-secondary`)
+- 🎯 **Texto de Alto Contraste** - `#f5f5f5` (`--text-primary`) em tema escuro para máxima legibilidade
+- 🎯 **Botão X Direito** - Posicionado absolutamente `top: 1rem, right: 1rem` em todos os modais
+- 🎯 **Overlay Aprimorado** - Opacidade `0.7` com `backdrop-filter: blur(5px)` para hierarquia visual
+
+**Dimensões e Posicionamento:**
+- `max-width: 1100px` - Modais largos aproveitam espaço horizontal
+- `max-height: 65vh` - Respeita altura da viewport
+- `border-radius: 8px` - Cantos levemente arredondados
+- Centralizado na tela com `top: 50%`, `left: 50%`, `transform: translate(-50%, -50%)`
+- `z-index: 10000+` - Garante visibilidade acima de outros elementos
+
+**Grid de Conteúdo:**
+- 2 colunas com `gap: 1.2rem`
+- Padding `1.5rem` interno
+- Cards secundários com fundo `var(--bg-card)` (#252525)
+
+#### Modal de Agendamentos
+
+**Arquivo:** `css/schedules-module.css`
+**Acionado:** Ao clicar em um paciente na lista de agendamentos
+**Conteúdo:** 
+- Data e horário do agendamento
+- Informações do paciente
+- Procedimentos realizados
+- Status (Compareceu/Faltou)
+
+**Especificidades:**
+- `.modal-schedule-container` - Container principal com overlay
+- `.modal-schedule-body` - Corpo com fundo tema secundário
+- `.modal-info-box` - Cards de informações internas
+- Grade com campos de informação estilizados
+
+#### Modal de Detalhes do Paciente
+
+**Arquivo:** `css/patient-details-modal.css`
+**Acionado:** Ao clicar em um paciente na aba Evoluções
+**Conteúdo:**
+- Dados pessoais do paciente
+- Histórico de atendimentos
+- Análise de evolução
+- Estatísticas de presença
+
+**Especificidades:**
+- `.modal-content` - Container principal
+- `.modal-body` - Corpo com layout grid
+- `.analytics-card` - Cards com gradientes inclusos
+- `.modal-close-btn` - Botão fechar (X) estilizado
+
+#### Modal de Cartões Flutuantes
+
+**Arquivo:** `css/floating-cards.css`
+**Acionado:** Ao clicar em "Detalhes de Atendimento" em diversas seções
+**Conteúdo:**
+- Resumo de atendimentos
+- Estatísticas de procedimentos
+- Informações de presença
+- Dados financeiros resumidos
+
+**Especificidades:**
+- `.floating-card-content` - Container principal
+- `.floating-card-body` - Corpo com grid layout
+- `.floating-section` - Seções de conteúdo
+- `.procedure-tag` - Tags de procedimentos com cores
+
+#### Tema Automático dos Modais
+
+Todos os modais suportam tema claro e escuro automaticamente:
+
+**Tema Escuro (Padrão):**
+- Fundo: `#0f0f0f` (cinza muito escuro)
+- Corpo: `#1a1a1a` (cinza escuro)
+- Cards: `#252525` (cinza médio)
+- Texto: `#f5f5f5` (branco claro)
+- Acentos: `#2fbe8f` (verde Zenfisio)
+
+**Tema Claro** (com `[data-theme="light"]`):
+- Fundo: `#ffffff` (branco)
+- Corpo: `#f5f5f5` (cinza muito claro)
+- Cards: `#e8e8e8` (cinza claro)
+- Texto: `#1a1a1a` (cinza muito escuro)
+- Acentos: `#2fbe8f` (verde Zenfisio)
+
+**Implementação:** Todas as cores usam CSS Variables, então mudam automaticamente quando `[data-theme]` muda.
+
+#### Acessibilidade dos Modais
+
+- ✅ **Contraste Alto** - Proporção mínima 4.5:1 (WCAG AA)
+- ✅ **Teclado** - Navegação completa com Tab, Enter e ESC
+- ✅ **Leitores de Tela** - Estrutura semântica apropriada
+- ✅ **Focus Visible** - Indicadores de foco claros
+- ✅ **Viewport** - Funciona em mobile, tablet e desktop
+
 ### 💾 Sistema de Backup e Exportação v2
 
 #### Formatos de Exportação
@@ -488,7 +591,7 @@ Desenvolvedor: Lucas Tavares
 Instituição Parceira: ESEFID/UFRGS - Clínica de Fisioterapia
 Diretora Autorizante: Fernanda Tambosi Varella
 Data de Criação: Novembro de 2025
-Versão: 1.1.0
+Versão: 1.1.1
 ```
 
 ### 📋 Esclarecimento de Autoria
@@ -614,7 +717,7 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 | Informação | Valor |
 |-----------|-------|
-| **Versão Atual** | 1.1.0 |
+| **Versão Atual** | 1.1.1 |
 | **Data de Lançamento** | Novembro de 2025 |
 | **Desenvolvedor** | Lucas Tavares |
 | **Instituição** | ESEFID/UFRGS - Clínica de Fisioterapia |
@@ -630,7 +733,73 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 ## 🌟 Histórico de Versões
 
-### Versão 1.1.0 (Novembro 2025) - ATUAL ✨
+### Versão 1.1.1 (Novembro 2025) - ATUAL ✨
+
+**🎨 Sistema de Cores e Modais Padronizados**
+
+Atualização focada em experiência visual, acessibilidade e consistência de design. Os 3 modais do sistema foram completamente padronizados com paleta de cores do sistema aplicada mediante CSS Variables.
+
+**🚀 Melhorias Implementadas:**
+- ✅ **Padronização de 3 Modais** - Agendamentos, Detalhes do Paciente e Floating Cards com layout consistente
+- ✅ **Layout Horizontal Otimizado** - Header no lado esquerdo, conteúdo em grid 2 colunas no lado direito
+- ✅ **Cores do Sistema CSS Variables** - Implementação de `var(--bg-primary)`, `var(--bg-secondary)`, `var(--text-primary)`, `var(--text-secondary)`
+- ✅ **Verde Zenfisio (#2fbe8f)** - Gradiente linear `to right` em headers de todos os modais
+- ✅ **Tema Escuro Primário (#0f0f0f)** - `var(--bg-primary)` para fundo dos containers
+- ✅ **Tema Secundário (#1a1a1a)** - `var(--bg-secondary)` para corpo dos modais
+- ✅ **Cards Cinza (#252525)** - `var(--bg-card)` para elementos internos (boxes, cards, stats)
+- ✅ **Texto Alto Contraste (#f5f5f5)** - `var(--text-primary)` em tema escuro para máxima legibilidade
+- ✅ **Texto Secundário (#b0b0b0)** - `var(--text-secondary)` para legendas e texto ajudante
+- ✅ **Botão X Repositionado** - Absolutamente posicionado `top: 1rem, right: 1rem` em todos os modais
+- ✅ **Grid Layout Compactado** - 2 colunas com gap `1.2rem` para melhor organização visual
+- ✅ **Dimensões Responsivas** - `max-width: 1100px`, `max-height: 65vh`, totalmente centralizados
+- ✅ **Overlay Aprimorado** - Opacidade `0.7` com `backdrop-filter: blur(5px)` para hierarquia visual clara
+- ✅ **Sem Animações** - Mantidas conforme solicitado (design clean e direto)
+- ✅ **Validação CSS** - Zero erros em todos 3 arquivos CSS principais (schedules-module.css, patient-details-modal.css, floating-cards.css)
+- ✅ **Arquivo Obsoleto Removido** - `schedules-module-old.css` deletado (versão antiga não referenciada)
+- ✅ **Acessibilidade de Texto** - Cores de texto ajustam automaticamente conforme tema do sistema
+
+**🐛 Correções Implementadas:**
+- ✅ Texto em modais agora visível em tema escuro (cor atualizada para `var(--text-primary)`)
+- ✅ Botão X visível em tema escuro (cor alterada de `white` para `var(--text-primary)`)
+- ✅ Modais centrados corretamente com `position: absolute` + `transform: translate(-50%, -50%)`
+- ✅ Overlay aumentado de opacidade `0.5` para `0.7` para melhor contraste
+- ✅ Arquivo CSS obsoleto removido (sem impacto, não estava referenciado)
+- ✅ Consistência visual entre os 3 modais garantida
+
+**📐 Especificações Técnicas:**
+- **Header Modal**: Largura mínima 180px, gradiente verde de `#2fbe8f` a `#1a9970`
+- **Container Modal**: max-width 1100px, max-height 65vh, 8px border-radius
+- **Overlay Modal**: rgba(0,0,0,0.7) com 5px backdrop blur
+- **Grid Conteúdo**: 2 colunas, gap 1.2rem, padding 1.5rem
+- **Posicionamento**: Centralizado com `top: 50%`, `left: 50%`, `transform: translate(-50%, -50%)`
+- **Z-index**: 10000+ para garantir visibilidade acima de outros elementos
+
+**🎯 Benefícios da Atualização:**
+- Experiência visual **consistente em todo o sistema**
+- **Acessibilidade melhorada** com alto contraste texto/fundo
+- **Tema automático** - cores invertem perfeitamente em tema claro (data-theme="light")
+- **Manutenção facilitada** - CSS variables permitem mudanças globais com uma variável
+- **Design profissional** - paleta de cores padronizada em tudo
+- **Performance mantida** - nenhum overhead adicional
+- **Responsivo** - funciona perfeitamente em mobile, tablet e desktop
+
+**📊 Arquivos Modificados:**
+- `css/schedules-module.css` - Cores atualizadas, layout otimizado
+- `css/patient-details-modal.css` - Cores do sistema aplicadas
+- `css/floating-cards.css` - Cores e layout padronizados
+- `frontend/js/history.js` - Entrada v1.1.1 adicionada
+- `index.html` - Version badge atualizada para 1.1.1
+- `README.md` - Documentação completa desta versão
+
+**👨‍💻 Informações de Desenvolvimento:**
+- Desenvolvido por: Lucas Tavares
+- Autorização: Fernanda Tambosi Varella (Diretora - ESEFID/UFRGS)
+- Contexto: Continuação do projeto profissional voluntário
+- Objetivo: Melhorar UX/UI com design system consistente
+
+---
+
+### Versão 1.1.0 (Novembro 2025)
 
 **🚀 Melhorias Implementadas:**
 - ✅ **Novo Módulo Agendamentos** - Sistema completo de gerenciamento de agendamentos
@@ -668,8 +837,6 @@ Sugestões de melhorias são bem-vindas e devem ser:
 - Objetivo: Resolver deficiências operacionais com análise moderna de dados
 
 ---
-
-### Versão 1.0.9 (Novembro 2025)
 
 **✨ Memória de Posição + Filtros Avançados**
 
@@ -769,7 +936,7 @@ Versão: 1.1.0
   
   Para ESEFID/UFRGS - Clínica de Fisioterapia | Autorização de Fernanda Tambosi Varella
   
-  Projeto Profissional | Portfólio | LGPD Compliant | Versão 1.1.0
+  Projeto Profissional | Portfólio | LGPD Compliant | Versão 1.1.1
   
   *Desenvolvido com padrões profissionais, segurança de dados prioritária e ética na engenharia de software*
   

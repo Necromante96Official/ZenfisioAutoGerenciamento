@@ -590,8 +590,8 @@ class EvolucoesUI {
                     <h3>📋 Detalhes de Atendimentos</h3>
                     <h4>${pacienteName}</h4>
                     <div class="floating-card-date">${formatDataPtBr(new Date())}</div>
-                    <button class="floating-card-close">&times;</button>
                 </div>
+                <button class="floating-card-close">&times;</button>
                 <div class="floating-card-body">
                     <div class="floating-stats-grid">
                         <div class="floating-stat">
@@ -725,8 +725,8 @@ class EvolucoesUI {
                     <h3>📊 Detalhes de Atendimentos</h3>
                     <h4>${therapistName}</h4>
                     <div class="floating-card-date">${formatDataPtBr(new Date())}</div>
-                    <button class="floating-card-close">&times;</button>
                 </div>
+                <button class="floating-card-close">&times;</button>
                 <div class="floating-card-body">
                     <div class="floating-stats-grid">
                         <div class="floating-stat">

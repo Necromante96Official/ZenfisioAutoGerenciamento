@@ -9,6 +9,7 @@ class SchedulesUI {
         console.log(`🎨 SchedulesUI: Inicializando...`);
         this.analyzer = analyzerInstance;
         this.currentTab = 'pacientes';
+        this.currentSelectedPatient = null;
         console.log(`🎨 SchedulesUI: Configurando event listeners...`);
         this.init();
         console.log(`🎨 SchedulesUI: Inicialização concluída`);
@@ -21,19 +22,19 @@ class SchedulesUI {
     setupEventListeners() {
         // Event listeners para botões
         document.addEventListener('click', (e) => {
-            // Expandir card de paciente
-            if (e.target.closest('.schedule-patient-card-header')) {
-                const card = e.target.closest('.schedule-patient-card');
-                this.toggleCardExpansion(card);
+            // Clique no item da lista de paciente - abre modal flutuante
+            if (e.target.closest('.list-item')) {
+                const card = e.target.closest('.list-item');
+                this.openPatientDetailModal(card);
             }
 
-            // Fechar card flutuante
-            if (e.target.closest('.floating-card-close')) {
+            // Fechar modal flutuante
+            if (e.target.closest('.modal-schedule-close')) {
                 this.closeFloatingCard();
             }
 
-            // Clique fora do card
-            if (e.target.classList.contains('floating-card-overlay')) {
+            // Clique fora do modal
+            if (e.target.classList.contains('modal-schedule-overlay')) {
                 this.closeFloatingCard();
             }
         });
@@ -202,19 +203,22 @@ class SchedulesUI {
         }
 
         let html = `
-            <div class="schedules-pacientes-container">
+            <div class="schedules-list-wrapper">
                 <!-- COLUNA ESQUERDA: Compareceram -->
-                <div class="schedules-column schedules-column-compareceu">
-                    <div class="schedules-column-header">
-                        <h3>✅ Compareceram</h3>
-                        <span class="column-info">${compareceram.length} pacientes</span>
+                <div class="schedules-list-column">
+                    <div class="list-section-header section-compareceu">
+                        <div class="header-icon">✅</div>
+                        <div class="header-info">
+                            <h3>Compareceram</h3>
+                            <span class="header-count">${compareceram.length} pacientes</span>
+                        </div>
                     </div>
-                    <div class="schedules-list">
+                    <div class="list-items">
         `;
 
         // Renderiza pacientes que compareceram
         if (compareceram.length === 0) {
-            html += this.getEmptyState('Nenhum paciente compareceu', true);
+            html += `<div class="list-empty-state">Nenhum paciente compareceu</div>`;
         } else {
             compareceram.forEach(paciente => {
                 html += this.renderPacienteCard(paciente, 'compareceu');
@@ -226,17 +230,20 @@ class SchedulesUI {
                 </div>
 
                 <!-- COLUNA DIREITA: Faltaram -->
-                <div class="schedules-column schedules-column-faltaram">
-                    <div class="schedules-column-header">
-                        <h3>❌ Faltaram</h3>
-                        <span class="column-info">${faltaram.length} pacientes</span>
+                <div class="schedules-list-column">
+                    <div class="list-section-header section-falta">
+                        <div class="header-icon">❌</div>
+                        <div class="header-info">
+                            <h3>Faltaram</h3>
+                            <span class="header-count">${faltaram.length} pacientes</span>
+                        </div>
                     </div>
-                    <div class="schedules-list">
+                    <div class="list-items">
         `;
 
         // Renderiza pacientes que faltaram
         if (faltaram.length === 0) {
-            html += this.getEmptyState('Nenhum paciente faltou', true);
+            html += `<div class="list-empty-state">Nenhum paciente faltou</div>`;
         } else {
             faltaram.forEach(paciente => {
                 html += this.renderPacienteCard(paciente, 'falta');
@@ -253,86 +260,178 @@ class SchedulesUI {
     }
 
     /**
-     * Renderiza card de paciente - Moderno e expandível com data
+     * Renderiza item de paciente - LISTA SIMPLES E BONITA
      * @param {Object} paciente
      * @param {string} tipo - 'compareceu' ou 'falta'
      * @returns {string} - HTML
      */
     renderPacienteCard(paciente, tipo) {
         const icon = tipo === 'compareceu' ? '✅' : '❌';
-        const statusClass = tipo === 'compareceu' ? 'compareceu' : 'falta';
+        const statusClass = tipo === 'compareceu' ? 'status-success' : 'status-danger';
         
         // Obtém data do analyzer
         const data = this.analyzer.data || 'Data não informada';
+        const horario = this.sanitize(paciente.horario || 'Horário não informado');
+        const nome = this.sanitize(paciente.nome);
 
         return `
-            <div class="schedule-patient-card schedule-patient-${statusClass}">
-                <div class="schedule-patient-card-header">
-                    <div class="patient-header-left">
-                        <span class="patient-icon">${icon}</span>
-                        <div class="patient-info">
-                            <div class="patient-name" title="${this.sanitize(paciente.nome)}">${this.sanitize(paciente.nome)}</div>
-                            <div class="patient-time">
-                                <span>⏰ ${this.sanitize(paciente.horario || 'Horário não informado')}</span>
-                                <span style="margin-left: 0.5rem;">📅 ${data}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="patient-header-right">
-                        <span class="expand-icon">⋯</span>
+            <div class="list-item ${statusClass}" data-paciente-json='${JSON.stringify({
+                nome: paciente.nome,
+                horario: paciente.horario,
+                data: data,
+                fisioterapeuta: paciente.fisioterapeuta,
+                convenio: paciente.convenio,
+                celular: paciente.celular,
+                procedimentos: paciente.procedimentos,
+                status: paciente.status,
+                periodo: paciente.periodo,
+                tipo: tipo
+            }).replace(/'/g, '&apos;')}'>
+                <div class="item-left">
+                    <span class="item-status">${icon}</span>
+                </div>
+                <div class="item-center">
+                    <div class="item-name">${nome}</div>
+                    <div class="item-meta">
+                        <span class="meta-tag">📅 ${data}</span>
+                        <span class="meta-tag">⏰ ${horario}</span>
                     </div>
                 </div>
-                <div class="schedule-patient-card-content">
-                    <div class="patient-detail">
-                        <span class="detail-label">👨‍⚕️ Fisio:</span>
-                        <span class="detail-value">${this.sanitize(paciente.fisioterapeuta || 'Não informado')}</span>
-                    </div>
-                    <div class="patient-detail">
-                        <span class="detail-label">🏥 Convênio:</span>
-                        <span class="detail-value">${this.sanitize(paciente.convenio || 'Não informado')}</span>
-                    </div>
-                    <div class="patient-detail">
-                        <span class="detail-label">📱 Celular:</span>
-                        <span class="detail-value">${this.sanitize(paciente.celular || 'Não informado')}</span>
-                    </div>
-                    <div class="patient-detail">
-                        <span class="detail-label">🏥 Procedimento:</span>
-                        <span class="detail-value">${this.sanitize(paciente.procedimentos || 'Não informado')}</span>
-                    </div>
-                    <div class="patient-detail">
-                        <span class="detail-label">📌 Status:</span>
-                        <span class="detail-value">${this.sanitize(paciente.status || 'Não informado')}</span>
-                    </div>
-                    ${paciente.periodo ? `
-                    <div class="patient-detail">
-                        <span class="detail-label">📅 Período:</span>
-                        <span class="detail-value">${this.sanitize(paciente.periodo)}</span>
-                    </div>
-                    ` : ''}
+                <div class="item-right">
+                    <span class="item-click">→</span>
                 </div>
             </div>
         `;
     }
 
     /**
-     * Toggle expansão de card - Com animação
+     * Abre modal flutuante centralizado com detalhes do paciente
      */
-    toggleCardExpansion(card) {
-        const header = card.querySelector('.schedule-patient-card-header');
-        const content = card.querySelector('.schedule-patient-card-content');
-        const icon = card.querySelector('.expand-icon');
-        
-        const isExpanded = content.classList.contains('show');
-        
-        if (isExpanded) {
-            content.classList.remove('show');
-            header.classList.remove('expanded');
-            icon.textContent = '⋯';
-        } else {
-            content.classList.add('show');
-            header.classList.add('expanded');
-            icon.textContent = '⋀';
+    openPatientDetailModal(cardElement) {
+        const jsonStr = cardElement.dataset.pacienteJson;
+        if (!jsonStr) return;
+
+        try {
+            const paciente = JSON.parse(jsonStr);
+            this.createAndShowPatientModal(paciente);
+        } catch (e) {
+            console.error('Erro ao parsear paciente:', e);
         }
+    }
+
+    /**
+     * Cria e exibe o modal do paciente - Totalmente centralizado
+     */
+    createAndShowPatientModal(paciente) {
+        // Remove modal anterior se existir
+        this.closeFloatingCard();
+
+        const statusIcon = paciente.tipo === 'compareceu' ? '✅' : '❌';
+        const statusText = paciente.tipo === 'compareceu' ? 'Compareceu' : 'Faltou';
+        const statusClass = paciente.tipo === 'compareceu' ? 'status-success' : 'status-danger';
+
+        const modalHTML = `
+            <div class="modal-schedule-overlay">
+                <div class="modal-schedule-container">
+                    <!-- Header -->
+                    <div class="modal-schedule-header ${statusClass}">
+                        <div class="modal-header-left">
+                            <span class="modal-status-icon">${statusIcon}</span>
+                            <div class="modal-header-title">
+                                <h2>${this.sanitize(paciente.nome)}</h2>
+                                <p class="modal-status-text">${statusText}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="modal-schedule-close" aria-label="Fechar">✕</button>
+
+                    <!-- Body -->
+                    <div class="modal-schedule-body">
+                        <!-- Seção de Agendamento -->
+                        <div class="modal-section">
+                            <h3 class="modal-section-title">📅 Agendamento</h3>
+                            <div class="modal-grid-2">
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Data</span>
+                                    <span class="modal-value">${this.sanitize(paciente.data)}</span>
+                                </div>
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Horário</span>
+                                    <span class="modal-value">${this.sanitize(paciente.horario || 'Não informado')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Informações Pessoais -->
+                        <div class="modal-section">
+                            <h3 class="modal-section-title">👤 Informações Pessoais</h3>
+                            <div class="modal-grid-2">
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Nome Completo</span>
+                                    <span class="modal-value">${this.sanitize(paciente.nome)}</span>
+                                </div>
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Celular</span>
+                                    <span class="modal-value">${this.sanitize(paciente.celular || 'Não informado')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Informações Clínicas -->
+                        <div class="modal-section">
+                            <h3 class="modal-section-title">🏥 Informações Clínicas</h3>
+                            <div class="modal-grid-2">
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Fisioterapeuta</span>
+                                    <span class="modal-value">${this.sanitize(paciente.fisioterapeuta || 'Não informado')}</span>
+                                </div>
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Convênio</span>
+                                    <span class="modal-value">${this.sanitize(paciente.convenio || 'Não informado')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Procedimentos -->
+                        <div class="modal-section">
+                            <h3 class="modal-section-title">💊 Procedimento</h3>
+                            <div class="modal-full-width">
+                                <div class="modal-procedure-box">
+                                    <span class="modal-value">${this.sanitize(paciente.procedimentos || 'Não informado')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Status -->
+                        <div class="modal-section">
+                            <h3 class="modal-section-title">📌 Status</h3>
+                            <div class="modal-grid-2">
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Status</span>
+                                    <span class="modal-value">${this.sanitize(paciente.status || 'Não informado')}</span>
+                                </div>
+                                ${paciente.periodo ? `
+                                <div class="modal-info-box">
+                                    <span class="modal-label">Período</span>
+                                    <span class="modal-value">${this.sanitize(paciente.periodo)}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        // Ativa o modal com animação
+        setTimeout(() => {
+            const modal = document.querySelector('.modal-schedule-overlay');
+            if (modal) {
+                modal.classList.add('active');
+            }
+        }, 10);
     }
 
     /**
@@ -367,9 +466,14 @@ class SchedulesUI {
      * Fecha card flutuante se existir
      */
     closeFloatingCard() {
-        const floatingCard = document.querySelector('.floating-card');
-        if (floatingCard) {
-            floatingCard.remove();
+        const modal = document.querySelector('.modal-schedule-overlay');
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                if (modal.parentElement) {
+                    modal.remove();
+                }
+            }, 300);
         }
     }
 }

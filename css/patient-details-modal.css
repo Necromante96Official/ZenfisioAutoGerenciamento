@@ -14,7 +14,8 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease;
+    padding: 20px;
 }
 
 .patient-detail-modal.active {
@@ -27,20 +28,22 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
     position: relative;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 800px;
-    max-height: 90vh;
-    overflow-y: auto;
+    background: var(--bg-primary);
+    border-radius: 14px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+    max-width: 1100px;
+    max-height: 65vh;
+    overflow: hidden;
     animation: slideUp 0.3s ease;
     width: 90%;
+    display: flex;
+    flex-direction: row;
 }
 
 @keyframes slideUp {
@@ -56,74 +59,93 @@
 
 .modal-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px;
-    border-bottom: 2px solid #f0f0f0;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1.5rem 1.2rem;
     background: linear-gradient(135deg, #2fbe8f 0%, #1fa070 100%);
     color: white;
-    border-radius: 12px 12px 0 0;
+    border-radius: 14px 0 0 14px;
+    min-width: 180px;
+    flex-shrink: 0;
+    position: relative;
+    gap: 0.8rem;
 }
 
 .modal-header h2 {
     margin: 0;
-    font-size: 28px;
+    font-size: 1.1rem;
     font-weight: 600;
+    word-break: break-word;
 }
 
 .modal-close-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: white;
-    font-size: 32px;
+    color: #ffffff;
+    font-size: 1.4rem;
     cursor: pointer;
-    width: 44px;
-    height: 44px;
+    width: 2.4rem;
+    height: 2.4rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10010;
+    line-height: 1;
 }
 
 .modal-close-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
 }
 
 .modal-body {
-    padding: 24px;
+    padding: 1.8rem;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    background: var(--bg-secondary);
 }
 
 .detail-section {
-    margin-bottom: 32px;
+    margin-bottom: 0;
 }
 
 .detail-section h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
 /* Analytics Grid */
 .analytics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px;
-    margin-bottom: 16px;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    margin-bottom: 0;
 }
 
 .analytics-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
-    border-radius: 10px;
-    padding: 16px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%);
+    border-radius: 8px;
+    padding: 0.7rem;
     text-align: center;
-    border-left: 4px solid #2fbe8f;
-    transition: all 0.3s ease;
+    border-left: 3px solid #2fbe8f;
+    transition: all 0.15s ease;
 }
 
 .analytics-card:hover {
@@ -132,16 +154,16 @@
 }
 
 .analytics-label {
-    font-size: 12px;
-    color: #666;
+    font-size: 0.65rem;
+    color: #ffffff;
     font-weight: 500;
     text-transform: uppercase;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.2px;
 }
 
 .analytics-value {
-    font-size: 28px;
+    font-size: 1.4rem;
     font-weight: 700;
     color: #2fbe8f;
 }
@@ -165,7 +187,7 @@
 
 .period-label {
     font-weight: 600;
-    color: #1a1a1a;
+    color: #ffffff;
 }
 
 .period-value {
@@ -197,7 +219,7 @@
 
 .professional-name {
     font-weight: 600;
-    color: #1a1a1a;
+    color: #ffffff;
 }
 
 .professional-count {
@@ -246,7 +268,7 @@
 }
 
 .history-fisio {
-    color: #1a1a1a;
+    color: #ffffff;
     font-weight: 500;
 }
 
