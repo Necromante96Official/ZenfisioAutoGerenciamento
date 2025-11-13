@@ -218,13 +218,21 @@ class EvolucoesIntegration {
                     console.log(`✅ ${recordsValidados.length} registros validados para análise financeira`);
 
                     if (recordsValidados.length > 0) {
-                        const analyzer = new FinancialAnalyzer(recordsValidados);
+                        // 🔑 CRUCIAL: Recupera registros antigos para ACUMULAR
+                        const registrosAntigos = window.dataManager?.getFinanceiroRecords?.() || [];
+                        console.log(`📊 Registros financeiros antigos carregados: ${registrosAntigos.length}`);
+                        
+                        // Combina registros antigos com novos (ACUMULAÇÃO)
+                        const registrosCombinados = [...registrosAntigos, ...recordsValidados];
+                        console.log(`📊 Total de registros financeiros após acumular: ${registrosCombinados.length}`);
+                        
+                        const analyzer = new FinancialAnalyzer(registrosCombinados);
                         const analysis = analyzer.analyze();
 
                         // Salva dados financeiros
                         try {
                             if (window.dataManager) {
-                                window.dataManager.addFinanceiro(analysis, recordsValidados);
+                                window.dataManager.addFinanceiro(analysis, registrosCombinados);
                             }
                         } catch (saveError) {
                             console.warn('Aviso ao salvar dados financeiros:', saveError);
@@ -233,7 +241,7 @@ class EvolucoesIntegration {
                         // Renderiza na UI com registros validados
                         // Verifica se FinancialIntegration e sua UI estão inicializadas
                         if (window.financialIntegration && window.financialIntegration.ui) {
-                            window.financialIntegration.ui.render(analysis, recordsValidados);
+                            window.financialIntegration.ui.render(analysis, registrosCombinados);
                             console.log(`✅ Análise Financeira renderizada com sucesso`);
                         } else {
                             // Se não estiver renderizado, tenta renderizar manualmente
@@ -246,13 +254,13 @@ class EvolucoesIntegration {
                                 if (!window.financialIntegration.ui) {
                                     window.financialIntegration.ui = new FinancialUI();
                                 }
-                                window.financialIntegration.ui.render(analysis, recordsValidados);
+                                window.financialIntegration.ui.render(analysis, registrosCombinados);
                                 console.log(`✅ Análise Financeira renderizada com sucesso (inicialização automática)`);
                             } else {
                                 console.warn('⚠️ Container #financeiro não encontrado para renderização');
                             }
                         }
-                        resultadoFinanceiro = recordsValidados.length;
+                        resultadoFinanceiro = registrosCombinados.length;
                     }
                 } catch (errorFin) {
                     console.error('❌ Erro ao processar Análise Financeira:', errorFin);
