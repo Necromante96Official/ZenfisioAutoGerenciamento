@@ -46,9 +46,19 @@ class SchedulesAnalyzer {
         }
 
         // Armazena a data se ainda não tiver
-        if (!this.data && agendamento.dia && agendamento.mes && agendamento.ano) {
-            this.data = `${String(agendamento.dia).padStart(2, '0')}/${String(agendamento.mes).padStart(2, '0')}/${agendamento.ano}`;
-            console.log(`   - Data definida: ${this.data}`);
+        // Prioritiza a data do dateManager sobre a data dos dados parseados
+        if (!this.data) {
+            if (window.dateManager) {
+                const currentDate = window.dateManager.getDate();
+                const dia = String(currentDate.getDate()).padStart(2, '0');
+                const mes = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const ano = currentDate.getFullYear();
+                this.data = `${dia}/${mes}/${ano}`;
+                console.log(`   - Data definida pelo dateManager: ${this.data}`);
+            } else if (agendamento.dia && agendamento.mes && agendamento.ano) {
+                this.data = `${String(agendamento.dia).padStart(2, '0')}/${String(agendamento.mes).padStart(2, '0')}/${agendamento.ano}`;
+                console.log(`   - Data definida pelos dados parseados: ${this.data}`);
+            }
         }
 
         return { adicionado: true, categoria };

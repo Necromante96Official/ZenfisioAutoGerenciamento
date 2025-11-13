@@ -145,20 +145,28 @@ class AgendamentoParser {
         // Define se é pagante (não é isento e tem valor ou convênio não é isento)
         agendamento.isPagante = !agendamento.isIsento && agendamento.valorAtendimento > 0;
 
-        // Se não tiver mês/ano/dia definido, tenta extrair da linha de período
+        // Se não tiver mês/ano/dia definido, usa a data do dateManager
         if (!agendamento.mes || !agendamento.ano || !agendamento.dia) {
-            // Tenta encontrar data em qualquer lugar do conteúdo
-            const allDataMatch = content.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-            if (allDataMatch) {
-                agendamento.dia = parseInt(allDataMatch[1]);
-                agendamento.mes = parseInt(allDataMatch[2]);
-                agendamento.ano = parseInt(allDataMatch[3]);
+            if (window.dateManager) {
+                const currentDate = window.dateManager.getDate();
+                agendamento.dia = currentDate.getDate();
+                agendamento.mes = currentDate.getMonth() + 1;
+                agendamento.ano = currentDate.getFullYear();
+                console.log(`   - Data do dateManager aplicada: ${agendamento.dia}/${agendamento.mes}/${agendamento.ano}`);
             } else {
-                // Se não conseguir, usa data de processamento
-                const hoje = new Date();
-                agendamento.dia = hoje.getDate();
-                agendamento.mes = hoje.getMonth() + 1;
-                agendamento.ano = hoje.getFullYear();
+                // Tenta encontrar data em qualquer lugar do conteúdo como fallback
+                const allDataMatch = content.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+                if (allDataMatch) {
+                    agendamento.dia = parseInt(allDataMatch[1]);
+                    agendamento.mes = parseInt(allDataMatch[2]);
+                    agendamento.ano = parseInt(allDataMatch[3]);
+                } else {
+                    // Se não conseguir, usa data de processamento atual
+                    const hoje = new Date();
+                    agendamento.dia = hoje.getDate();
+                    agendamento.mes = hoje.getMonth() + 1;
+                    agendamento.ano = hoje.getFullYear();
+                }
             }
         }
 

@@ -124,6 +124,7 @@ class EvolucoesIntegration {
 
                 // Adiciona a data do date picker a cada agendamento
                 agendamentos.forEach(agendamento => {
+                    agendamento.dia = parseInt(dia);
                     agendamento.mes = parseInt(mes);
                     agendamento.ano = ano;
                     agendamento.dataProcessamento = `${dia}/${mes}/${ano}`;
