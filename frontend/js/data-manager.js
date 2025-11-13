@@ -14,6 +14,8 @@ class DataManager {
             evolucoes: [],
             financeiro: {},
             financeiro_records: [],
+            schedules: {},
+            schedules_data: {},
             timestamp: null
         };
         this.isSyncing = false;
@@ -143,12 +145,30 @@ class DataManager {
     }
 
     /**
+     * Adiciona dados de agendamentos
+     */
+    addSchedules(schedulesData = {}) {
+        if (!schedulesData) return false;
+        
+        console.log(`💾 DataManager.addSchedules() - Salvando dados de agendamentos`);
+        console.log(`   - Compareceram: ${schedulesData.compareceram?.length || 0}`);
+        console.log(`   - Faltaram: ${schedulesData.faltaram?.length || 0}`);
+        
+        this.data.schedules_data = schedulesData;
+        
+        console.log(`   - Dados de agendamentos salvos`);
+        
+        this.saveData();
+        return true;
+    }
+
+    /**
      * Exporta todos os dados em JSON estruturado
      */
     exportData() {
         try {
             const exportData = {
-                version: '1.0.0.9',
+                version: '1.1.0',
                 exportDate: new Date().toISOString(),
                 data: this.data,
                 metadata: {
@@ -235,6 +255,16 @@ class DataManager {
     }
 
     /**
+     * Limpa dados de agendamentos
+     */
+    async clearSchedulesData() {
+        this.data.schedules_data = {};
+        this.data.schedules_records = [];
+        await this.saveData();
+        console.log('🧹 Dados de agendamentos limpos');
+    }
+
+    /**
      * Limpa dados
      */
     async clearData() {
@@ -266,6 +296,13 @@ class DataManager {
     }
 
     /**
+     * Retorna dados de agendamentos
+     */
+    getSchedules() {
+        return this.data.schedules_data || {};
+    }
+
+    /**
      * Retorna timestamp do último save
      */
     getLastSaveTime() {
@@ -292,6 +329,8 @@ class DataManager {
             evolucoes: Array.isArray(state?.evolucoes) ? state.evolucoes : [],
             financeiro: state?.financeiro || {},
             financeiro_records: Array.isArray(state?.financeiro_records) ? state.financeiro_records : [],
+            schedules: state?.schedules || {},
+            schedules_data: state?.schedules_data || {},
             timestamp: state?.timestamp || null
         };
     }

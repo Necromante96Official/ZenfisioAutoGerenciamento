@@ -7,7 +7,7 @@
   
   *Desenvolvido por Lucas Tavares para ESEFID/UFRGS - Clínica de Fisioterapia*
   
-  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0.8-brightgreen)](#)
+  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.0-brightgreen)](#)
   [![Licença](https://img.shields.io/badge/licen%C3%A7a-Portf%C3%B3lio%20Profissional-blue)](#direitos-autorais)
   [![Desenvolvedor](https://img.shields.io/badge/desenvolvedor-Lucas%20Tavares-informational)](#)
   [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
@@ -488,7 +488,7 @@ Desenvolvedor: Lucas Tavares
 Instituição Parceira: ESEFID/UFRGS - Clínica de Fisioterapia
 Diretora Autorizante: Fernanda Tambosi Varella
 Data de Criação: Novembro de 2025
-Versão: 1.0.0.9
+Versão: 1.1.0
 ```
 
 ### 📋 Esclarecimento de Autoria
@@ -614,13 +614,13 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 | Informação | Valor |
 |-----------|-------|
-| **Versão Atual** | 1.0.0.9 |
+| **Versão Atual** | 1.1.0 |
 | **Data de Lançamento** | Novembro de 2025 |
 | **Desenvolvedor** | Lucas Tavares |
 | **Instituição** | ESEFID/UFRGS - Clínica de Fisioterapia |
 | **Ano de Desenvolvimento** | 2025 |
 | **Linhas de Código** | 15.000+ |
-| **Módulos Principais** | 2 (Evoluções, Financeiro) |
+| **Módulos Principais** | 3 (Evoluções, Financeiro, Agendamentos) |
 | **Arquivos CSS** | 2.500+ linhas |
 | **Dependências Externas** | Nenhuma (Vanilla Stack) |
 | **Tamanho** | ~150 KB |
@@ -630,63 +630,85 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 ## 🌟 Histórico de Versões
 
-### Versão 1.0.0.9 (Novembro 2025) - ATUAL ✨
+### Versão 1.1.0 (Novembro 2025) - ATUAL ✨
 
 **🚀 Melhorias Implementadas:**
+- ✅ **Novo Módulo Agendamentos** - Sistema completo de gerenciamento de agendamentos
+- ✅ **Visualização de Agendamentos** - Cards mostrando comparecimentos, faltas e total
+- ✅ **Botão "Limpar Tudo"** - Remove dados de todos os módulos simultaneamente
+- ✅ **Confirmação de Segurança** - Dialog pergunta antes de limpar tudo para evitar acidentes
+- ✅ **Limpeza Completa** - localStorage, analyzer properties e DOM todos limpos
+- ✅ **Auto-reload após Limpeza** - Página recarrega automaticamente para estado limpo
+- ✅ **Layout Agendamentos Horizontal** - Aproveita tela cheia sem espaço cinza desperdiçado
+- ✅ **Botão Limpar Agendamentos** - Posicionado na aba esquerda para fácil acesso
+- ✅ **Modal "Como Usar" Completo** - 8 passos detalhados com instruções acessíveis
+- ✅ **4 Caixas de Informação** - Verde (dicas), Vermelho (avisos), Azul (formato), Amarelo (ajuda)
+- ✅ **Animações de Reveal** - Passos aparecem com animação elegante em cascata
+- ✅ **Typography Melhorada** - Textos maiores e mais legíveis para melhor compreensão
+- ✅ **Documentação Acessível** - Linguagem simples para usuários comuns entenderem tudo
+
+**🐛 Correções Implementadas:**
+- ✅ Layout Agendamentos sem espaço cinza excessivo (max-width removido)
+- ✅ Título de Agendamentos não duplicado mais (apenas HTML header)
+- ✅ Dados de Agendamentos agora limpam completamente (analyzer properties limpas)
+- ✅ localStorage limpo integralmente com pattern matching
+- ✅ Página sincroniza corretamente após limpeza de dados
+
+**📊 Novo em v1.1.0:**
+- Terceiro módulo completo - Agendamentos com análise
+- Controle centralizado de dados - "Limpar Tudo" gerencia tudo
+- 8 passos de tutorial em vez de 6 (mais completo)
+- Info boxes coloridas com significados claros
+- Layout responsivo sem desperdiçadores de espaço
+
+**👨‍💻 Informações de Desenvolvimento:**
+- Desenvolvido por: Lucas Tavares
+- Autorização: Fernanda Tambosi Varella (Diretora - ESEFID/UFRGS)
+- Contexto: Projeto profissional voluntário para otimização de processos
+- Objetivo: Resolver deficiências operacionais com análise moderna de dados
+
+---
+
+### Versão 1.0.9 (Novembro 2025)
+
+**✨ Memória de Posição + Filtros Avançados**
+
 - ✅ **Memória Completa de Posição do Usuário** - Sistema salva e restaura estado
 - ✅ **Posição em Abas** - Usuário mantém aba ativa ao sincronizar dados
 - ✅ **Scroll Position** - Manutenção de scroll após sincronização
 - ✅ **Filtros Persistentes** - Todos os filtros aplicados são mantidos
 - ✅ **Filtros de Especialidades** - Botões [📊 Todos] [💳 Particulares] [🛡️ Isentos]
-- ✅ **Tipo de Especialidade** - Cada especialidade marcada com data-type
 - ✅ **Filtros Avançados de Registros** - 7 filtros por coluna (Data, Horário, Fisio, Paciente, Convênio, Procedimento, Valor)
 - ✅ **Dropdown Expansível** - 🔎 Filtros Avançados recolhível
 - ✅ **Filtros Combinados** - Múltiplos filtros funcionam simultaneamente
-- ✅ **Botão Limpar Filtros** - Reset rápido de todos os filtros
-- ✅ **UIStateManager Novo** - Classe dedicada para gerenciar estado completo
-- ✅ **localStorage Backup** - Backup automático para recuperação segura
-- ✅ **Auto-refresh Integrado** - Estado persiste com sincronização 60s
-- ✅ **Performance Otimizada** - Zero overhead perceptível
-- ✅ **Zero Erros** - Aplicação sem bugs encontrados
-- ✅ **Compatibilidade Total** - Todos os navegadores suportados
-- ✅ **Responsivo Completo** - Funciona em qualquer resolução
-
-**🐛 Correções Implementadas:**
-- ✅ Nenhuma perda de contexto ao sincronizar
-- ✅ Filtros não são resetados após refresh
-- ✅ Posição do usuário preservada
-- ✅ Event listeners otimizados sem duplicação
-- ✅ Memory leaks eliminados
-
-**📊 Novo em v1.0.0.9:**
-- UIStateManager classe completa com save/restore
-- Sistema automático de auto-save no localStorage
-- 3 botões de filtro para especialidades
-- Dropdown expansível com 7 filtros avançados
-- Integração perfeita com auto-refresh 60s
-- Atributos data-* em elementos para filtro rápido
-
-**👨‍💻 Informações de Desenvolvimento:**
-- Desenvolvido por: Lucas Tavares
-- Autorização: Fernanda Tambosi Varella (Diretora)
-- Contexto: Projeto profissional voluntário para otimização de processos
 
 ---
 
-### Versão 1.0.0.8 (Novembro 2025)
+### Versão 1.0.8 (Novembro 2025)
 
+**✨ Sistema de Sincronização Automática (60s) + Botão de Refresh Premium**
 
-- Propósito: Colaboração com ESEFID/UFRGS + Portfólio Profissional
-- Validação robusta de arquivos importados
-- Sincronização automática UI após importação
+- ✅ **Auto-refresh a cada 60 segundos** - Dados sempre frescos
+- ✅ **Botão de refresh visual** - Com animações dinâmicas (spin, pulse, bounce)
+- ✅ **Refresh manual** - Clique no botão 🔄 para atualizar imediatamente
+- ✅ **Notificações de sincronização** - Usuário sabe quando dados foram atualizados
 
-**📝 Documentação:**
-- ✅ README atualizado com novo sistema de export/import
-- ✅ Histórico completo de versões documentado
-- ✅ Instruções claras para todos os formatos
-- ✅ Exemplos de uso para cada funcionalidade
+---
 
-### Versão 1.0.0.6 (Novembro 2025)
+### Versão 1.0.7 (Novembro 2025)
+
+**✨ Export/Import v2 Completo + Melhorias Finais**
+
+- ✅ **3 Formatos de Exportação** - JSON (técnico), TXT (legível), Markdown (profissional)
+- ✅ **Importação de Backups** - Restaure dados salvos anteriormente
+- ✅ **Botões Visuais** - Escolha o formato desejado facilmente
+- ✅ **Resumo Estatístico** - Cada backup inclui informações de quantos dados foram salvos
+
+---
+
+### Versão 1.0.6 (Novembro 2025)
+
+**✨ Sistema de Limpeza Independente & Melhorias de Interface**
 
 **✨ Características Implementadas:**
 - ✅ Modal de confirmação personalizado
@@ -734,7 +756,7 @@ Desenvolvido por: Lucas Tavares
 Para: ESEFID/UFRGS - Clínica de Fisioterapia
 Autorização: Fernanda Tambosi Varella (Diretora)
 Ano: 2025
-Versão: 1.0.0.9
+Versão: 1.1.0
 ```
 
 ---
@@ -747,7 +769,7 @@ Versão: 1.0.0.9
   
   Para ESEFID/UFRGS - Clínica de Fisioterapia | Autorização de Fernanda Tambosi Varella
   
-  Projeto Profissional | Portfólio | LGPD Compliant | Versão 1.0.0.9
+  Projeto Profissional | Portfólio | LGPD Compliant | Versão 1.1.0
   
   *Desenvolvido com padrões profissionais, segurança de dados prioritária e ética na engenharia de software*
   

@@ -53,6 +53,13 @@ class ZenfisioApp {
                 window.financialIntegration.reloadData?.();
                 window.dataSync?.recordSync('Financeiro');
             }
+
+            // Refresh de Agendamentos
+            if (window.schedulesIntegration) {
+                console.log('  ♻️ Atualizando Agendamentos...');
+                window.schedulesIntegration.reloadData?.();
+                window.dataSync?.recordSync('Agendamentos');
+            }
             
             console.log('✅ Refresh automático concluído');
             
@@ -100,25 +107,49 @@ class ZenfisioApp {
     }
 
     switchModule(moduleName) {
+        console.log(`🔄 Alternando para módulo: ${moduleName}`);
+        
+        // Mapeia nomes de módulo para IDs de section
+        const moduleMap = {
+            'evolucoes': 'evolucoes',
+            'financeiro': 'financeiro',
+            'desenvolvimento': 'agendamentos'  // Mapeia "desenvolvimento" para "agendamentos"
+        };
+        
+        const sectionId = moduleMap[moduleName] || moduleName;
+        
         // Hide all modules
         document.querySelectorAll('.module').forEach(mod => {
             mod.classList.remove('active');
         });
 
         // Show selected module
-        const targetModule = document.getElementById(moduleName) || document.querySelector(`[data-module="${moduleName}"]`);
+        const targetModule = document.getElementById(sectionId);
         if (targetModule) {
+            console.log(`✅ Módulo encontrado (${sectionId}), ativando...`);
             targetModule.classList.add('active');
+        } else {
+            console.warn(`⚠️ Módulo não encontrado: ${sectionId}`);
         }
 
         // Update nav button states
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.remove('active');
+            if (btn.dataset.module === moduleName) {
+                btn.classList.add('active');
+            }
         });
-        document.querySelector(`[data-module="${moduleName}"]`)?.closest('.nav-btn')?.classList.add('active');
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Re-render o módulo se houver integração carregada
+        if (moduleName === 'desenvolvimento') {
+            console.log(`📅 Re-renderizando Agendamentos...`);
+            if (window.schedulesIntegration) {
+                window.schedulesIntegration.loadSavedData();
+            }
+        }
     }
 
     clearInput() {

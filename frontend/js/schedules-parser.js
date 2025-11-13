@@ -1,10 +1,16 @@
 /**
- * PARSER-AGENDAMENTOS.JS
+ * SCHEDULES-PARSER.JS
  * Módulo responsável por fazer o parse de mensagens de agendamento
- * e extrair os dados para análise financeira
+ * Processa agendamentos que NÃO foram atendidos (status: "não atendido" ou "faltou")
+ * 
+ * Fluxo de Status:
+ * - "não atendido" → Coletado neste parser
+ * - "faltou" → Coletado neste parser
+ * - "presença confirmada" → Coletado TAMBÉM para mostrar no lado esquerdo da aba
+ * - "atendido" → Coletado TAMBÉM para mostrar no lado esquerdo da aba
  */
 
-class AgendamentoParser {
+class SchedulesParser {
     constructor() {
         this.agendamentos = [];
     }
@@ -41,25 +47,22 @@ class AgendamentoParser {
             dia: null,
             isIsento: false,
             isPagante: false,
-            isAtendido: false
+            isAtendido: false,
+            isFalta: false,
+            isNaoAtendido: false
         };
 
         // Parse linha por linha
-        lines.forEach((line, lineIndex) => {
+        lines.forEach(line => {
             const cleanLine = line.trim();
             if (!cleanLine) return; // Pula linhas vazias
-
-            console.log(`     [L${lineIndex}] ${cleanLine.substring(0, 60)}${cleanLine.length > 60 ? '...' : ''}`);
 
             // Horário - Extrai APENAS HH:MM - HH:MM
             if (cleanLine.match(/^Horário:/i) || cleanLine.match(/^Horário\s*:/i)) {
                 let horarioCompleto = cleanLine.replace(/^Horário\s*:\s*/i, '').trim();
-                // Remove caracteres especiais extras (como ×, -, etc) que podem vir no início
                 horarioCompleto = horarioCompleto.replace(/^[×\-\s]+/, '').trim();
-                // Captura apenas a primeira ocorrência de HH:MM ou HH:MM - HH:MM
                 const horaMatch = horarioCompleto.match(/\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}|\d{1,2}:\d{2}/);
                 agendamento.horario = horaMatch ? horaMatch[0].trim() : horarioCompleto;
-                console.log(`     ✓ Horário: ${agendamento.horario}`);
             }
 
             // Fisioterapeuta
@@ -70,7 +73,6 @@ class AgendamentoParser {
             // Paciente
             if (cleanLine.match(/^Paciente:/i)) {
                 agendamento.paciente = cleanLine.replace(/^Paciente\s*:\s*/i, '').trim();
-                console.log(`     ✓ Paciente: ${agendamento.paciente}`);
             }
 
             // Celular
@@ -86,15 +88,17 @@ class AgendamentoParser {
             // Status
             if (cleanLine.match(/^Status:/i)) {
                 agendamento.status = cleanLine.replace(/^Status\s*:\s*/i, '').trim();
-                console.log(`     ✓ Status: "${agendamento.status}"`);
-                agendamento.isAtendido = agendamento.status.toLowerCase() === 'atendido';
+                const statusLower = agendamento.status.toLowerCase();
+                
+                // Classifica o status
+                agendamento.isAtendido = statusLower === 'atendido';
+                agendamento.isFalta = statusLower === 'faltou';
+                agendamento.isNaoAtendido = statusLower === 'não atendido';
             }
 
             // Procedimentos
             if (cleanLine.match(/^Procedimentos:/i)) {
                 agendamento.procedimentos = cleanLine.replace(/^Procedimentos\s*:\s*/i, '').trim();
-                
-                // Verifica se é isento (case-insensitive)
                 agendamento.isIsento = /isento/i.test(agendamento.procedimentos);
             }
 
@@ -108,53 +112,42 @@ class AgendamentoParser {
                 const periodoText = cleanLine.replace(/^Per[íi]odo\s*:\s*/i, '').trim();
                 agendamento.periodo = periodoText;
                 
-                // Extrai data inicial para determinar dia/mês/ano
+                // Extrai data inicial para determinar mês/ano
                 const dataMatch = periodoText.match(/(\d{2})\/(\d{2})\/(\d{4})/);
                 if (dataMatch) {
-                    const dia = parseInt(dataMatch[1]);
-                    const mes = parseInt(dataMatch[2]);
-                    const ano = parseInt(dataMatch[3]);
-                    
-                    agendamento.dia = dia;
-                    agendamento.mes = mes;
-                    agendamento.ano = ano;
-                    agendamento.dataInicial = new Date(ano, mes - 1, dia);
-                    console.log(`     ✓ Data: ${dia}/${mes}/${ano}`);
+                    agendamento.dia = parseInt(dataMatch[1]);
+                    agendamento.mes = parseInt(dataMatch[2]);
+                    agendamento.ano = parseInt(dataMatch[3]);
+                    agendamento.dataInicial = new Date(agendamento.ano, agendamento.mes - 1, agendamento.dia);
                 }
             }
 
-            // Atendimento - Particular (corrige "Pa..." para "Particular")
-            // Também detecta com quebras de linha (ex: "Atendimento - Pa... R$ 15,00")
+            // Atendimento - Particular
             if (cleanLine.match(/atendimento.*r\$|r\$.*atendimento/i)) {
-                // Corrige "Pa..." para "Particular"
                 const corrigido = cleanLine.replace(/\bPa\.{2,}\b/g, 'Particular');
                 agendamento.tipoConvenio = corrigido.includes('Particular') ? 'Particular' : 'Outros';
                 
-                // Extrai valor (suporta R$ 15,00 ou R$ 15.00)
                 const valorMatch = corrigido.match(/R\$\s*([\d,.]+)/i);
                 if (valorMatch) {
                     const valorStr = valorMatch[1]
-                        .replace(/\./g, '') // Remove pontos
-                        .replace(',', '.'); // Substitui vírgula por ponto
+                        .replace(/\./g, '')
+                        .replace(',', '.');
                     agendamento.valorAtendimento = parseFloat(valorStr) || 0;
-                    console.log(`     ✓ Valor: R$ ${agendamento.valorAtendimento.toFixed(2)}`);
                 }
             }
         });
 
-        // Define se é pagante (não é isento e tem valor ou convênio não é isento)
+        // Define se é pagante
         agendamento.isPagante = !agendamento.isIsento && agendamento.valorAtendimento > 0;
 
-        // Se não tiver mês/ano/dia definido, tenta extrair da linha de período
-        if (!agendamento.mes || !agendamento.ano || !agendamento.dia) {
-            // Tenta encontrar data em qualquer lugar do conteúdo
+        // Se não tiver mês/ano definido, tenta extrair da linha de período
+        if (!agendamento.mes || !agendamento.ano) {
             const allDataMatch = content.match(/(\d{2})\/(\d{2})\/(\d{4})/);
             if (allDataMatch) {
                 agendamento.dia = parseInt(allDataMatch[1]);
                 agendamento.mes = parseInt(allDataMatch[2]);
                 agendamento.ano = parseInt(allDataMatch[3]);
             } else {
-                // Se não conseguir, usa data de processamento
                 const hoje = new Date();
                 agendamento.dia = hoje.getDate();
                 agendamento.mes = hoje.getMonth() + 1;
@@ -162,7 +155,7 @@ class AgendamentoParser {
             }
         }
 
-        // Valida campos essenciais (horário e paciente são obrigatórios)
+        // Valida campos essenciais
         if (!agendamento.horario || !agendamento.paciente) {
             console.warn('❌ Validação falhou - faltam campos: ', {
                 temHorario: !!agendamento.horario,
@@ -171,13 +164,11 @@ class AgendamentoParser {
             return null;
         }
 
-        console.log(`   ✅ Parse bem-sucedido para: ${agendamento.paciente} (Status: "${agendamento.status}")`);
         return agendamento;
     }
 
     /**
      * Processa múltiplas mensagens de uma vez
-     * Agora detecta blocos separados por linhas vazias ou quebras duplas
      * @param {string} content - Conteúdo com múltiplas mensagens
      * @returns {Array} Array de agendamentos
      */
@@ -186,58 +177,41 @@ class AgendamentoParser {
             return [];
         }
 
-        // Remove caracteres especiais que podem aparecer (como ×)
         let cleanContent = content.replace(/[×•·]/g, ' ').trim();
-        
         const agendamentos = [];
         
-        // Estratégia: Dividir por "Horário:" como identificador de bloco
+        // Divide por "Horário:" como identificador de bloco
         const horariosPattern = /(?=Horário:)/gi;
         const blocos = cleanContent.split(horariosPattern).filter(b => b.trim());
         
-        console.log(`📋 Detectados ${blocos.length} blocos de agendamento`);
+        console.log(`📅 Detectados ${blocos.length} blocos de agendamento`);
         
         blocos.forEach((bloco, index) => {
-            console.log(`\n   [Bloco ${index + 1}]`);
-            console.log(`   Conteúdo bruto (primeiras 100 chars): ${bloco.substring(0, 100)}...`);
-            
-            // Reconstrói o bloco adicionando "Horário:" de volta (exceto o primeiro que já começa com Horário:)
             let blocoCompleto = (index === 0 ? '' : 'Horário:') + bloco;
             blocoCompleto = blocoCompleto.trim();
             
-            // Limita a linhas relevantes (remove quebras excessivas)
             const linhas = blocoCompleto.split('\n')
                 .map(l => l.trim())
                 .filter(l => l.length > 0);
             
-            console.log(`   Linhas extraídas: ${linhas.length}`);
-            linhas.forEach((l, i) => console.log(`     [${i}] ${l}`));
-            
-            // Valida se tem os campos mínimos
-            const temHorario = linhas.some(l => l.toLowerCase().startsWith('horário:'));
-            const temPaciente = linhas.some(l => l.toLowerCase().startsWith('paciente:'));
-            const temStatus = linhas.some(l => l.toLowerCase().startsWith('status:'));
-            
-            console.log(`   Validação - Horário: ${temHorario}, Paciente: ${temPaciente}, Status: ${temStatus}`);
+            const temHorario = linhas.some(l => l.startsWith('Horário:'));
+            const temPaciente = linhas.some(l => l.startsWith('Paciente:'));
             
             if (!temHorario || !temPaciente) {
-                console.warn(`   ❌ Bloco ${index + 1} ignorado - faltam campos obrigatórios`);
+                console.warn(`⚠️ Bloco ${index + 1} ignorado - dados incompletos`);
                 return;
             }
             
-            // Junta novamente e faz o parse
             const blocoConteudo = linhas.join('\n');
             const agendamento = this.parse(blocoConteudo);
             
             if (agendamento) {
                 agendamentos.push(agendamento);
-                console.log(`   ✅ Agendamento parseado: ${agendamento.paciente} - Status: "${agendamento.status}"`);
-            } else {
-                console.warn(`   ❌ Bloco não pôde ser processado (validação falhou)`);
+                console.log(`✅ Agendamento ${index + 1} parseado: ${agendamento.horario} - ${agendamento.paciente} (${agendamento.status})`);
             }
         });
         
-        console.log(`\n📊 Total de agendamentos processados com sucesso: ${agendamentos.length}`);
+        console.log(`📊 Total de agendamentos processados: ${agendamentos.length}`);
         return agendamentos;
     }
 
@@ -288,7 +262,6 @@ class AgendamentoParser {
     extrairEspecialidade(procedimento) {
         if (!procedimento) return 'Não especificado';
 
-        // Padrões comuns
         const patterns = [
             { regex: /músculoesquelética/i, nome: 'Fisioterapia Músculoesquelética' },
             { regex: /neurológica/i, nome: 'Fisioterapia Neurológica' },
@@ -323,11 +296,8 @@ class AgendamentoParser {
             return { valido: false, erro: 'Mensagem vazia' };
         }
 
-        // Remove caracteres especiais para validação
         content = content.replace(/[×•·]/g, ' ');
 
-        // Verifica campos obrigatórios (pode ter múltiplos)
-        // Usa regex mais flexível
         const temHorario = /horário\s*:/i.test(content);
         const temPaciente = /paciente\s*:/i.test(content);
 
@@ -343,20 +313,20 @@ class AgendamentoParser {
     }
 
     /**
-     * Limpa conteúdo de caracteres especiais e formatação
+     * Limpa conteúdo de caracteres especiais
      * @param {string} content 
      * @returns {string}
      */
     limparConteudo(content) {
         return content
-            .replace(/[×•·]/g, ' ')           // Remove caracteres especiais
-            .replace(/\r\n/g, '\n')          // Normaliza quebras de linha
-            .replace(/\n\s*\n\s*\n/g, '\n\n') // Remove múltiplas linhas vazias
+            .replace(/[×•·]/g, ' ')
+            .replace(/\r\n/g, '\n')
+            .replace(/\n\s*\n\s*\n/g, '\n\n')
             .trim();
     }
 }
 
-// Exporta a classe para uso em outros módulos
+// Exporta a classe
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = AgendamentoParser;
+    module.exports = SchedulesParser;
 }

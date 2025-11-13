@@ -103,6 +103,11 @@ class EvolucoesIntegration {
         try {
             // Parse dos dados - AGORA SUPORTA MÚLTIPLAS MENSAGENS!
             const agendamentos = this.parser.parseMultiple(content);
+            
+            console.log(`📋 PARSEADOS ${agendamentos.length} agendamentos`);
+            agendamentos.forEach((a, i) => {
+                console.log(`[${i+1}] ${a.paciente} - Status: "${a.status}" - Horário: ${a.horario}`);
+            });
 
             if (agendamentos.length === 0) {
                 this.mostrarNotificacao('Nenhum agendamento válido encontrado', 'warning');
@@ -127,26 +132,59 @@ class EvolucoesIntegration {
 
             // NOVO: Separa dados por status para processamento dual-mode
             // APENAS "Presença confirmada" vai para Evoluções
-            // Todos os outros status vão para Análise Financeira
+            // "Presença confirmada" + "Atendido" vão para Análise Financeira
+            // "Não atendido" + "Faltou" vão para Agendamentos
             const comPresenca = agendamentos.filter(a => {
                 if (!a.status) return false;
-                const statusLower = a.status.toLowerCase();
-                // APENAS "Presença confirmada" - sem "Atendido"
-                return statusLower.includes('presença confirmada');
+                const statusLower = a.status.toLowerCase().trim();
+                // APENAS "Presença confirmada"
+                const match = statusLower.includes('presença confirmada');
+                console.log(`   [PRESENÇA] "${a.status}" → ${match}`);
+                return match;
             });
-            const semPresenca = agendamentos.filter(a => {
+
+            const comAtendido = agendamentos.filter(a => {
+                if (!a.status) return false;
+                const statusLower = a.status.toLowerCase().trim();
+                // APENAS "Atendido" (mas não "não atendido")
+                const match = statusLower.includes('atendido') && !statusLower.includes('não');
+                console.log(`   [ATENDIDO] "${a.status}" → ${match}`);
+                return match;
+            });
+
+            const naoAtendidoOuFaltou = agendamentos.filter(a => {
+                if (!a.status) return false;
+                const statusLower = a.status.toLowerCase().trim();
+                // "Não atendido", "não atendio" (typo), ou "Faltou"
+                const isNaoAtendido = statusLower.includes('não atendid');  // Captura "não atendido" e "não atendio"
+                const isFaltou = statusLower.includes('faltou');
+                const match = isNaoAtendido || isFaltou;
+                console.log(`   [NÃO ATENDIDO/FALTOU] "${a.status}" → isNaoAtendido: ${isNaoAtendido}, isFaltou: ${isFaltou} → ${match}`);
+                return match;
+            });
+
+            const outros = agendamentos.filter(a => {
                 if (!a.status) return true;
-                const statusLower = a.status.toLowerCase();
-                // Todos os outros status (Atendido, Cancelado, etc)
-                return !statusLower.includes('presença confirmada');
+                const statusLower = a.status.toLowerCase().trim();
+                // Outros status (Cancelado, etc) - não está em nenhuma das categorias acima
+                const isPresenca = statusLower.includes('presença confirmada');
+                const isAtendido = statusLower.includes('atendido') && !statusLower.includes('não');
+                const isNaoAtendido = statusLower.includes('não atendid');
+                const isFaltou = statusLower.includes('faltou');
+                const match = !isPresenca && !isAtendido && !isNaoAtendido && !isFaltou;
+                console.log(`   [OUTROS] "${a.status}" → ${match}`);
+                return match;
             });
 
             console.log(`📊 Separação por status:`);
-            console.log(`  ✅ Com "Presença confirmada": ${comPresenca.length}`);
-            console.log(`  💾 Com outros status (Financeiro): ${semPresenca.length}`);
+            console.log(`  ✅ Com "Presença confirmada" (Evoluções): ${comPresenca.length}`);
+            console.log(`  ✅ Com "Atendido" (Financeiro): ${comAtendido.length}`);
+            console.log(`  ❌ Com "Não atendido" ou "Faltou" (Agendamentos): ${naoAtendidoOuFaltou.length}`);
+            console.log(`  ⚪ Outros status: ${outros.length}`);
 
             let resultadoEvolucoes = { sucesso: 0, ignoradas: 0 };
             let resultadoFinanceiro = 0;
+            let resultadoAgendamentos = 0;
 
             // ==========================================
             // PASSO 1: Processa registros com "Presença confirmada" em Evoluções
@@ -177,13 +215,13 @@ class EvolucoesIntegration {
             }
 
             // ==========================================
-            // PASSO 2: Processa TODOS os dados em Análise Financeira
-            // Inclui tanto "Presença confirmada" quanto outros status
+            // PASSO 2: Processa dados em Análise Financeira
+            // APENAS "Presença confirmada" + "Atendido"
             // ==========================================
-            // Cria lista combinada de TODOS os registros para análise financeira
-            const todosParaFinanceiro = [...comPresenca, ...semPresenca];
+            // Cria lista combinada apenas de registros financeiros válidos
+            const paraFinanceiro = [...comPresenca, ...comAtendido];
             
-            if (todosParaFinanceiro.length > 0 && window.financialIntegration) {
+            if (paraFinanceiro.length > 0 && window.financialIntegration) {
                 try {
                     // Cria um novo parser para processar apenas os registros novos
                     // sem acumular com dados anteriores
@@ -191,7 +229,7 @@ class EvolucoesIntegration {
                     
                     // Adiciona registros com conversão correta de campos
                     // valorAtendimento é o campo do agendamento, valor é o do parser financeiro
-                    todosParaFinanceiro.forEach(agendamento => {
+                    paraFinanceiro.forEach(agendamento => {
                         // Cria registro com campos corretos do parser financeiro
                         const record = {
                             horario: agendamento.horario || '',
@@ -211,7 +249,7 @@ class EvolucoesIntegration {
                         newParser.records.push(record);
                     });
 
-                    console.log(`📊 ${todosParaFinanceiro.length} registros adicionados ao parser financeiro`);
+                    console.log(`📊 ${paraFinanceiro.length} registros adicionados ao parser financeiro`);
 
                     // Processa análise com registros validados
                     const recordsValidados = newParser.getValidRecords();
@@ -267,10 +305,35 @@ class EvolucoesIntegration {
                 }
             }
 
+            // ==========================================
+            // PASSO 3: Processa dados de Agendamentos
+            // Lado esquerdo: "não atendido" e "faltou" (FALTAS)
+            // Lado direito: Todos os outros status (compareceram/processados)
+            // ==========================================
+            try {
+                if (window.schedulesIntegration) {
+                    // Prepara dados para agendamentos
+                    // LADO ESQUERDO (Faltaram): "não atendido" + "faltou"
+                    // LADO DIREITO (Compareceram): "presença confirmada" + "atendido" + outros
+                    const compareceram = [...comPresenca, ...comAtendido, ...outros];
+                    
+                    if (naoAtendidoOuFaltou.length > 0 || compareceram.length > 0) {
+                        console.log(`📅 Processando para Agendamentos:`);
+                        console.log(`   - Faltaram (lado esquerdo): ${naoAtendidoOuFaltou.length}`);
+                        console.log(`   - Compareceram (lado direito): ${compareceram.length}`);
+                        window.schedulesIntegration.processDataWithArray(naoAtendidoOuFaltou, compareceram, true); // Silent mode
+                        console.log(`✅ Agendamentos processados`);
+                        resultadoAgendamentos = naoAtendidoOuFaltou.length;
+                    }
+                }
+            } catch (errorSchedules) {
+                console.error('❌ Erro ao processar Agendamentos:', errorSchedules);
+            }
+
             // Monta mensagens granulares (cada notificação com uma informação)
             
-            // Se apenas evoluções foram processadas (sem dados de financeiro)
-            if (resultadoEvolucoes.sucesso > 0 && resultadoFinanceiro === 0) {
+            // Se apenas evoluções foram processadas
+            if (resultadoEvolucoes.sucesso > 0 && resultadoFinanceiro === 0 && resultadoAgendamentos === 0) {
                 const plural = resultadoEvolucoes.sucesso !== 1 ? 's' : '';
                 this.mostrarNotificacao(
                     `${resultadoEvolucoes.sucesso} atendimento${plural} com "Presença confirmada" adicionado${plural}`,
@@ -281,35 +344,39 @@ class EvolucoesIntegration {
                     'info'
                 );
             }
-            // Se apenas financeiro foi processado (sem evoluções)
-            else if (resultadoEvolucoes.sucesso === 0 && resultadoFinanceiro > 0) {
-                const plural = resultadoFinanceiro !== 1 ? 's' : '';
-                this.mostrarNotificacao(
-                    `${resultadoFinanceiro} atendimento${plural} processado${plural} para Análise Financeira`,
-                    'success'
-                );
-                this.mostrarNotificacao(
-                    `Status diferente de "Presença confirmada"`,
-                    'info'
-                );
-            }
-            // Se ambos foram processados (evoluções + financeiro)
-            else if (resultadoEvolucoes.sucesso > 0 && resultadoFinanceiro > 0) {
-                const pluralEv = resultadoEvolucoes.sucesso !== 1 ? 's' : '';
-                const pluralFin = resultadoFinanceiro !== 1 ? 's' : '';
+            // Se processou múltiplos módulos
+            else if (resultadoEvolucoes.sucesso > 0 || resultadoFinanceiro > 0 || resultadoAgendamentos > 0) {
+                // Notifica cada módulo que foi processado
+                if (resultadoEvolucoes.sucesso > 0) {
+                    const plural = resultadoEvolucoes.sucesso !== 1 ? 's' : '';
+                    this.mostrarNotificacao(
+                        `${resultadoEvolucoes.sucesso} evolução${plural} adicionada${plural} (Presença confirmada)`,
+                        'success'
+                    );
+                }
                 
-                this.mostrarNotificacao(
-                    `${resultadoEvolucoes.sucesso} evolução${pluralEv} adicionada${pluralEv} (com "Presença confirmada")`,
-                    'success'
-                );
-                this.mostrarNotificacao(
-                    `${resultadoFinanceiro} registro${pluralFin} enviado${pluralFin} para Análise Financeira`,
-                    'success'
-                );
-                this.mostrarNotificacao(
-                    `Processamento dual concluído: Evoluções + Financeiro`,
-                    'info'
-                );
+                if (resultadoFinanceiro > 0) {
+                    const plural = resultadoFinanceiro !== 1 ? 's' : '';
+                    this.mostrarNotificacao(
+                        `${resultadoFinanceiro} registro${plural} enviado${plural} para Análise Financeira (Atendido)`,
+                        'success'
+                    );
+                }
+                
+                if (resultadoAgendamentos > 0) {
+                    const plural = resultadoAgendamentos !== 1 ? 's' : '';
+                    this.mostrarNotificacao(
+                        `${resultadoAgendamentos} falta${plural} registrada${plural} em Agendamentos`,
+                        'success'
+                    );
+                }
+                
+                if (resultadoEvolucoes.sucesso > 0 || resultadoFinanceiro > 0 || resultadoAgendamentos > 0) {
+                    this.mostrarNotificacao(
+                        `Processamento concluído com sucesso`,
+                        'info'
+                    );
+                }
             }
             // Se nada foi processado
             else {

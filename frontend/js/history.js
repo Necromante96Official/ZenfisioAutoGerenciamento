@@ -45,36 +45,85 @@ class HistoryManager {
     getVersions() {
         return [
             {
-                version: '1.0.0.9',
+                version: '1.1.0',
+                date: '13 de novembro de 2025',
+                title: 'Módulo Agendamentos + "Limpar Tudo" + Documentação Completa',
+                description: 'Versão 1.1.0 - Grande atualização com novo módulo de Agendamentos completo! Sistema agora permite gerenciar e analisar agendamentos com visualização de comparecimentos, faltas e totais. Novo botão "Limpar Tudo" limpa todos os dados de todos os módulos de uma vez. Modal "Como Usar" completamente reescrito com 8 passos detalhados e 4 caixas de informações coloridas para melhor compreensão dos usuários. Interface melhorada com layout horizontal responsivo.',
+                features: [
+                    'Novo Módulo Agendamentos - Gerenciar e analisar agendamentos',
+                    'Cards de Agendamentos - Mostra comparecimentos, faltas e total',
+                    'Botão "Limpar Tudo" - Remove dados de todos os módulos simultaneamente',
+                    'Confirmação de Segurança - Dialog pergunta antes de limpar tudo',
+                    'Limpeza Completa - localStorage, analyzer e DOM todos limpos',
+                    'Auto-reload após Limpeza - Página recarrega para estado limpo',
+                    'Layout Agendamentos Horizontal - Aproveita tela cheia sem espaço cinza',
+                    'Botão Limpar Agendamentos - Aba esquerda com botão de limpeza',
+                    'Modal "Como Usar" Completo - 8 passos com instruções detalhadas',
+                    '4 Caixas de Informação - Verde (dicas), Vermelho (avisos), Azul (formato), Amarelo (ajuda)',
+                    'Animações de Reveal - Passos aparecem com animação em cascata',
+                    'Typography Melhorada - Textos maiores e mais legíveis',
+                    'Documentação Acessível - Linguagem simples para usuários comuns',
+                    'Cores Padronizadas - Info boxes com cores claras e diferenciadas',
+                    'Gradientes nos Cards - Visual mais moderno e atrativo',
+                    'Passagem de Versão - Sistema agora em versão 1.1.0',
+                    'Reformulação de Versões - Versões antigas renumeradas sem 0 final',
+                    'README Atualizado - Documentação completa com novas funcionalidades',
+                    'History.js Atualizado - Sistema mostra 1.1.0 como versão atual'
+                ],
+                improvements: [
+                    'Agora com 3 módulos completos - Evoluções, Financeiro e Agendamentos',
+                    'Controle total sobre dados - botão Limpar Tudo centraliza gerenciamento',
+                    'Interface mais clara - Layout responsivo sem espaços desnecessários',
+                    'Documentação acessível - Qualquer pessoa consegue entender o sistema',
+                    'Modal "Como Usar" muito melhor - 8 passos em vez de 6',
+                    'Informações coloridas - Cada tipo de mensagem em cor diferente',
+                    'Agendamentos gerenciados - Novo módulo permite análise completa',
+                    'Comparecimentos vs Faltas - Visualize estatísticas importantes',
+                    'Segurança na limpeza - Confirmação antes de deletar dados',
+                    'Sistema profissional - Visual e funcionalidade melhorados',
+                    'Todos os dados protegidos - Limpeza é segura e controlada',
+                    'Interface intuitiva - Botões e controles bem organizados',
+                    'Performance mantida - Sem lentidão ou travamentos',
+                    'Compatibilidade total - Funciona em todos os navegadores',
+                    'Responsivo - Mobile, tablet e desktop funcionam perfeitamente',
+                    'Tema claro e escuro - Ambos os temas com suporte completo',
+                    'Acessibilidade - Teclado e mouse funcionam corretamente',
+                    'Modular - Cada módulo funciona independentemente',
+                    'Dados acumulam - Múltiplos processamentos mantêm histórico',
+                    'Sistema pronto para produção - Totalmente testado e validado'
+                ]
+            },
+            {
+                version: '1.0.9',
                 date: '12 de novembro de 2025',
                 title: 'Memória de Posição + Filtros Avançados (Especialidades & Registros)',
-                description: 'Nona versão com sistema completo de memória de posição! Usuário não perde sua posição quando o sistema sincroniza. Filtros rápidos em especialidades (Particulares/Isentos) e 7 filtros avançados por coluna em registros detalhados (Data, Horário, Fisioterapeuta, Paciente, Convênio, Procedimento). Múltiplos filtros funcionam simultaneamente.',
+                description: 'Sistema completo de memória de posição! Usuário não perde sua posição quando o sistema sincroniza. Filtros rápidos em especialidades (Particulares/Isentos) e 7 filtros avançados por coluna em registros detalhados (Data, Horário, Fisioterapeuta, Paciente, Convênio, Procedimento). Múltiplos filtros funcionam simultaneamente.',
                 features: [
-                    '✨ Memória completa de posição do usuário (aba + scroll + filtros)',
-                    '✨ Sistema salva estado ANTES de sincronizar dados',
-                    '✨ Restaura estado APÓS sincronização (60s automático ou manual)',
-                    '✨ Funciona com auto-refresh e refresh manual (botão 🔄)',
-                    '✨ Backup em localStorage para segurança',
-                    '✨ Especialidades com 3 filtros rápidos: [📊 Todos] [💳 Particulares] [🛡️ Isentos]',
-                    '✨ Filtros de tipo por especialidade (particulares vs isentos)',
-                    '✨ Registros com 7 filtros avançados por coluna',
-                    '✨ Dropdown expansível "🔎 Filtros Avançados"',
-                    '✨ Filtro por Data (📅)',
-                    '✨ Filtro por Horário (⏰)',
-                    '✨ Filtro por Fisioterapeuta (👤)',
-                    '✨ Filtro por Paciente (🏥)',
-                    '✨ Filtro por Convênio (💳)',
-                    '✨ Filtro por Procedimento (🏥)',
-                    '✨ Múltiplos filtros funcionam juntos (combinação)',
-                    '✨ Botão "✨ Limpar Filtros" para resetar tudo',
-                    '✨ Filtros persistem após sincronização',
-                    '✨ UI State Manager gerencia todo o estado',
-                    '✨ Data-attributes em elementos para filtro rápido',
-                    '✨ Event listeners otimizados sem duplicação',
-                    '✨ Performance não afetada (< 100ms overhead)',
-                    '✨ Compatível com todos os navegadores',
-                    '✨ Tema claro e escuro funcionam perfeitamente',
-                    '✨ Mobile e tablet totalmente responsivos'
+                    'Memória completa de posição do usuário (aba + scroll + filtros)',
+                    'Sistema salva estado ANTES de sincronizar dados',
+                    'Restaura estado APÓS sincronização (60s automático ou manual)',
+                    'Funciona com auto-refresh e refresh manual (botão 🔄)',
+                    'Backup em localStorage para segurança',
+                    'Especialidades com 3 filtros rápidos: [📊 Todos] [💳 Particulares] [🛡️ Isentos]',
+                    'Filtros de tipo por especialidade (particulares vs isentos)',
+                    'Registros com 7 filtros avançados por coluna',
+                    'Dropdown expansível "🔎 Filtros Avançados"',
+                    'Filtro por Data (📅)',
+                    'Filtro por Horário (⏰)',
+                    'Filtro por Fisioterapeuta (👤)',
+                    'Filtro por Paciente (🏥)',
+                    'Filtro por Convênio (💳)',
+                    'Filtro por Procedimento (🏥)',
+                    'Múltiplos filtros funcionam juntos (combinação)',
+                    'Botão "✨ Limpar Filtros" para resetar tudo',
+                    'Filtros persistem após sincronização',
+                    'UI State Manager gerencia todo o estado',
+                    'Data-attributes em elementos para filtro rápido',
+                    'Event listeners otimizados sem duplicação',
+                    'Performance não afetada (< 100ms overhead)',
+                    'Compatível com todos os navegadores',
+                    'Tema claro e escuro funcionam perfeitamente',
+                    'Mobile e tablet totalmente responsivos'
                 ],
                 improvements: [
                     'Memória de posição - usuário nunca perde lugar ao sincronizar',
@@ -100,7 +149,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.8',
+                version: '1.0.8',
                 date: '12 de novembro de 2025',
                 title: 'Sistema de Sincronização Automática (60s) + Botão de Refresh Premium',
                 description: 'Oitava versão com sistema de sincronização automática a cada 60 segundos! Botão premium com animações dinâmicas (spin, pulse, bounce) para refresh manual. Auto-refresh recarrega dados do localStorage reprocessando com todas as melhorias implementadas. Sistema funciona sem perder foco ou interromper navegação do usuário.',
@@ -156,7 +205,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.7',
+                version: '1.0.7',
                 date: '11 de novembro de 2025',
                 title: 'Export/Import v2 Completo + Melhorias Finais',
                 features: [
@@ -209,7 +258,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.6',
+                version: '1.0.6',
                 date: '11 de novembro de 2025',
                 title: 'Sistema de Limpeza Independente & Melhorias de Interface',
                 features: [
@@ -259,7 +308,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.5',
+                version: '1.0.5',
                 date: '10 de novembro de 2025',
                 title: 'Integração Completa: Análise Financeira + Notificações Cascata',
                 features: [
@@ -306,7 +355,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.4',
+                version: '1.0.4',
                 date: '10 de novembro de 2025',
                 title: 'Melhorias de Cards Flutuantes & Layout Horizontal',
                 features: [
@@ -348,7 +397,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.3',
+                version: '1.0.3',
                 date: '10 de novembro de 2025',
                 title: 'Melhorias de Interface & Correções de Tema',
                 features: [
@@ -388,7 +437,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.2',
+                version: '1.0.2',
                 date: '10 de novembro de 2025',
                 title: 'Sistema de Evoluções Pendentes + Limpeza',
                 features: [
@@ -426,7 +475,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.1',
+                version: '1.0.1',
                 date: '10 de novembro de 2025',
                 title: 'Refinamento Visual & Melhor Acessibilidade',
                 features: [
@@ -464,7 +513,7 @@ class HistoryManager {
                 ]
             },
             {
-                version: '1.0.0.0',
+                version: '1.0.0',
                 date: '10 de novembro de 2025',
                 title: 'Lançamento Inicial',
                 features: [

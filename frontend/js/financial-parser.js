@@ -119,16 +119,24 @@ class FinancialParser {
 
     /**
      * Filtra registros confirmados
-     * Aceita qualquer status preenchido como válido
-     * NOTA: v1.0.0.9 usa getValidRecords() que é mais flexível
+     * AGORA: Aceita "Presença confirmada" E "Atendido" (os que VÃO gerar receita)
+     * EXCLUI: "não atendido" e "faltou" (são para a aba Agendamentos)
      */
     getConfirmedRecords() {
-        // Se não tem status, qualquer registro com dados principais é considerado válido
         return this.records.filter(r => {
+            // Rejeita estatuses que não devem aparecer aqui
+            const statusLower = (r.status || '').toLowerCase();
+            if (statusLower === 'não atendido' || statusLower === 'faltou') {
+                return false; // Será processado em Agendamentos
+            }
+            
+            // Aceita apenas "Presença confirmada" ou "Atendido"
+            const isValido = statusLower === 'presença confirmada' || statusLower === 'atendido';
+            
             const temDados = (r.fisioterapeuta && r.fisioterapeuta.trim()) || 
                            (r.paciente && r.paciente.trim());
-            // Aceita se tem dados E (tem status OU é um registro válido)
-            return temDados && r.status;
+            
+            return temDados && isValido;
         });
     }
 

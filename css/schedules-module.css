@@ -1,0 +1,816 @@
+/**
+ * SCHEDULES-MODULE.CSS
+ * Estilos para a aba de Agendamentos - Layout Moderno e Horizontal
+ */
+
+:root {
+    --schedules-color-falta: #dc3545;
+    --schedules-color-falta-light: rgba(220, 53, 69, 0.1);
+    --schedules-color-compareceu: #28a745;
+    --schedules-color-compareceu-light: rgba(40, 167, 69, 0.1);
+    --schedules-color-total: #007bff;
+    --schedules-color-total-light: rgba(0, 123, 255, 0.1);
+}
+
+/* Agendamentos Card - Layout correto */
+.agendamentos-card {
+    margin: 0.5rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.agendamentos-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    border-bottom: 2px solid rgba(47, 190, 143, 0.15);
+    background: linear-gradient(135deg, rgba(47, 190, 143, 0.05), rgba(26, 153, 112, 0.02));
+    gap: 1.5rem;
+    position: relative;
+}
+
+.agendamentos-header h3 {
+    margin: 0;
+    text-align: center;
+}
+
+.agendamentos-body {
+    padding: 0;
+    flex: 1;
+    overflow: auto;
+}
+
+.schedules-clear-btn-header {
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    white-space: nowrap;
+    position: absolute;
+    left: 2rem;
+}
+
+.schedules-clear-btn-header:hover {
+    background-color: #c82333;
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.5);
+    transform: translateY(-2px);
+}
+
+.schedules-clear-btn-header:active {
+    transform: translateY(0);
+}
+
+/* Container principal - Horizontalizado e Expandido */
+#agendamentos-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+
+
+.schedules-clear-btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    white-space: nowrap;
+}
+
+.schedules-clear-btn:hover {
+    background-color: #c82333;
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.5);
+    transform: translateY(-2px);
+}
+
+.schedules-clear-btn:active {
+    transform: translateY(0);
+}
+
+/* Cards informativos - Grid de 3 colunas horizontal */
+.schedules-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.schedules-info-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border: 2px solid transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.schedules-info-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.schedules-info-card.card-primary {
+    border-color: var(--schedules-color-compareceu);
+    background: linear-gradient(135deg, var(--schedules-color-compareceu-light), rgba(40, 167, 69, 0.05));
+}
+
+.schedules-info-card.card-primary:hover {
+    background: linear-gradient(135deg, var(--schedules-color-compareceu-light), rgba(40, 167, 69, 0.1));
+}
+
+.schedules-info-card.card-danger {
+    border-color: var(--schedules-color-falta);
+    background: linear-gradient(135deg, var(--schedules-color-falta-light), rgba(220, 53, 69, 0.05));
+}
+
+.schedules-info-card.card-danger:hover {
+    background: linear-gradient(135deg, var(--schedules-color-falta-light), rgba(220, 53, 69, 0.1));
+}
+
+.schedules-info-card.card-info {
+    border-color: var(--schedules-color-total);
+    background: linear-gradient(135deg, var(--schedules-color-total-light), rgba(0, 123, 255, 0.05));
+}
+
+.schedules-info-card.card-info:hover {
+    background: linear-gradient(135deg, var(--schedules-color-total-light), rgba(0, 123, 255, 0.1));
+}
+
+.schedules-info-card .card-icon {
+    font-size: 2.4rem;
+    min-width: 3rem;
+    text-align: center;
+}
+
+.schedules-info-card .card-content {
+    flex: 1;
+}
+
+.schedules-info-card .card-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 800;
+}
+
+.schedules-info-card .card-value {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+    line-height: 1;
+}
+
+.schedules-info-card .card-subtext {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Abas - Modernas e centralizadas */
+.schedules-tabs {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    margin-top: 2rem;
+}
+
+.schedules-tabs-header {
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid var(--border-color);
+    background: var(--bg-tertiary);
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.schedules-tab-btn {
+    padding: 1.2rem 2rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    min-width: 200px;
+}
+
+.schedules-tab-btn:hover {
+    color: var(--text-primary);
+    background: rgba(0, 102, 204, 0.08);
+}
+
+.schedules-tab-btn.active {
+    color: #0066cc;
+    border-bottom-color: #0066cc;
+    background: rgba(0, 102, 204, 0.05);
+}
+
+/* Conteúdo das abas */
+.schedules-tabs-content {
+    padding: 2rem;
+}
+
+.schedules-tab-content {
+    display: none;
+}
+
+.schedules-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Container de pacientes - Lado-a-lado com altura definida */
+.schedules-pacientes-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    min-height: 500px;
+}
+
+@media (max-width: 1200px) {
+    .schedules-pacientes-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        min-height: auto;
+    }
+}
+
+/* Colunas com scroll */
+.schedules-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.schedules-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+    background: var(--bg-tertiary);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.schedules-column-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.column-info {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    background: rgba(0, 102, 204, 0.1);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: #0066cc;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.schedules-column-compareceu .column-info {
+    background: var(--schedules-color-compareceu-light);
+    color: var(--schedules-color-compareceu);
+}
+
+.schedules-column-faltaram .column-info {
+    background: var(--schedules-color-falta-light);
+    color: var(--schedules-color-falta);
+}
+
+/* Lista de pacientes - Scrollável */
+.schedules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.schedules-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.schedules-list::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+}
+
+.schedules-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.schedules-list::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Card de paciente - Moderno e responsivo */
+.schedule-patient-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #0066cc;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.schedule-patient-card:hover {
+    border-color: #0066cc;
+    box-shadow: 0 4px 16px rgba(0, 102, 204, 0.2);
+    transform: translateX(4px);
+}
+
+.schedule-patient-card.schedule-patient-compareceu {
+    border-left-color: var(--schedules-color-compareceu);
+}
+
+.schedule-patient-card.schedule-patient-compareceu:hover {
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.2);
+}
+
+.schedule-patient-card.schedule-patient-falta {
+    border-left-color: var(--schedules-color-falta);
+}
+
+.schedule-patient-card.schedule-patient-falta:hover {
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.2);
+}
+
+/* Header do card - Clickável */
+.schedule-patient-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    cursor: pointer;
+    background: var(--bg-secondary);
+    transition: all 0.3s ease;
+    gap: 0.75rem;
+}
+
+.schedule-patient-card:hover .schedule-patient-card-header {
+    background: var(--bg-tertiary);
+}
+
+.patient-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.patient-icon {
+    font-size: 1.3rem;
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+.patient-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.patient-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.patient-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.patient-header-right {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.expand-icon {
+    color: var(--text-secondary);
+    transition: transform 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.schedule-patient-card-header.expanded .expand-icon {
+    transform: rotate(180deg);
+    color: #0066cc;
+}
+
+/* Conteúdo do card (expandível) - Animado */
+.schedule-patient-card-content {
+    display: none;
+    background: var(--bg-tertiary);
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    max-height: 0;
+    overflow: hidden;
+    animation: slideDown 0.3s ease forwards;
+}
+
+.schedule-patient-card-content.show {
+    display: block;
+    animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 600px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+}
+
+.patient-detail {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    align-items: flex-start;
+}
+
+.patient-detail:last-child {
+    margin-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 110px;
+    text-transform: capitalize;
+}
+
+.detail-value {
+    color: var(--text-primary);
+    flex: 1;
+    word-break: break-word;
+    font-weight: 500;
+}
+
+/* Empty state */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    min-height: 300px;
+}
+
+.empty-state-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    opacity: 0.2;
+}
+
+.empty-state-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+/* Responsivo - Tablets */
+@media (max-width: 1200px) {
+    .schedules-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .schedules-pacientes-container {
+        grid-template-columns: 1fr;
+    }
+
+    .schedules-list {
+        max-height: 400px;
+    }
+
+    #agendamentos-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Responsivo - Mobile médio */
+@media (max-width: 768px) {
+    .schedules-header-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .schedules-header-title {
+        font-size: 1.3rem;
+        width: 100%;
+    }
+
+    .schedules-clear-btn-wrapper {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .schedules-clear-btn {
+        width: 100%;
+    }
+
+    .schedules-cards-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .schedules-info-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .schedules-info-card .card-icon {
+        font-size: 2rem;
+    }
+
+    .schedules-info-card .card-value {
+        font-size: 2rem;
+    }
+
+    .schedules-tabs-header {
+        flex-direction: column;
+    }
+
+    .schedules-tab-btn {
+        min-width: 100%;
+        padding: 1rem;
+        border-bottom: none;
+        border-right: 3px solid transparent;
+    }
+
+    .schedules-tab-btn.active {
+        border-right-color: #0066cc;
+        border-bottom-color: transparent;
+    }
+
+    .schedules-pacientes-container {
+        min-height: auto;
+    }
+
+    .schedules-column-header {
+        padding: 1rem;
+    }
+
+    .schedules-column-header h3 {
+        font-size: 1rem;
+    }
+
+    .schedules-list {
+        max-height: 350px;
+        padding: 0.75rem;
+        gap: 0.25rem;
+    }
+
+    .schedule-patient-card-header {
+        padding: 0.75rem;
+    }
+
+    .schedule-patient-card-content {
+        padding: 0.75rem;
+    }
+
+    .patient-name {
+        font-size: 0.9rem;
+    }
+
+    .patient-time {
+        font-size: 0.75rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .patient-detail {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-label {
+        min-width: 80px;
+        font-size: 0.8rem;
+    }
+
+    .detail-value {
+        font-size: 0.85rem;
+    }
+}
+
+/* Responsivo - Mobile pequeno */
+@media (max-width: 480px) {
+    #agendamentos-content {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .schedules-header-title {
+        font-size: 1.2rem;
+    }
+
+    .schedules-clear-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
+    }
+
+    .schedules-cards-container {
+        gap: 0.75rem;
+    }
+
+    .schedules-info-card {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .schedules-info-card .card-icon {
+        font-size: 1.8rem;
+    }
+
+    .schedules-info-card .card-label {
+        font-size: 0.7rem;
+    }
+
+    .schedules-info-card .card-value {
+        font-size: 1.5rem;
+    }
+
+    .schedules-info-card .card-subtext {
+        font-size: 0.75rem;
+    }
+
+    .schedules-tabs {
+        margin-top: 1.5rem;
+    }
+
+    .schedules-tabs-content {
+        padding: 1rem;
+    }
+
+    .schedules-tab-btn {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.3px;
+    }
+
+    .schedules-column-header {
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
+
+    .schedules-column-header h3 {
+        font-size: 0.9rem;
+    }
+
+    .column-info {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .schedules-list {
+        max-height: 300px;
+        padding: 0.5rem;
+    }
+
+    .schedule-patient-card {
+        border-radius: 6px;
+    }
+
+    .schedule-patient-card-header {
+        padding: 0.65rem;
+    }
+
+    .patient-icon {
+        font-size: 1.1rem;
+    }
+
+    .patient-name {
+        font-size: 0.85rem;
+    }
+
+    .patient-time {
+        font-size: 0.7rem;
+    }
+
+    .expand-icon {
+        font-size: 0.75rem;
+    }
+
+    .schedule-patient-card-content {
+        padding: 0.65rem;
+    }
+
+    .patient-detail {
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 0.4rem;
+        font-size: 0.8rem;
+    }
+
+    .detail-label {
+        min-width: auto;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .detail-value {
+        font-size: 0.8rem;
+    }
+
+    .empty-state {
+        padding: 2rem 1rem;
+        min-height: 250px;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .empty-state-text {
+        font-size: 0.85rem;
+    }
+}

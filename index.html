@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/financial-module.css">
     <link rel="stylesheet" href="css/filter-styles.css">
     <link rel="stylesheet" href="css/filter-modal-styles.css">
+    <link rel="stylesheet" href="css/schedules-module.css">
 </head>
 <body>
     <!-- Navigation Header -->
@@ -23,7 +24,7 @@
             <nav class="app-nav">
                 <button class="nav-btn active" data-module="evolucoes">Evoluções Pendentes</button>
                 <button class="nav-btn" data-module="financeiro">Análise Financeira</button>
-                <button class="nav-btn" data-module="desenvolvimento">Em Desenvolvimento</button>
+                <button class="nav-btn" data-module="desenvolvimento">Agendamentos</button>
             </nav>
             <div class="header-actions">
                 <button id="refreshDataBtn" class="refresh-btn" title="Atualizar sistema com melhorias (Sincroniza dados e recarrega análises)">
@@ -121,6 +122,9 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                                 <button class="action-btn" id="importBtn" title="Importar dados de backup">
                                     📂 Importar
                                 </button>
+                                <button class="action-btn" id="clearAllBtn" title="Limpar todos os dados de todas as páginas">
+                                    🗑️ Limpar Tudo
+                                </button>
                                 <input type="file" id="importInput" accept=".json" style="display: none;">
                             </div>
                         </div>
@@ -186,6 +190,23 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
             <!-- Renderizado dinamicamente pelo FinancialUI -->
         </section>
 
+        <!-- Agendamentos Module -->
+        <section class="module" id="agendamentos" data-module="desenvolvimento">
+            <div class="card agendamentos-card">
+                <div class="card-header agendamentos-header">
+                    <button id="clearSchedulesDataBtn" class="action-btn schedules-clear-btn-header">
+                        🗑️ Limpar Agendamentos
+                    </button>
+                    <h3><span class="card-title-text">Análise de Agendamentos e Faltas</span></h3>
+                </div>
+                <div class="card-body agendamentos-body">
+                    <div id="agendamentos-content">
+                        <!-- Renderizado dinamicamente pelo SchedulesUI -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Organizacional Module -->
         <section class="module" id="organizacional" data-module="desenvolvimento">
             <div class="module-container">
@@ -223,7 +244,7 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
             </div>
             <div class="footer-center">
                 <button class="version-badge" title="Clique para ver histórico de atualizações">
-                    <span>📦 Versão 1.0.0.9</span>
+                    <span>📦 Versão 1.1.0</span>
                 </button>
             </div>
             <div class="footer-right">
@@ -273,7 +294,7 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                     </div>
                     <div class="terms-info-row">
                         <span class="terms-label">Versão:</span>
-                        <span>1.0.0.9</span>
+                        <span>1.1.0</span>
                     </div>
                 </div>
 
@@ -437,7 +458,7 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                         <h3>Atualizações & Versionamento</h3>
                     </div>
                     <ul>
-                        <li><strong>Versão Atual:</strong> 1.0.0.9</li>
+                        <li><strong>Versão Atual:</strong> 1.1.0</li>
                         <li><strong>Formato:</strong> X.Y.Z (Major.Minor.Patch)</li>
                         <li><strong>Atualizações:</strong> Novas versões podem introduzir funcionalidades ou alterar fluxos</li>
                         <li><strong>Notificação:</strong> Não há garantia de notificação prévia</li>
@@ -468,14 +489,13 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                 <div class="how-to-step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <h3>Cole o Conteúdo</h3>
-                        <p>Cole as evoluções/atendimentos na seção à esquerda. Suporta:</p>
+                        <h3>📝 Cole o Conteúdo</h3>
+                        <p>Na seção à esquerda, cole as informações de pacientes e atendimentos:</p>
                         <ul>
-                            <li>✅ Uma ou várias mensagens juntas</li>
-                            <li>✅ Texto livre com dados de pacientes, fisioterapeutas e atendimentos</li>
-                            <li>✅ Caracteres especiais (×, ×, etc)</li>
-                            <li>✅ Múltiplos formatos e separadores</li>
-                            <li>⚠️ Apenas "Presença confirmada" será processado</li>
+                            <li>✅ Cole uma ou várias mensagens de uma vez</li>
+                            <li>✅ Pode ser texto livre com dados misturados</li>
+                            <li>✅ O sistema reconhece automaticamente: Horário, Fisioterapeuta, Paciente, Celular, Convênio, Status, Procedimentos e Valor</li>
+                            <li>💡 Copie direto do ZenFisio e cole aqui!</li>
                         </ul>
                     </div>
                 </div>
@@ -483,13 +503,14 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                 <div class="how-to-step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Selecione a Data</h3>
-                        <p>Use os controles de data à esquerda:</p>
+                        <h3>📅 Selecione a Data</h3>
+                        <p>Use os botões para escolher qual data está processando:</p>
                         <ul>
-                            <li>◀◀ - Mês anterior</li>
-                            <li>− / + - Dia anterior/próximo</li>
-                            <li>Hoje - Retorna para hoje</li>
-                            <li>Data selecionada aparece em destaque</li>
+                            <li>◀◀ - Volta um mês inteiro</li>
+                            <li>− - Dia anterior</li>
+                            <li>+ - Dia seguinte</li>
+                            <li>Hoje - Volta para o dia de hoje</li>
+                            <li>A data selecionada fica em destaque azul</li>
                         </ul>
                     </div>
                 </div>
@@ -497,13 +518,14 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                 <div class="how-to-step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3>Processar</h3>
-                        <p>Clique em "Processar" para iniciar a análise:</p>
+                        <h3>⚙️ Processar os Dados</h3>
+                        <p>Clique no botão "Processar" para o sistema analisar os dados:</p>
                         <ul>
-                            <li>✅ Sistema processa automaticamente</li>
-                            <li>✅ Campo é limpo após sucesso</li>
-                            <li>✅ Notificação mostra quantos registros foram adicionados</li>
-                            <li>✅ Dados salvam automaticamente</li>
+                            <li>✅ O sistema automaticamente divide os atendimentos por tipo (Evoluções, Financeiro, Agendamentos)</li>
+                            <li>✅ Dados são salvos automaticamente</li>
+                            <li>✅ Uma mensagem mostra quantos registros foram adicionados</li>
+                            <li>✅ O campo é limpado para colar novos dados</li>
+                            <li>📊 Os dados ACUMULAM - você pode processar várias vezes!</li>
                         </ul>
                     </div>
                 </div>
@@ -511,13 +533,14 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                 <div class="how-to-step">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <h3>Visualizar Evoluções</h3>
-                        <p>No módulo "Evoluções Pendentes", navegue pelas 4 abas:</p>
+                        <h3>📋 Evoluções Pendentes</h3>
+                        <p>Clique em "Evoluções Pendentes" no topo para ver os pacientes pendentes:</p>
                         <ul>
-                            <li><strong>Visão Geral</strong> - Resumo de pacientes e profissionais</li>
-                            <li><strong>Pacientes</strong> - Cards expandíveis com detalhes</li>
-                            <li><strong>Fisioterapeutas</strong> - Lista de profissionais e atendimentos</li>
-                            <li><strong>Cronologia</strong> - Timeline dos eventos por data</li>
+                            <li><strong>Visão Geral</strong> - Resumo rápido de quantos pacientes e profissionais estão na lista</li>
+                            <li><strong>Pacientes</strong> - Cards dos pacientes (clique para expandir e ver detalhes)</li>
+                            <li><strong>Fisioterapeutas</strong> - Quem está atendendo e quantos pacientes cada um tem</li>
+                            <li><strong>Cronologia</strong> - Timeline (linha do tempo) de tudo que foi processado</li>
+                            <li>🔍 Use o botão "Filtrar" para buscar informações específicas</li>
                         </ul>
                     </div>
                 </div>
@@ -525,13 +548,15 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                 <div class="how-to-step">
                     <div class="step-number">5</div>
                     <div class="step-content">
-                        <h3>Análise Financeira (NOVO!)</h3>
-                        <p>Clique em "Análise Financeira" para ver relatórios monetários:</p>
+                        <h3>💰 Análise Financeira</h3>
+                        <p>Clique em "Análise Financeira" para ver ganhos e receitas:</p>
                         <ul>
-                            <li><strong>Resumo</strong> - Total de atendimentos, receita total, ticket médio</li>
-                            <li><strong>Especialidades</strong> - Receita por tipo de procedimento</li>
-                            <li><strong>Profissionais</strong> - Rentabilidade por terapeuta, pacientes únicos</li>
-                            <li><strong>Pacientes</strong> - Separação entre isentos e particulares com valores</li>
+                            <li><strong>Resumo</strong> - Vê quantos atendimentos teve, quanto ganhou total e o ticket médio (média por atendimento)</li>
+                            <li><strong>Por Data</strong> - Quanto ganhou em cada dia</li>
+                            <li><strong>Especialidades</strong> - Qual tipo de procedimento ganha mais</li>
+                            <li><strong>Profissionais</strong> - Quanto cada terapeuta faturou</li>
+                            <li><strong>Pacientes</strong> - Vê quanto ganhou com pacientes particulares e isentos</li>
+                            <li>🔍 Clique em "Filtrar" para filtrar por data, tipo de procedimento, etc</li>
                         </ul>
                     </div>
                 </div>
@@ -539,26 +564,64 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                 <div class="how-to-step">
                     <div class="step-number">6</div>
                     <div class="step-content">
-                        <h3>Exportar & Importar</h3>
-                        <p>Salve e restaure seus dados:</p>
+                        <h3>📅 Agendamentos e Faltas</h3>
+                        <p>Clique em "Agendamentos" para controlar presença e faltas:</p>
                         <ul>
-                            <li>💾 Exportar - Salva tudo em arquivo JSON</li>
-                            <li>📂 Importar - Restaura dados de backup anterior</li>
-                            <li>⚙️ Auto-save - Dados salvam a cada 30 segundos</li>
+                            <li><strong>3 Cards de Resumo</strong> - Mostra quantos compareceram, quantos faltaram e total de agendamentos</li>
+                            <li><strong>Compareceram</strong> - Lista de pacientes que tiveram presença confirmada ou "Atendido"</li>
+                            <li><strong>Faltaram</strong> - Lista de pacientes que não compareceram ou tiveram status "Faltou"</li>
+                            <li>✏️ Clique em um paciente para expandir e ver horário, data, telefone, convênio, etc</li>
+                            <li>📊 Use para acompanhar a taxa de falta de cada dia</li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="how-to-info-box">
-                    <p>ℹ️ <strong>Dica:</strong> Copie múltiplas mensagens do ZenFisio e cole tudo de uma vez. O sistema processa automaticamente!</p>
+                <div class="how-to-step">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <h3>💾 Salvar e Restaurar Dados</h3>
+                        <p>Use os botões na aba de Evoluções para gerenciar seus dados:</p>
+                        <ul>
+                            <li><strong>💾 Exportar</strong> - Salva todos os seus dados em um arquivo JSON. Guarde em um local seguro!</li>
+                            <li><strong>📂 Importar</strong> - Restaura dados de um arquivo que você salvou antes</li>
+                            <li><strong>🗑️ Limpar Financeiro</strong> - Remove apenas os dados financeiros (evoluções ficam)</li>
+                            <li><strong>🗑️ Limpar Agendamentos</strong> - Remove apenas agendamentos</li>
+                            <li><strong>🗑️ Limpar Tudo</strong> - Remove TUDO (evoluções, financeiro, agendamentos) - ⚠️ Use com cuidado!</li>
+                            <li>⏱️ Os dados salvam automaticamente a cada 30 segundos</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="how-to-info-box">
-                    <p>✅ <strong>Formato Aceito:</strong> Horário, Fisioterapeuta, Paciente, Celular, Convênio, Status, Procedimentos, Repetido, Data, Valor</p>
+                <div class="how-to-step">
+                    <div class="step-number">8</div>
+                    <div class="step-content">
+                        <h3>🔄 Dicas Importantes</h3>
+                        <p>Maximize a produtividade do sistema:</p>
+                        <ul>
+                            <li>💡 <strong>Múltiplos Processamentos</strong> - Você pode processar dados vários dias seguidos e tudo vai ficar guardado</li>
+                            <li>🎯 <strong>Filtros Poderosos</strong> - Use os filtros para encontrar rapidamente o que você procura</li>
+                            <li>📱 <strong>Responsivo</strong> - Funciona em celular, tablet e computador</li>
+                            <li>🌙 <strong>Tema Escuro</strong> - Clique no botão de lua/sol no canto superior para trocar de tema</li>
+                            <li>🔄 <strong>Auto-sincronização</strong> - Dados sincronizam automaticamente a cada 5 minutos</li>
+                            <li>❌ <strong>Cuidado ao Limpar</strong> - Sempre confirme antes de limpar dados importantes!</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="how-to-info-box">
-                    <p>⏱️ <strong>Notificações:</strong> Aparecem em cascata elegante (50ms de diferença entre elas)</p>
+                <div class="how-to-info-box" style="background: linear-gradient(135deg, rgba(47, 190, 143, 0.1), rgba(26, 153, 112, 0.05)); border-left: 4px solid #2fbe8f;">
+                    <p>💡 <strong>Dica de Ouro:</strong> Copie múltiplas mensagens do ZenFisio, cole tudo de uma vez e clique em Processar. O sistema reconhece e organiza tudo automaticamente!</p>
+                </div>
+
+                <div class="how-to-info-box" style="background: linear-gradient(135deg, rgba(255, 71, 87, 0.1), rgba(220, 53, 69, 0.05)); border-left: 4px solid #dc3545;">
+                    <p>⚠️ <strong>Status Importante:</strong> Apenas registros com "Presença confirmada" ou "Atendido" aparecerão em Comparecimentos. "Faltou" e "Não atendido" vão para Faltas.</p>
+                </div>
+
+                <div class="how-to-info-box" style="background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 102, 204, 0.05)); border-left: 4px solid #0066cc;">
+                    <p>✅ <strong>Formato Reconhecido:</strong> Horário • Fisioterapeuta • Paciente • Celular • Convênio • Status • Procedimentos • Período • Valor de Atendimento</p>
+                </div>
+
+                <div class="how-to-info-box" style="background: linear-gradient(135deg, rgba(250, 204, 21, 0.1), rgba(240, 180, 0, 0.05)); border-left: 4px solid #facc15;">
+                    <p>🎯 <strong>Precisa de Ajuda?</strong> Este modal está sempre disponível! Clique no botão "❓ Como Usar" quando tiver dúvidas.</p>
                 </div>
             </div>
         </div>
@@ -574,9 +637,13 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
     <script src="frontend/js/data-manager.js"></script>
     <script src="frontend/js/export-import-manager-v2.js"></script>
     <script src="frontend/js/parser-agendamentos.js"></script>
+    <script src="frontend/js/schedules-parser.js"></script>
     <script src="frontend/js/evolucoes-analyzer.js"></script>
+    <script src="frontend/js/schedules-analyzer.js"></script>
     <script src="frontend/js/evolucoes-ui.js"></script>
+    <script src="frontend/js/schedules-ui.js"></script>
     <script src="frontend/js/evolucoes-integration.js"></script>
+    <script src="frontend/js/schedules-integration.js"></script>
     <script src="frontend/js/financial-parser.js"></script>
     <script src="frontend/js/financial-analyzer.js"></script>
     <script src="frontend/js/financial-ui.js"></script>

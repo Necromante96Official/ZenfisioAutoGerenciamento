@@ -20,7 +20,21 @@ class EvolucoesAnalyzer {
      */
     adicionarEvolucao(agendamento) {
         // Filtro crítico: só adiciona se status for "Presença confirmada"
-        if (!agendamento || agendamento.status?.toLowerCase() !== this.statusFiltro.toLowerCase()) {
+        // EXCLUI: "não atendido" e "faltou" (são para a aba Agendamentos)
+        if (!agendamento) {
+            return false;
+        }
+
+        const statusLower = agendamento.status?.toLowerCase() || '';
+        
+        // Rejeita estatuses que não devem aparecer aqui
+        if (statusLower === 'não atendido' || statusLower === 'faltou') {
+            console.warn(`⚠️ Evolução ignorada - Status: "${agendamento.status}" (será processado em Agendamentos)`);
+            return false;
+        }
+
+        // Aceita apenas "Presença confirmada"
+        if (statusLower !== this.statusFiltro.toLowerCase()) {
             console.warn(`⚠️ Evolução ignorada - Status: "${agendamento?.status}" (esperado: "${this.statusFiltro}")`);
             return false;
         }
