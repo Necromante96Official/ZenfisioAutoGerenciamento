@@ -121,13 +121,12 @@ class SchedulesIntegration {
                 return;
             }
 
-            // ⭐ IMPORTANTE: Processa separadamente para manter categorização correta
-            // Primeiro limpa o analyzer
-            this.analyzer.limpar();
+            // ⭐ IMPORTANTE: ACUMULA dados ao invés de limpar
+            // NÃO limpa o analyzer - apenas ADICIONA novos dados aos existentes
             
             // Processa faltaram
             if (faltaram.length > 0) {
-                console.log(`   📌 Adicionando ${faltaram.length} agendamentos em FALTARAM...`);
+                console.log(`   📌 Adicionando ${faltaram.length} agendamentos em FALTARAM (ACUMULATIVO)...`);
                 faltaram.forEach(agendamento => {
                     this.analyzer.adicionarAgendamento(agendamento);
                 });
@@ -135,7 +134,7 @@ class SchedulesIntegration {
             
             // Processa compareceram
             if (compareceram.length > 0) {
-                console.log(`   📌 Adicionando ${compareceram.length} agendamentos em COMPARECERAM...`);
+                console.log(`   📌 Adicionando ${compareceram.length} agendamentos em COMPARECERAM (ACUMULATIVO)...`);
                 compareceram.forEach(agendamento => {
                     this.analyzer.adicionarAgendamento(agendamento);
                 });

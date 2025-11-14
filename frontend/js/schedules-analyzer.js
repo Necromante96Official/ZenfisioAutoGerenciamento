@@ -129,6 +129,10 @@ class SchedulesAnalyzer {
             procedimentos: ag.procedimentos,
             periodo: ag.periodo,
             repetido: ag.repetido,
+            dataSelecionada: ag.dataSelecionada, // ⭐ Passa a data armazenada
+            dia: ag.dia,
+            mes: ag.mes,
+            ano: ag.ano,
             tipo: 'falta'
         })).sort((a, b) => a.nome.localeCompare(b.nome));
     }
@@ -150,6 +154,10 @@ class SchedulesAnalyzer {
             procedimentos: ag.procedimentos,
             periodo: ag.periodo,
             repetido: ag.repetido,
+            dataSelecionada: ag.dataSelecionada, // ⭐ Passa a data armazenada
+            dia: ag.dia,
+            mes: ag.mes,
+            ano: ag.ano,
             tipo: 'compareceu'
         })).sort((a, b) => a.nome.localeCompare(b.nome));
     }

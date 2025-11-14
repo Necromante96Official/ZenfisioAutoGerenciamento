@@ -29,6 +29,14 @@ class SchedulesParser {
         content = content.replace(/[×•·]/g, ' ');
 
         const lines = content.split('\n');
+        
+        // ⭐ Obtém a data selecionada NO MOMENTO DO PARSE (não usa data atual depois)
+        let dataSelecionada = null;
+        if (window.dateManager && typeof window.dateManager.getDate === 'function') {
+            const dateObj = window.dateManager.getDate();
+            dataSelecionada = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+        }
+        
         const agendamento = {
             horario: null,
             fisioterapeuta: null,
@@ -42,6 +50,7 @@ class SchedulesParser {
             valorAtendimento: 0,
             tipoConvenio: null,
             dataProcessamento: new Date(),
+            dataSelecionada: dataSelecionada, // ⭐ NOVO: Armazena data selecionada
             mes: null,
             ano: null,
             dia: null,

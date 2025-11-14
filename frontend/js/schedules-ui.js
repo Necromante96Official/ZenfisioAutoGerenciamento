@@ -278,23 +278,23 @@ class SchedulesUI {
         const icon = tipo === 'compareceu' ? '✅' : '❌';
         const statusClass = tipo === 'compareceu' ? 'status-success' : 'status-danger';
         
-        // Obtém data: SEMPRE prioriza dateManager para manter sincronizado
+        // ⭐ IMPORTANTE: Usa a data armazenada no agendamento, NÃO a data atual do dateManager
         let data = 'Data não informada';
-        if (window.dateManager && typeof window.dateManager.getDate === 'function') {
-            try {
-                const currentDate = window.dateManager.getDate();
-                const dia = String(currentDate.getDate()).padStart(2, '0');
-                const mes = String(currentDate.getMonth() + 1).padStart(2, '0');
-                const ano = currentDate.getFullYear();
-                data = `${dia}/${mes}/${ano}`;
-                console.log(`📅 Data do dateManager: ${data}`);
-            } catch (e) {
-                console.warn('⚠️ Erro ao obter data do dateManager:', e);
-                data = this.analyzer.data || 'Data não informada';
-            }
-        } else {
+        
+        // Primeiro tenta usar a dataSelecionada armazenada no agendamento (se houver)
+        if (paciente.dataSelecionada) {
+            data = paciente.dataSelecionada;
+            console.log(`📅 Usando dataSelecionada do agendamento: ${data}`);
+        } 
+        // Se não tiver dataSelecionada, tenta montar a partir de dia/mes/ano
+        else if (paciente.dia && paciente.mes && paciente.ano) {
+            data = `${String(paciente.dia).padStart(2, '0')}/${String(paciente.mes).padStart(2, '0')}/${paciente.ano}`;
+            console.log(`📅 Usando dia/mes/ano do agendamento: ${data}`);
+        }
+        // Fallback para analyzer.data (data em que foi processado o lote)
+        else {
             data = this.analyzer.data || 'Data não informada';
-            console.warn('⚠️ dateManager não disponível, usando analyzer.data');
+            console.log(`📅 Usando analyzer.data como fallback: ${data}`);
         }
         
         const horario = this.sanitize(paciente.horario || 'Horário não informado');
