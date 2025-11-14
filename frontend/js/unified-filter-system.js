@@ -180,30 +180,56 @@ class UnifiedFilterSystem {
      * @private
      */
     _filterEvolucoes(evolucoes, filters) {
-        return evolucoes.filter(ev => {
-            // Filtro por dia/mes/ano
-            if (filters.dia && ev.dia !== filters.dia) return false;
-            if (filters.mes && ev.mes !== filters.mes) return false;
-            if (filters.ano && ev.ano !== filters.ano) return false;
+        console.log('🔍 _filterEvolucoes iniciado');
+        console.log('   Filtros recebidos:', filters);
+        console.log('   Total de evoluções:', evolucoes.length);
+        
+        // Debug: mostra estrutura do primeiro registro
+        if (evolucoes.length > 0) {
+            console.log('   Exemplo de registro:', {
+                dia: evolucoes[0].dia,
+                mes: evolucoes[0].mes,
+                ano: evolucoes[0].ano,
+                paciente: evolucoes[0].paciente,
+                fisioterapeuta: evolucoes[0].fisioterapeuta
+            });
+        }
+
+        const filtered = evolucoes.filter(ev => {
+            // Filtro por dia/mes/ano - verifica se não é null/undefined
+            if (filters.dia !== null && filters.dia !== undefined && filters.dia !== '') {
+                if (ev.dia !== parseInt(filters.dia)) return false;
+            }
+            
+            if (filters.mes !== null && filters.mes !== undefined && filters.mes !== '') {
+                if (ev.mes !== parseInt(filters.mes)) return false;
+            }
+            
+            if (filters.ano !== null && filters.ano !== undefined && filters.ano !== '') {
+                if (ev.ano !== parseInt(filters.ano)) return false;
+            }
 
             // Filtro por paciente
-            if (filters.paciente) {
+            if (filters.paciente && filters.paciente.trim() !== '') {
                 const paciente = ev.paciente?.toLowerCase() || '';
-                if (!paciente.includes(filters.paciente.toLowerCase())) {
+                if (!paciente.includes(filters.paciente.toLowerCase().trim())) {
                     return false;
                 }
             }
 
             // Filtro por fisioterapeuta
-            if (filters.fisioterapeuta) {
+            if (filters.fisioterapeuta && filters.fisioterapeuta.trim() !== '') {
                 const fisio = ev.fisioterapeuta?.toLowerCase() || '';
-                if (!fisio.includes(filters.fisioterapeuta.toLowerCase())) {
+                if (!fisio.includes(filters.fisioterapeuta.toLowerCase().trim())) {
                     return false;
                 }
             }
 
             return true;
         });
+
+        console.log(`   ✅ Resultado: ${filtered.length} registros filtrados`);
+        return filtered;
     }
 
     /**
@@ -226,17 +252,12 @@ class UnifiedFilterSystem {
         let filtered = this._filterFinanceiro(allRecords, filters);
         console.log(`📊 Total após filtros: ${filtered.length}`);
 
-        // Re-analisa dados filtrados
-        if (window.financialIntegration.analyzer) {
-            window.financialIntegration.analyzer.limpar();
-            filtered.forEach(record => {
-                window.financialIntegration.analyzer.adicionarAtendimento(record);
-            });
-
-            // Re-renderiza UI
-            const analysisData = window.financialIntegration.analyzer.getAnalysis();
-            window.financialIntegration.ui.render(analysisData);
-        }
+        // Re-cria analyzer com dados filtrados
+        window.financialIntegration.analyzer = new FinancialAnalyzer(filtered);
+        const analysisData = window.financialIntegration.analyzer.analyze();
+        
+        // Re-renderiza UI com records filtrados
+        window.financialIntegration.ui.render(analysisData, filtered);
 
         // Salva filtro ativo
         this.activeFilters.financeiro = filters;
@@ -268,7 +289,7 @@ class UnifiedFilterSystem {
 
             // Filtro por profissional
             if (filters.profissional) {
-                const prof = record.profissional?.toLowerCase() || '';
+                const prof = record.fisioterapeuta?.toLowerCase() || '';
                 if (!prof.includes(filters.profissional.toLowerCase())) {
                     return false;
                 }

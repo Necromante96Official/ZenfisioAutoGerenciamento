@@ -50,6 +50,7 @@ class EvolucoesAnalyzer {
             procedimentos: agendamento.procedimentos,
             periodo: agendamento.periodo,
             dataProcessamento: agendamento.dataProcessamento,
+            dia: agendamento.dia,
             mes: agendamento.mes,
             ano: agendamento.ano
         };

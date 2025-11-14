@@ -7,14 +7,12 @@ class EvolucoesUI {
     constructor(analyzerInstance) {
         this.analyzer = analyzerInstance;
         this.currentTab = 'visao-geral';
-        this.filterModal = null;
         this.filteredData = null;
         this.init();
         this.restoreFilterFromLocalStorage();
     }
 
     init() {
-        this.setupFilterModal();
         this.setupTabs();
         this.setupEventListeners();
         this.setupAutoSave();  // Ativa auto-save a cada 5 segundos
@@ -25,30 +23,7 @@ class EvolucoesUI {
         });
     }
 
-    /**
-     * Inicializa modal de filtros
-     */
-    setupFilterModal() {
-        this.filterModal = new FilterModal('evolucoes');
-    }
 
-    /**
-     * Abre modal de filtros
-     */
-    openFilterModal() {
-        if (!this.analyzer.evolucoes || this.analyzer.evolucoes.length === 0) {
-            if (window.notify) {
-                window.notify.warning('Nenhum dado para filtrar', 2000);
-            }
-            return;
-        }
-
-        this.filterModal.open(this.analyzer.evolucoes, (filteredData) => {
-            console.log('✅ Filtros aplicados:', filteredData.length, 'registros');
-            this.filteredData = filteredData;
-            this.renderAllTabs();
-        });
-    }
 
     setupTabs() {
         const tabsContainer = document.querySelector('.evolucoes-tabs');
@@ -159,8 +134,8 @@ class EvolucoesUI {
      * Obtém dados com filtros aplicados
      */
     getFilteredData() {
-        // Se há dados filtrados (modal foi usado), retorna eles
-        if (this.filteredData && this.filteredData.length > 0) {
+        // Se há dados filtrados (modal foi usado), retorna eles (mesmo que array vazio)
+        if (this.filteredData !== null && this.filteredData !== undefined) {
             return this.filteredData;
         }
         // Caso contrário, retorna todos os dados
@@ -922,6 +897,23 @@ class EvolucoesUI {
             this.savePageState();
         }, 5000);
         console.log('⏱️ Auto-save ativado a cada 5 segundos');
+    }
+
+    /**
+     * Renderiza com dados filtrados (chamado pelo sistema unificado de filtros)
+     * @param {Array} filteredData - Dados já filtrados
+     */
+    renderWithFilteredData(filteredData) {
+        console.log('🎨 EvolucoesUI: Renderizando dados filtrados');
+        console.log(`   - Total de registros filtrados: ${filteredData.length}`);
+        
+        // Salva dados filtrados
+        this.filteredData = filteredData;
+        
+        // Re-renderiza todas as abas com os dados filtrados
+        this.renderAllTabs();
+        
+        console.log('✅ EvolucoesUI: Renderização com filtros concluída');
     }
 }
 

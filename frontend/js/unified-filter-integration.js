@@ -77,29 +77,6 @@ function detectActiveModule() {
 }
 
 /**
- * Adiciona método helper para EvolucoesUI renderizar com dados filtrados
- */
-if (window.evolucoesUI) {
-    window.evolucoesUI.renderWithFilteredData = function(filteredData) {
-        console.log('🎨 EvolucoesUI: Renderizando dados filtrados');
-        
-        // Salva referência aos dados originais
-        if (!this._originalData) {
-            this._originalData = window.dataManager?.getEvolucoes() || [];
-        }
-
-        // Processa dados filtrados
-        if (this.analyzer) {
-            this.analyzer.limpar();
-            filteredData.forEach(ev => this.analyzer.adicionarEvolucao(ev));
-            
-            // Re-renderiza todas as abas
-            this.render(this.analyzer.getResumo());
-        }
-    };
-}
-
-/**
  * Adiciona método helper para FinancialIntegration recarregar dados
  */
 if (window.financialIntegration) {

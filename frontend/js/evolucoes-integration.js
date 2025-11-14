@@ -244,6 +244,7 @@ class EvolucoesIntegration {
                             dataAtendimento: agendamento.periodo || '', // Campo correto
                             valor: agendamento.valorAtendimento || 0, // ✅ Converte campo de agendamento
                             dataProcessamento: agendamento.dataProcessamento || `${String(new Date().getDate()).padStart(2,'0')}/${String(new Date().getMonth()+1).padStart(2,'0')}/${new Date().getFullYear()}`,
+                            dia: agendamento.dia || new Date().getDate(),
                             mes: agendamento.mes || new Date().getMonth() + 1,
                             ano: agendamento.ano || new Date().getFullYear()
                         };

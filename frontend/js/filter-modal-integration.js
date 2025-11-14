@@ -4,15 +4,8 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Botão de filtro para Evoluções
+    // Botão de filtro para Financeiro
     document.addEventListener('click', (e) => {
-        if (e.target.id === 'openEvolucoesFilterBtn') {
-            if (window.evolucoesIntegration && window.evolucoesIntegration.ui) {
-                window.evolucoesIntegration.ui.openFilterModal();
-            }
-        }
-
-        // Botão de filtro para Financeiro
         if (e.target.id === 'openFinanceiroFilterBtn') {
             if (window.financialIntegration && window.financialIntegration.ui) {
                 window.financialIntegration.ui.openFilterModal();
