@@ -321,6 +321,29 @@ class SchedulesAnalyzer {
         
         console.log('✅ Dados de agendamentos restaurados');
     }
+
+    /**
+     * Sincroniza a data com o dateManager
+     * Garante que sempre mostre a data selecionada
+     */
+    sincronizarDataComDateManager() {
+        if (window.dateManager && typeof window.dateManager.getDate === 'function') {
+            try {
+                const currentDate = window.dateManager.getDate();
+                const dia = String(currentDate.getDate()).padStart(2, '0');
+                const mes = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const ano = currentDate.getFullYear();
+                const novaData = `${dia}/${mes}/${ano}`;
+                
+                if (this.data !== novaData) {
+                    console.log(`🔄 Data sincronizada: ${this.data} → ${novaData}`);
+                    this.data = novaData;
+                }
+            } catch (e) {
+                console.warn('⚠️ Erro ao sincronizar data com dateManager:', e);
+            }
+        }
+    }
 }
 
 // Exporta a classe

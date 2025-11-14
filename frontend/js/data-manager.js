@@ -167,15 +167,25 @@ class DataManager {
      */
     exportData() {
         try {
+            // Coleta dados de agendamentos
+            const schedulesData = this.data.schedules_data || {};
+            const compareceram = schedulesData.compareceram || [];
+            const faltaram = schedulesData.faltaram || [];
+            const totalAgendamentos = compareceram.length + faltaram.length;
+
             const exportData = {
-                version: '1.1.0',
+                version: '1.2.0',
                 exportDate: new Date().toISOString(),
                 data: this.data,
                 metadata: {
                     evolucoesCont: this.data.evolucoes?.length || 0,
                     financeiroCont: this.data.financeiro?.summary ? 1 : 0,
                     totalAtendimentos: this.data.financeiro?.summary?.totalAtendimentos || 0,
-                    receitaTotal: this.data.financeiro?.summary?.receitaTotal || '0.00'
+                    receitaTotal: this.data.financeiro?.summary?.receitaTotal || '0.00',
+                    agendamentosCompareceram: compareceram.length,
+                    agendamentosFaltaram: faltaram.length,
+                    totalAgendamentos: totalAgendamentos,
+                    dataAgendamentos: schedulesData.data || 'Não informada'
                 }
             };
 
@@ -221,11 +231,22 @@ class DataManager {
                 importData.data.financeiro_records = [];
             }
 
+            // Valida estrutura de agendamentos
+            if (importData.data.schedules_data === undefined) {
+                importData.data.schedules_data = {};
+            }
+
+            if (importData.data.schedules_records === undefined) {
+                importData.data.schedules_records = [];
+            }
+
             // Carrega dados mantendo a estrutura
             this.data = {
                 evolucoes: importData.data.evolucoes || [],
                 financeiro: importData.data.financeiro || {},
                 financeiro_records: importData.data.financeiro_records || [],
+                schedules_data: importData.data.schedules_data || {},
+                schedules_records: importData.data.schedules_records || [],
                 timestamp: new Date().toISOString()
             };
 
@@ -268,7 +289,7 @@ class DataManager {
      * Limpa dados
      */
     async clearData() {
-        this.data = this.normalizeState({ evolucoes: [], financeiro: {}, financeiro_records: [], timestamp: null });
+        this.data = this.normalizeState({ evolucoes: [], financeiro: {}, financeiro_records: [], schedules_data: {}, schedules_records: [], timestamp: null });
         localStorage.removeItem(this.storageKey);
         console.log('✅ Dados limpos');
         await this.clearRemoteState();
@@ -331,6 +352,7 @@ class DataManager {
             financeiro_records: Array.isArray(state?.financeiro_records) ? state.financeiro_records : [],
             schedules: state?.schedules || {},
             schedules_data: state?.schedules_data || {},
+            schedules_records: Array.isArray(state?.schedules_records) ? state.schedules_records : [],
             timestamp: state?.timestamp || null
         };
     }

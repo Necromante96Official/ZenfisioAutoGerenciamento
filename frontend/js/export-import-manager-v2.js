@@ -136,6 +136,32 @@ class ExportImportManagerV2 {
                 })
             },
 
+            // ===== PÁGINA DE AGENDAMENTOS =====
+            agendamentos: {
+                // Dados brutos
+                dadosCompletos: window.dataManager?.getSchedules() || {},
+                
+                // Dados organizados
+                compareceram: this._safeGet(() => window.schedulesIntegration?.analyzer?.compareceram || []),
+                faltaram: this._safeGet(() => window.schedulesIntegration?.analyzer?.faltaram || []),
+                
+                // Análise estruturada
+                resumo: this._safeGet(() => window.schedulesIntegration?.analyzer?.getResumo() || {}),
+                estatisticasPorFisio: this._safeGet(() => window.schedulesIntegration?.analyzer?.getEstatisticasPorFisio() || []),
+                estatisticasPorConvenio: this._safeGet(() => window.schedulesIntegration?.analyzer?.getEstatisticasPorConvenio() || []),
+                pacientesUnicosFaltaram: this._safeGet(() => window.schedulesIntegration?.analyzer?.getPacientesUnicosFaltaram() || []),
+                
+                // Data de referência
+                dataReferencia: this._safeGet(() => window.schedulesIntegration?.analyzer?.data || 'Não informada'),
+                
+                // Totalizadores
+                totais: {
+                    compareceram: this._safeGet(() => window.schedulesIntegration?.analyzer?.compareceram?.length || 0),
+                    faltaram: this._safeGet(() => window.schedulesIntegration?.analyzer?.faltaram?.length || 0),
+                    total: this._safeGet(() => (window.schedulesIntegration?.analyzer?.compareceram?.length || 0) + (window.schedulesIntegration?.analyzer?.faltaram?.length || 0))
+                }
+            },
+
             // ===== METADADOS =====
             metadata: {
                 versao: '2.0.0.1',
@@ -162,6 +188,13 @@ class ExportImportManagerV2 {
                     totalReceitaLiquida: this._safeGet(() => window.dataManager?.getFinanceiro()?.summary?.receitaLiquida || '0.00'),
                     receitaTotal: this._safeGet(() => window.dataManager?.getFinanceiro()?.summary?.receitaTotal || '0.00'),
                     pacientesUnicos: this._safeGet(() => window.dataManager?.getFinanceiro()?.summary?.pacientesUnicos || 0)
+                },
+                agendamentos: {
+                    totalCompareceram: this._safeGet(() => window.schedulesIntegration?.analyzer?.compareceram?.length || 0),
+                    totalFaltaram: this._safeGet(() => window.schedulesIntegration?.analyzer?.faltaram?.length || 0),
+                    totalAgendamentos: this._safeGet(() => (window.schedulesIntegration?.analyzer?.compareceram?.length || 0) + (window.schedulesIntegration?.analyzer?.faltaram?.length || 0)),
+                    dataReferencia: this._safeGet(() => window.schedulesIntegration?.analyzer?.data || 'Não informada'),
+                    taxaFalta: this._safeGet(() => window.schedulesIntegration?.analyzer?.getResumo()?.taxaFalta || '0')
                 },
                 dataUltimoSalva: window.dataManager?.getLastSaveTime() || new Date().toISOString()
             }
@@ -444,6 +477,44 @@ class ExportImportManagerV2 {
             txt += JSON.stringify(allData.financeiro.porData, null, 2) + '\n\n';
         }
 
+        // Resumo Agendamentos
+        txt += '📋 AGENDAMENTOS - RESUMO\n';
+        txt += '─'.repeat(80) + '\n';
+        txt += `Total de Agendamentos: ${allData.resumo.agendamentos.totalAgendamentos}\n`;
+        txt += `Compareceram: ${allData.resumo.agendamentos.totalCompareceram}\n`;
+        txt += `Faltaram: ${allData.resumo.agendamentos.totalFaltaram}\n`;
+        txt += `Taxa de Faltas: ${allData.resumo.agendamentos.taxaFalta}%\n`;
+        txt += `Data de Referência: ${allData.resumo.agendamentos.dataReferencia}\n\n`;
+
+        // Detalhes Agendamentos - Compareceram
+        if (allData.agendamentos.compareceram.length > 0) {
+            txt += '✅ AGENDAMENTOS - COMPARECERAM\n';
+            txt += '─'.repeat(80) + '\n';
+            allData.agendamentos.compareceram.forEach((ag, idx) => {
+                txt += `\n[${idx + 1}] ${ag.paciente}\n`;
+                txt += `    Horário: ${ag.horario}\n`;
+                txt += `    Fisioterapeuta: ${ag.fisioterapeuta}\n`;
+                txt += `    Status: ${ag.status}\n`;
+                txt += `    Convênio: ${ag.convenio || 'Não informado'}\n`;
+            });
+            txt += '\n';
+        }
+
+        // Detalhes Agendamentos - Faltaram
+        if (allData.agendamentos.faltaram.length > 0) {
+            txt += '❌ AGENDAMENTOS - FALTARAM\n';
+            txt += '─'.repeat(80) + '\n';
+            allData.agendamentos.faltaram.forEach((ag, idx) => {
+                txt += `\n[${idx + 1}] ${ag.paciente}\n`;
+                txt += `    Horário: ${ag.horario}\n`;
+                txt += `    Fisioterapeuta: ${ag.fisioterapeuta}\n`;
+                txt += `    Status: ${ag.status}\n`;
+                txt += `    Convênio: ${ag.convenio || 'Não informado'}\n`;
+                txt += `    Celular: ${ag.celular || 'Não informado'}\n`;
+            });
+            txt += '\n';
+        }
+
         txt += '═'.repeat(80) + '\n';
         txt += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
 
@@ -493,6 +564,31 @@ class ExportImportManagerV2 {
         md += `| Receita Bruta | R$ ${allData.resumo.financeiro.totalReceitaBruta} |\n`;
         md += `| Receita Líquida | R$ ${allData.resumo.financeiro.totalReceitaLiquida} |\n`;
         md += `| Receita Total | R$ ${allData.resumo.financeiro.receitaTotal} |\n\n`;
+
+        md += '## 📋 Resumo de Agendamentos\n\n';
+        md += `| Métrica | Valor |\n`;
+        md += `|--------|-------|\n`;
+        md += `| Total de Agendamentos | ${allData.resumo.agendamentos.totalAgendamentos} |\n`;
+        md += `| Compareceram | ${allData.resumo.agendamentos.totalCompareceram} |\n`;
+        md += `| Faltaram | ${allData.resumo.agendamentos.totalFaltaram} |\n`;
+        md += `| Taxa de Faltas | ${allData.resumo.agendamentos.taxaFalta}% |\n`;
+        md += `| Data de Referência | ${allData.resumo.agendamentos.dataReferencia} |\n\n`;
+
+        if (allData.agendamentos.compareceram.length > 0) {
+            md += '### ✅ Pacientes que Compareceram\n\n';
+            allData.agendamentos.compareceram.forEach((ag, idx) => {
+                md += `${idx + 1}. **${ag.paciente}** - ${ag.horario} (${ag.fisioterapeuta})\n`;
+            });
+            md += '\n';
+        }
+
+        if (allData.agendamentos.faltaram.length > 0) {
+            md += '### ❌ Pacientes que Faltaram\n\n';
+            allData.agendamentos.faltaram.forEach((ag, idx) => {
+                md += `${idx + 1}. **${ag.paciente}** - ${ag.horario} (${ag.fisioterapeuta}) - Tel: ${ag.celular || 'N/A'}\n`;
+            });
+            md += '\n';
+        }
 
         md += '---\n\n';
         md += `*Backup gerado em ${new Date().toLocaleString('pt-BR')}*\n`;

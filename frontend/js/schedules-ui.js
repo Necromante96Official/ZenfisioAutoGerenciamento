@@ -47,6 +47,11 @@ class SchedulesUI {
     render(data) {
         console.log(`🎨 SchedulesUI.render() chamado`);
         
+        // Sincroniza data com dateManager antes de renderizar
+        if (this.analyzer && typeof this.analyzer.sincronizarDataComDateManager === 'function') {
+            this.analyzer.sincronizarDataComDateManager();
+        }
+        
         // Obtém container da seção
         const container = document.querySelector('#agendamentos-content');
         if (!container) {
@@ -207,11 +212,13 @@ class SchedulesUI {
                 <!-- COLUNA ESQUERDA: Compareceram -->
                 <div class="schedules-list-column">
                     <div class="list-section-header section-compareceu">
-                        <div class="header-icon">✅</div>
+                        <div>
+                            <div class="header-icon">✅</div>
+                        </div>
                         <div class="header-info">
                             <h3>Compareceram</h3>
-                            <span class="header-count">${compareceram.length} pacientes</span>
                         </div>
+                        <div class="header-count">👥 ${compareceram.length}</div>
                     </div>
                     <div class="list-items">
         `;
@@ -232,11 +239,13 @@ class SchedulesUI {
                 <!-- COLUNA DIREITA: Faltaram -->
                 <div class="schedules-list-column">
                     <div class="list-section-header section-falta">
-                        <div class="header-icon">❌</div>
+                        <div>
+                            <div class="header-icon">❌</div>
+                        </div>
                         <div class="header-info">
                             <h3>Faltaram</h3>
-                            <span class="header-count">${faltaram.length} pacientes</span>
                         </div>
+                        <div class="header-count">👥 ${faltaram.length}</div>
                     </div>
                     <div class="list-items">
         `;
@@ -269,8 +278,25 @@ class SchedulesUI {
         const icon = tipo === 'compareceu' ? '✅' : '❌';
         const statusClass = tipo === 'compareceu' ? 'status-success' : 'status-danger';
         
-        // Obtém data do analyzer
-        const data = this.analyzer.data || 'Data não informada';
+        // Obtém data: SEMPRE prioriza dateManager para manter sincronizado
+        let data = 'Data não informada';
+        if (window.dateManager && typeof window.dateManager.getDate === 'function') {
+            try {
+                const currentDate = window.dateManager.getDate();
+                const dia = String(currentDate.getDate()).padStart(2, '0');
+                const mes = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const ano = currentDate.getFullYear();
+                data = `${dia}/${mes}/${ano}`;
+                console.log(`📅 Data do dateManager: ${data}`);
+            } catch (e) {
+                console.warn('⚠️ Erro ao obter data do dateManager:', e);
+                data = this.analyzer.data || 'Data não informada';
+            }
+        } else {
+            data = this.analyzer.data || 'Data não informada';
+            console.warn('⚠️ dateManager não disponível, usando analyzer.data');
+        }
+        
         const horario = this.sanitize(paciente.horario || 'Horário não informado');
         const nome = this.sanitize(paciente.nome);
 
@@ -301,6 +327,7 @@ class SchedulesUI {
                     <span class="item-click">→</span>
                 </div>
             </div>
+            <div class="list-item-divider"></div>
         `;
     }
 
