@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/financial-module.css">
     <link rel="stylesheet" href="css/filter-styles.css">
     <link rel="stylesheet" href="css/filter-modal-styles.css">
+    <link rel="stylesheet" href="css/unified-filter-modal.css">
     <link rel="stylesheet" href="css/schedules-module.css">
 </head>
 <body>
@@ -27,6 +28,9 @@
                 <button class="nav-btn" data-module="desenvolvimento">Agendamentos</button>
             </nav>
             <div class="header-actions">
+                <button id="unifiedFilterBtn" class="filter-global-btn" title="Abrir Filtros Avançados - Todas as páginas">
+                    🔍 Filtros
+                </button>
                 <button id="refreshDataBtn" class="refresh-btn" title="Atualizar sistema com melhorias (Sincroniza dados e recarrega análises)">
                     <span class="refresh-icon">🔄</span>
                     <span class="refresh-pulse"></span>
@@ -244,7 +248,7 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
             </div>
             <div class="footer-center">
                 <button class="version-badge" title="Clique para ver histórico de atualizações">
-                    <span>📦 Versão 1.1.2</span>
+                    <span>📦 Versão 1.1.3</span>
                 </button>
             </div>
             <div class="footer-right">
@@ -458,7 +462,7 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
                         <h3>Atualizações & Versionamento</h3>
                     </div>
                     <ul>
-                        <li><strong>Versão Atual:</strong> 1.1.0</li>
+                        <li><strong>Versão Atual:</strong> 1.1.3</li>
                         <li><strong>Formato:</strong> X.Y.Z (Major.Minor.Patch)</li>
                         <li><strong>Atualizações:</strong> Novas versões podem introduzir funcionalidades ou alterar fluxos</li>
                         <li><strong>Notificação:</strong> Não há garantia de notificação prévia</li>
@@ -634,6 +638,9 @@ Atendimento - Particular/Isento | R$ 15,00"></textarea>
     <script src="frontend/js/filter-ui.js"></script>
     <script src="frontend/js/filter-modal.js"></script>
     <script src="frontend/js/filter-modal-integration.js"></script>
+    <script src="frontend/js/unified-filter-system.js"></script>
+    <script src="frontend/js/unified-filter-modal.js"></script>
+    <script src="frontend/js/unified-filter-integration.js"></script>
     <script src="frontend/js/system-info.js"></script>
     <script src="frontend/js/data-manager.js"></script>
     <script src="frontend/js/export-import-manager-v2.js"></script>

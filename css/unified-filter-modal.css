@@ -1,0 +1,442 @@
+/* ========================================
+   UNIFIED FILTER MODAL - Modal Extenso Unificado
+   Sistema de filtros para todas as páginas
+   ======================================== */
+
+.unified-filter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+}
+
+.unified-filter-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.unified-filter-container {
+    background: var(--bg-primary);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    width: 95%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideInScale {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+.unified-filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 2px solid var(--border-color);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+.unified-filter-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.unified-filter-close {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.unified-filter-close:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+/* Tab Navigation */
+.unified-filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 2rem 0;
+    background: var(--bg-secondary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.unified-tab-btn {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.unified-tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-primary);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+}
+
+.unified-tab-btn:hover {
+    background: rgba(47, 190, 143, 0.05);
+    color: var(--text-primary);
+}
+
+.unified-tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    font-weight: 700;
+}
+
+.unified-tab-btn.active::after {
+    transform: scaleX(1);
+}
+
+/* Body */
+.unified-filter-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    background: var(--bg-primary);
+}
+
+.unified-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.unified-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Filter Sections */
+.filter-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.filter-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin: 0 0 1.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Quick Period Buttons */
+.filter-quick-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.filter-quick-btn {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.filter-quick-btn:hover {
+    border-color: var(--accent-primary);
+    background: rgba(47, 190, 143, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(47, 190, 143, 0.2);
+}
+
+.filter-quick-btn.active {
+    border-color: var(--accent-primary);
+    background: var(--accent-primary);
+    color: white;
+    font-weight: 700;
+}
+
+/* Filter Rows and Groups */
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.filter-row:last-child {
+    margin-bottom: 0;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group.full-width {
+    flex: 1 1 100%;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.filter-input,
+.filter-select {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(47, 190, 143, 0.1);
+    background: var(--bg-primary);
+}
+
+.filter-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Filter Info Box */
+.filter-info {
+    background: linear-gradient(135deg, rgba(47, 190, 143, 0.08) 0%, rgba(47, 190, 143, 0.03) 100%);
+    border: 2px solid rgba(47, 190, 143, 0.2);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.filter-info p {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-info p:first-child {
+    margin-top: 0;
+}
+
+.filter-info p:last-child {
+    margin-bottom: 0;
+}
+
+.filter-info strong {
+    color: var(--accent-primary);
+    font-weight: 700;
+}
+
+/* Footer */
+.unified-filter-footer {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    border-top: 2px solid var(--border-color);
+    justify-content: flex-end;
+    background: var(--bg-secondary);
+}
+
+.unified-filter-btn {
+    padding: 0.875rem 1.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.unified-filter-btn.primary {
+    background: var(--accent-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(47, 190, 143, 0.3);
+}
+
+.unified-filter-btn.primary:hover {
+    background: var(--accent-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(47, 190, 143, 0.4);
+}
+
+.unified-filter-btn.primary:active {
+    transform: translateY(0);
+}
+
+.unified-filter-btn.secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.unified-filter-btn.secondary:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .unified-filter-container {
+        width: 98%;
+        max-height: 95vh;
+        border-radius: 12px;
+    }
+
+    .unified-filter-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .unified-filter-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .unified-filter-tabs {
+        padding: 0.75rem 1rem 0;
+        gap: 0.25rem;
+    }
+
+    .unified-tab-btn {
+        padding: 0.75rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .unified-filter-body {
+        padding: 1.5rem;
+    }
+
+    .filter-row {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .filter-quick-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .unified-filter-footer {
+        flex-direction: column;
+        padding: 1rem 1.5rem;
+    }
+
+    .unified-filter-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Scrollbar customizado */
+.unified-filter-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.unified-filter-body::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+.unified-filter-body::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+}
+
+.unified-filter-body::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary-dark);
+}
+
+/* Animação de entrada suave */
+@media (prefers-reduced-motion: reduce) {
+    .unified-filter-overlay,
+    .unified-filter-container,
+    .unified-tab-content {
+        animation: none;
+        transition: none;
+    }
+}

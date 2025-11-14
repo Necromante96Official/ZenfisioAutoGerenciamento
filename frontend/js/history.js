@@ -45,6 +45,36 @@ class HistoryManager {
     getVersions() {
         return [
             {
+                version: '1.1.3',
+                date: 'Novembro de 2025',
+                title: 'Sistema Unificado de Filtros Avançados',
+                description: 'Sistema completo de filtros para TODAS as páginas! Agora você tem um botão roxo bonito no topo (🔍 Filtros) que abre um modal extenso com 3 abas - uma para cada módulo. Filtre por data (dia, semana, 15 dias, mês, ano), por pessoa, por valores, e muito mais. Os dados continuam salvos - os filtros só mudam a visualização!',
+                features: [
+                    'Botão Global de Filtros - roxo no header, funciona em todas as páginas',
+                    'Modal com 3 Abas - Evoluções, Financeiro e Agendamentos (cada uma com seus filtros)',
+                    'Filtros de Período Rápido - botões para Dia, Semana (Seg-Sex), 15 Dias, Mês e Ano',
+                    'Agendamentos: Filtra por data, status (compareceu/faltou), fisioterapeuta, paciente',
+                    'Evoluções: Filtra por dia/mês/ano, paciente e fisioterapeuta',
+                    'Financeiro: Filtra por data, faixa de valores (R$ mín/máx), profissional e convênio',
+                    'Intervalo de Datas - escolhe data início e data fim para períodos personalizados',
+                    'Dados Preservados - filtros não apagam nada, só mostram o que você quer ver',
+                    'Botão Limpar Filtros - volta a mostrar todos os dados com 1 clique',
+                    'Modal Extenso - 800px de largura, bem organizado e fácil de usar'
+                ],
+                improvements: [
+                    'Sistema detecta automaticamente qual página você está e abre a aba certa',
+                    'Filtros funcionam em tempo real - aplica e vê resultado na hora',
+                    'Busca inteligente - não precisa escrever o nome completo',
+                    'Combina vários filtros ao mesmo tempo',
+                    'Interface moderna com gradiente roxo no botão',
+                    'Totalmente responsivo - funciona perfeito em celular',
+                    'Animações suaves ao abrir e trocar de abas',
+                    'Dados acumulativos corrigidos - agendamentos somam ao invés de substituir',
+                    'Data correta mantida - cada registro mantém a data que foi enviado',
+                    'Cálculo de dias úteis (Seg-Sex) para períodos de trabalho'
+                ]
+            },
+            {
                 version: '1.1.2',
                 date: 'Novembro de 2025',
                 title: 'Sistema de Cores e Modais Padronizados',

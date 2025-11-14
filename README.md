@@ -7,7 +7,7 @@
   
   *Desenvolvido por Lucas Tavares para ESEFID/UFRGS - Clínica de Fisioterapia*
   
-  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.2-brightgreen)](#)
+  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.3-brightgreen)](#)
   [![Licença](https://img.shields.io/badge/licen%C3%A7a-Portf%C3%B3lio%20Profissional-blue)](#direitos-autorais)
   [![Desenvolvedor](https://img.shields.io/badge/desenvolvedor-Lucas%20Tavares-informational)](#)
   [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
@@ -99,6 +99,14 @@ Desenvolvido com tecnologias vanilla **JavaScript, HTML5 e CSS3**, oferece:
 - **Limpeza Modular**: Remova dados de forma independente por módulo
 - **Histórico de Versões**: Rastreamento completo de atualizações do sistema
 
+### 🔍 Sistema Unificado de Filtros (v1.1.3)
+- **Botão Global**: Acesso rápido a filtros de todas as páginas
+- **Modal com 3 Abas**: Filtros específicos para Evoluções, Financeiro e Agendamentos
+- **Filtros Rápidos de Período**: Dia, Semana (Seg-Sex), 15 Dias, Mês, Ano
+- **Filtros Personalizados**: Data, valores, profissionais, status, pacientes
+- **Preservação de Dados**: Filtros não alteram dados salvos, apenas visualização
+- **Busca Inteligente**: Busca parcial por nomes e termos
+
 ---
 
 ## 🛠️ Tecnologias Utilizadas
@@ -164,10 +172,15 @@ O projeto foi deliberadamente desenvolvido sem frameworks ou bibliotecas externa
    - **Profissionais**: Contribuição individual de cada terapeuta
    - **Pacientes**: Segmentação entre particulares e isentos
 
-3. **Filtros Avançados**
-   - Clique em "Filtrar" para refinar análises
-   - Selecione período, especialidade ou profissional
-   - Aplique para visualizar dados específicos
+3. **Filtros Avançados (v1.1.3)**
+   - Clique no botão "🔍 Filtros" no header (topo direito)
+   - Sistema detecta automaticamente qual módulo você está usando
+   - Modal abre com 3 abas: Evoluções, Financeiro, Agendamentos
+   - Configure filtros desejados (data, valores, pessoas, status)
+   - Use botões rápidos de período: Dia, Semana, 15 Dias, Mês, Ano
+   - Clique "Aplicar Filtros" para visualizar dados filtrados
+   - Clique "Limpar Filtros" para restaurar visualização completa
+   - Dados originais são preservados - filtros só afetam visualização
 
 4. **Limpeza de Dados**
    - Use "Limpar Financeiro" para remover dados deste módulo
@@ -204,33 +217,48 @@ ZenfisioAutoGerenciamento/
 │   ├── animations.css                  # Sistema de animações
 │   ├── financial-module.css            # Estilos módulo financeiro
 │   ├── evolucoes-tabs.css             # Estilos abas evoluções
-│   ├── modal-styles.css               # Estilos modais
-│   ├── filter-styles.css              # Estilos filtros
+│   ├── filter-styles.css              # Estilos filtros legados
+│   ├── filter-modal-styles.css        # Estilos modais de filtros
+│   ├── unified-filter-modal.css       # Estilos sistema unificado (v1.1.3)
 │   ├── floating-cards.css             # Cartões flutuantes
-│   ├── date-filters.css               # Filtros de data
-│   └── instructions-styles.css        # Estilos instruções
+│   ├── schedules-module.css           # Estilos módulo agendamentos
+│   └── patient-details-modal.css      # Modal detalhes paciente
 │
 ├── frontend/
 │   ├── js/
-│   │   ├── app.js                          # Inicialização aplicação
+│   │   ├── main.js                        # Inicialização aplicação
+│   │   ├── ui.js                          # Interface principal
 │   │   ├── financial-ui.js                # Interface financeira
 │   │   ├── financial-analyzer.js          # Análise de dados financeiros
 │   │   ├── financial-parser.js            # Parser dados financeiros
-│   │   ├── parser.js                      # Parser geral
+│   │   ├── financial-integration.js       # Integração módulo financeiro
 │   │   ├── parser-agendamentos.js         # Parser agendamentos
-│   │   ├── analytics.js                   # Analytics evoluções
-│   │   ├── analytics-financeiro.js        # Analytics financeiro
+│   │   ├── schedules-parser.js            # Parser agendamentos (novo)
+│   │   ├── schedules-analyzer.js          # Análise de agendamentos
+│   │   ├── schedules-ui.js                # Interface agendamentos
+│   │   ├── schedules-integration.js       # Integração módulo agendamentos
+│   │   ├── evolucoes-analyzer.js          # Análise evoluções
+│   │   ├── evolucoes-ui.js                # Interface evoluções
 │   │   ├── evolucoes-integration.js       # Integração evoluções
-│   │   ├── financial-integration.js       # Integração financeira
 │   │   ├── data-manager.js                # Gerenciamento dados
 │   │   ├── clear-data-manager.js          # Limpeza modular
-│   │   ├── filter-modal.js                # Lógica filtros
-│   │   ├── filter-modal-integration.js    # Integração filtros
+│   │   ├── filter-system.js               # Sistema de filtros base
+│   │   ├── filter-modal.js                # Modal filtros legado
+│   │   ├── filter-modal-integration.js    # Integração filtros legado
+│   │   ├── unified-filter-modal.js        # Modal filtros unificado (v1.1.3)
+│   │   ├── unified-filter-system.js       # Sistema filtros unificado (v1.1.3)
+│   │   ├── unified-filter-integration.js  # Integração filtros (v1.1.3)
 │   │   ├── confirmation-modal.js          # Modal confirmação
-│   │   ├── export-import-manager.js       # Exportação/importação
-│   │   ├── transitions.js                 # Transições módulos
-│   │   ├── app-transitions-integration.js # Integração transições
-│   │   └── history.js                     # Histórico versões
+│   │   ├── export-import-manager-v2.js    # Exportação/importação
+│   │   ├── notifications.js               # Sistema de notificações
+│   │   ├── theme.js                       # Tema claro/escuro
+│   │   ├── date.js                        # Gerenciamento de datas
+│   │   ├── history.js                     # Histórico versões
+│   │   ├── how-to-use.js                  # Modal instruções
+│   │   ├── modal.js                       # Sistema de modais
+│   │   ├── ui-state-manager.js            # Gerenciamento de estado UI
+│   │   ├── data-sync.js                   # Sincronização de dados
+│   │   └── string-utils.js                # Utilitários de string
 │   │
 │   └── css/                            # Estilos alternativos (organizados)
 │
@@ -290,6 +318,117 @@ O sistema utiliza algoritmos sofisticados para:
 - **Validação**: Verifica integridade dos dados
 - **Categorização**: Classifica automaticamente informações
 - **Agregação**: Consolida dados de múltiplas fontes
+
+### 🔍 Sistema Unificado de Filtros (v1.1.3)
+
+Sistema completo de filtros avançados que atende **todas as páginas** do sistema através de um único botão global.
+
+#### Acesso ao Sistema de Filtros
+
+**Botão Global no Header:**
+- 🎨 Botão roxo com gradiente (`#667eea` → `#764ba2`)
+- 📍 Localizado no header (topo direito), ao lado do botão de atualizar
+- 🔍 Texto: "🔍 Filtros"
+- ✨ Animação ao passar o mouse (translateY -2px)
+- 📱 Totalmente responsivo
+
+#### Estrutura do Modal
+
+**Modal Extenso Centralizado:**
+- 📐 Largura máxima: 800px
+- 📏 Altura máxima: 90vh
+- 🎯 Centralizado na tela
+- 🌓 Backdrop escuro com blur (rgba(0,0,0,0.6) + blur(4px))
+- ✨ Animação de entrada: slideInScale (0.4s cubic-bezier)
+
+**Navegação por Abas:**
+1. **📋 Evoluções** - Filtros para evoluções pendentes
+2. **💰 Financeiro** - Filtros para análise financeira
+3. **📅 Agendamentos** - Filtros para agendamentos e faltas
+
+#### Filtros Disponíveis
+
+**Aba Agendamentos:**
+
+*Filtros Rápidos de Período:*
+- 📅 **Dia Específico** - Filtra apenas o dia selecionado
+- 📆 **Semana (Seg-Sex)** - Segunda a sexta da semana atual
+- 🗓️ **15 Dias (Seg-Sex)** - 15 dias úteis a partir de hoje
+- 📊 **Mês Completo** - Do primeiro ao último dia do mês
+- 📈 **Ano Completo** - 1º de janeiro a 31 de dezembro
+
+*Filtros Manuais:*
+- 📅 **Data**: Dia / Mês / Ano (campos individuais)
+- 📆 **Intervalo**: Data Início → Data Fim (seletor de datas)
+- ✅ **Status**: Todos / Compareceu / Faltou
+- 👨‍⚕️ **Fisioterapeuta**: Busca parcial por nome
+- 👤 **Paciente**: Busca parcial por nome
+
+**Aba Evoluções:**
+- 📅 **Data**: Dia / Mês / Ano
+- 👤 **Paciente**: Busca por nome (case-insensitive)
+- 👨‍⚕️ **Fisioterapeuta**: Busca por nome
+
+**Aba Financeiro:**
+- 📅 **Data**: Dia / Mês / Ano
+- 💵 **Valor Mínimo**: R$ (campo numérico)
+- 💰 **Valor Máximo**: R$ (campo numérico)
+- 👨‍⚕️ **Profissional**: Busca por nome
+- 🏥 **Convênio**: Busca por convênio
+
+#### Funcionamento
+
+**Detecção Automática:**
+- Sistema detecta qual módulo está ativo
+- Abre modal na aba correspondente automaticamente
+- Mantém último filtro usado ao reabrir
+
+**Aplicação de Filtros:**
+1. Configure os filtros desejados
+2. Clique "✓ Aplicar Filtros"
+3. Dados são filtrados em tempo real
+4. UI atualiza instantaneamente
+5. Dados originais preservados
+
+**Limpeza de Filtros:**
+- Botão "✕ Limpar Filtros" em cada aba
+- Remove todos os filtros ativos
+- Restaura visualização completa
+- Não afeta dados salvos
+
+**Preservação de Dados:**
+- ⚠️ **IMPORTANTE**: Filtros **NÃO** alteram dados salvos
+- Dados originais mantidos no `DataManager`
+- Filtros afetam apenas visualização
+- Pode aplicar e limpar filtros à vontade
+
+#### Características Técnicas
+
+**Arquitetura Modular:**
+```javascript
+UnifiedFilterModal      → Interface e coleta de inputs
+UnifiedFilterSystem     → Lógica de aplicação de filtros  
+UnifiedFilterIntegration → Conexão com módulos
+```
+
+**Algoritmos de Filtragem:**
+- Busca case-insensitive
+- Match parcial em strings
+- Comparação de datas inteligente
+- Suporte a intervalos
+- Preservação de dados originais
+
+**Cálculo de Períodos:**
+- **Semana**: Detecta segunda-feira da semana atual
+- **15 Dias**: Conta apenas dias úteis (Seg-Sex)
+- **Mês**: Primeiro ao último dia do mês
+- **Ano**: 1º janeiro a 31 dezembro
+
+**Responsividade:**
+- Desktop: Grid auto-fit, modal 800px
+- Mobile: Colunas empilhadas, botões 2 colunas
+- Toque otimizado para mobile
+- Teclado otimizado para desktop
 
 ### 💬 Modal de Confirmação Personalizado
 
