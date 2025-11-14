@@ -164,14 +164,20 @@ class ExportImportManagerV2 {
 
             // ===== METADADOS =====
             metadata: {
-                versao: '2.0.0.1',
+                versao: window.SYSTEM_INFO?.version || '2.0.0.1',
+                sistema: window.SYSTEM_INFO?.name || 'Zenfisio Auto Gerenciamento',
+                desenvolvedor: window.SYSTEM_INFO?.developer?.name || 'Desconhecido',
+                diretora: window.SYSTEM_INFO?.director?.name || 'Não informada',
+                instituicao: window.SYSTEM_INFO?.institution?.name || 'Zenfisio',
+                universidade: window.SYSTEM_INFO?.university?.name || 'Não informada',
                 dataExportacao: new Date().toISOString(),
                 dataFormatada: new Date().toLocaleDateString('pt-BR'),
                 horarioFormatado: new Date().toLocaleTimeString('pt-BR'),
                 usuario: 'Clinica Zenfisio',
-                sistema: navigator.userAgent,
+                userAgent: navigator.userAgent,
                 resolucao: `${window.innerWidth}x${window.innerHeight}`,
-                navegador: this._getBrowserInfo()
+                navegador: this._getBrowserInfo(),
+                copyright: window.SYSTEM_INFO?.copyright || '© 2025 Zenfisio. Todos os direitos reservados.'
             },
 
             // ===== RESUMO PARA VALIDAÇÃO =====
@@ -418,18 +424,36 @@ class ExportImportManagerV2 {
     formatToTxt(allData) {
         let txt = '';
         
-        txt += '═'.repeat(80) + '\n';
-        txt += '📊 BACKUP COMPLETO - ZENFISIO MANAGER\n';
-        txt += '═'.repeat(80) + '\n\n';
+        txt += '╔' + '═'.repeat(78) + '╗\n';
+        txt += '║' + ' '.repeat(20) + '🏥 ' + allData.metadata.sistema.toUpperCase() + ' '.repeat(78 - 23 - allData.metadata.sistema.length) + '║\n';
+        txt += '║' + ' '.repeat(24) + 'v' + allData.metadata.versao + ' '.repeat(78 - 25 - allData.metadata.versao.length) + '║\n';
+        txt += '║' + ' '.repeat(25) + 'RELATÓRIO COMPLETO' + ' '.repeat(78 - 43) + '║\n';
+        txt += '╠' + '═'.repeat(78) + '╣\n';
+        txt += '║' + ' '.repeat(78) + '║\n';
+        txt += '║  👨‍💻 DESENVOLVEDOR' + ' '.repeat(57) + '║\n';
+        txt += '║     ' + allData.metadata.desenvolvedor + ' '.repeat(78 - 5 - allData.metadata.desenvolvedor.length) + '║\n';
+        txt += '║' + ' '.repeat(78) + '║\n';
+        txt += '║  👩‍💼 DIRETORA' + ' '.repeat(64) + '║\n';
+        txt += '║     ' + allData.metadata.diretora + ' '.repeat(78 - 5 - allData.metadata.diretora.length) + '║\n';
+        txt += '║' + ' '.repeat(78) + '║\n';
+        txt += '║  🏢 INSTITUIÇÃO' + ' '.repeat(60) + '║\n';
+        txt += '║     ' + allData.metadata.instituicao + ' '.repeat(78 - 5 - allData.metadata.instituicao.length) + '║\n';
+        txt += '║' + ' '.repeat(78) + '║\n';
+        txt += '║  🎓 UNIVERSIDADE' + ' '.repeat(59) + '║\n';
+        txt += '║     ' + allData.metadata.universidade + ' '.repeat(78 - 5 - allData.metadata.universidade.length) + '║\n';
+        txt += '║' + ' '.repeat(78) + '║\n';
+        txt += '║  © ' + allData.metadata.copyright + ' '.repeat(78 - 4 - allData.metadata.copyright.length) + '║\n';
+        txt += '║' + ' '.repeat(78) + '║\n';
+        txt += '╚' + '═'.repeat(78) + '╝\n\n';
 
         // Metadados
-        txt += '📋 METADADOS\n';
+        txt += '📋 METADADOS DO BACKUP\n';
         txt += '─'.repeat(80) + '\n';
-        txt += `Versão: ${allData.metadata.versao}\n`;
-        txt += `Data: ${allData.metadata.dataFormatada}\n`;
-        txt += `Hora: ${allData.metadata.horarioFormatado}\n`;
+        txt += `Versão do Sistema: ${allData.metadata.versao}\n`;
+        txt += `Data do Backup: ${allData.metadata.dataFormatada}\n`;
+        txt += `Hora do Backup: ${allData.metadata.horarioFormatado}\n`;
         txt += `Navegador: ${allData.metadata.navegador}\n`;
-        txt += `Resolução: ${allData.metadata.resolucao}\n\n`;
+        txt += `Resolução da Tela: ${allData.metadata.resolucao}\n\n`;
 
         // Resumo Evoluções
         txt += '📈 EVOLUÇÕES - RESUMO\n';
@@ -527,14 +551,36 @@ class ExportImportManagerV2 {
     formatToMd(allData) {
         let md = '';
 
-        md += '# 📊 Backup Completo - Zenfisio Manager\n\n';
+        md += '---\n';
+        md += 'layout: report\n';
+        md += 'title: Relatório de Backup Zenfisio\n';
+        md += `version: ${allData.metadata.versao}\n`;
+        md += `date: ${allData.metadata.dataFormatada}\n`;
+        md += '---\n\n';
+
+        md += '# 🏥 ' + allData.metadata.sistema + ' - v' + allData.metadata.versao + '\n\n';
+        md += 'Relatório Completo de Backup do Sistema\n\n';
         
-        md += '## 📋 Informações do Backup\n\n';
-        md += `- **Versão**: ${allData.metadata.versao}\n`;
-        md += `- **Data**: ${allData.metadata.dataFormatada}\n`;
-        md += `- **Hora**: ${allData.metadata.horarioFormatado}\n`;
-        md += `- **Navegador**: ${allData.metadata.navegador}\n`;
-        md += `- **Resolução**: ${allData.metadata.resolucao}\n\n`;
+        md += '## 📋 Informações Profissionais\n\n';
+        md += `| Informação | Detalhes |\n`;
+        md += `|-----------|----------|\n`;
+        md += `| **Sistema** | ${allData.metadata.sistema} |\n`;
+        md += `| **Versão** | ${allData.metadata.versao} |\n`;
+        md += `| **Desenvolvedor** | ${allData.metadata.desenvolvedor} |\n`;
+        md += `| **Diretora** | ${allData.metadata.diretora} |\n`;
+        md += `| **Instituição** | ${allData.metadata.instituicao} |\n`;
+        md += `| **Universidade** | ${allData.metadata.universidade} |\n\n`;
+
+        md += '---\n\n';
+
+        md += '## 📚 Informações do Backup\n\n';
+        md += `- **Data de Backup**: ${allData.metadata.dataFormatada}\n`;
+        md += `- **Hora de Backup**: ${allData.metadata.horarioFormatado}\n`;
+        md += `- **Navegador Utilizado**: ${allData.metadata.navegador}\n`;
+        md += `- **Resolução**: ${allData.metadata.resolucao}\n`;
+        md += `- **Copyright**: ${allData.metadata.copyright}\n\n`;
+
+        md += '---\n\n';
 
         md += '## 📈 Resumo de Evoluções\n\n';
         md += `| Métrica | Valor |\n`;
@@ -611,11 +657,20 @@ class ExportImportManagerV2 {
             // Coleta todos os dados
             const allData = this.collectAllDataComprehensive();
 
+            // Logs detalhados
+            console.log('📊 DADOS COLETADOS:');
+            console.log(`   ✅ Evoluções: ${allData.resumo.evolucoes.total} registros`);
+            console.log(`   ✅ Financeiro: ${allData.resumo.financeiro.totalRecords} records / ${allData.resumo.financeiro.totalAtendimentos} atendimentos`);
+            console.log(`   ✅ Agendamentos: ${allData.resumo.agendamentos.totalAgendamentos} registros (${allData.resumo.agendamentos.totalCompareceram} compareceram, ${allData.resumo.agendamentos.totalFaltaram} faltaram)`);
+
             // Valida se há dados
             const temEvol = allData.resumo.evolucoes.total > 0;
             const temFin = allData.resumo.financeiro.totalAtendimentos > 0;
+            const temAgend = allData.resumo.agendamentos.totalAgendamentos > 0;
 
-            if (!temEvol && !temFin) {
+            console.log(`📋 Validação: Evoluções=${temEvol}, Financeiro=${temFin}, Agendamentos=${temAgend}`);
+
+            if (!temEvol && !temFin && !temAgend) {
                 this.showNotification('Nenhum dado para exportar', 'warning');
                 return;
             }
@@ -661,11 +716,13 @@ class ExportImportManagerV2 {
             console.log(`✅ Download iniciado: ${filename}`);
             console.log(`   Tamanho: ${(blob.size / 1024).toFixed(2)} KB`);
 
-            // Notificações
-            this.showNotification(`Backup exportado com sucesso!`, 'success', 3000);
-            this.showNotification(`Formato: ${format.toUpperCase()}`, 'info', 2000);
-            this.showNotification(`Tamanho: ${(blob.size / 1024).toFixed(2)} KB`, 'info', 2000);
-            this.showNotification(`Arquivo: ${filename}`, 'info', 3000);
+            // Notificações com detalhes
+            this.showNotification(`✅ Backup exportado com sucesso!`, 'success', 3000);
+            this.showNotification(`📊 ${allData.resumo.evolucoes.total} evoluções exportadas`, 'info', 2500);
+            this.showNotification(`💰 ${allData.resumo.financeiro.totalAtendimentos} atendimentos financeiros exportados`, 'info', 2500);
+            this.showNotification(`📋 ${allData.resumo.agendamentos.totalAgendamentos} agendamentos exportados`, 'info', 2500);
+            this.showNotification(`📁 Arquivo: ${filename}`, 'info', 3000);
+            this.showNotification(`💾 Tamanho: ${(blob.size / 1024).toFixed(2)} KB`, 'info', 2000);
 
         } catch (error) {
             console.error('❌ Erro ao exportar:', error);
@@ -703,11 +760,15 @@ class ExportImportManagerV2 {
                     }
 
                     console.log(`✅ Arquivo validado - Versão: ${importedData.metadata.versao}`);
+                    console.log('📊 DADOS A IMPORTAR:');
+
+                    let contEvol = 0, contFin = 0, contAgend = 0;
 
                     // Restaura evoluções
                     if (importedData.evolucoes?.registros?.length > 0) {
+                        contEvol = importedData.evolucoes.registros.length;
                         window.dataManager.addEvolucoes(importedData.evolucoes.registros);
-                        console.log(`✅ ${importedData.evolucoes.registros.length} evoluções restauradas`);
+                        console.log(`   ✅ ${contEvol} evoluções restauradas`);
 
                         // Recarrega na interface
                         if (window.evolucoesIntegration?.analyzer) {
@@ -719,6 +780,7 @@ class ExportImportManagerV2 {
 
                     // Restaura financeiro
                     if (importedData.financeiro?.records?.length > 0) {
+                        contFin = importedData.financeiro.records.length;
                         const records = importedData.financeiro.records;
                         const analysis = {
                             summary: importedData.financeiro.resumo,
@@ -729,7 +791,7 @@ class ExportImportManagerV2 {
                         };
 
                         window.dataManager.addFinanceiro(analysis, records);
-                        console.log(`✅ ${records.length} registros financeiros restaurados`);
+                        console.log(`   ✅ ${contFin} registros financeiros restaurados`);
 
                         // Recarrega na interface
                         if (window.financialIntegration?.ui) {
@@ -737,21 +799,36 @@ class ExportImportManagerV2 {
                         }
                     }
 
+                    // Restaura agendamentos
+                    if (importedData.agendamentos?.dadosCompletos) {
+                        const schedulesData = importedData.agendamentos.dadosCompletos;
+                        contAgend = (schedulesData.compareceram?.length || 0) + (schedulesData.faltaram?.length || 0);
+                        window.dataManager.addSchedules(schedulesData);
+                        console.log(`   ✅ ${contAgend} agendamentos restaurados`);
+
+                        // Recarrega na interface
+                        if (window.schedulesIntegration?.analyzer) {
+                            window.schedulesIntegration.analyzer.restaurarDados(schedulesData);
+                            window.schedulesIntegration.ui?.render?.();
+                        }
+                    }
+
                     console.log('✅ Importação concluída!');
 
-                    // Notificações
-                    this.showNotification('Backup restaurado com sucesso!', 'success', 3000);
-                    this.showNotification(`${importedData.resumo.evolucoes.total} evoluções restauradas`, 'info', 2000);
-                    this.showNotification(`${importedData.resumo.financeiro.totalAtendimentos} atendimentos restaurados`, 'info', 2000);
-                    this.showNotification('Página recarregando...', 'info', 2000);
+                    // Notificações com detalhes
+                    this.showNotification('✅ Backup restaurado com sucesso!', 'success', 3000);
+                    this.showNotification(`📊 ${contEvol} evoluções restauradas`, 'info', 2500);
+                    this.showNotification(`💰 ${importedData.resumo.financeiro.totalAtendimentos} atendimentos financeiros restaurados`, 'info', 2500);
+                    this.showNotification(`📋 ${contAgend} agendamentos restaurados`, 'info', 2500);
+                    this.showNotification('🔄 Página recarregando em 3 segundos...', 'info', 2000);
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2500);
+                    }, 3000);
 
                 } catch (error) {
                     console.error('❌ Erro ao importar:', error);
-                    this.showNotification('Erro ao importar', 'error');
+                    this.showNotification('❌ Erro ao importar arquivo', 'error');
                     this.showNotification(error.message, 'warning', 4000);
                 }
             };
@@ -761,7 +838,7 @@ class ExportImportManagerV2 {
 
         } catch (error) {
             console.error('❌ Erro:', error);
-            this.showNotification('Erro ao importar', 'error');
+            this.showNotification('Erro ao processar arquivo', 'error');
         }
     }
 

@@ -7,7 +7,7 @@
   
   *Desenvolvido por Lucas Tavares para ESEFID/UFRGS - Clínica de Fisioterapia*
   
-  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.1-brightgreen)](#)
+  [![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1.2-brightgreen)](#)
   [![Licença](https://img.shields.io/badge/licen%C3%A7a-Portf%C3%B3lio%20Profissional-blue)](#direitos-autorais)
   [![Desenvolvedor](https://img.shields.io/badge/desenvolvedor-Lucas%20Tavares-informational)](#)
   [![Ano](https://img.shields.io/badge/ano-2025-informational)](#)
@@ -688,215 +688,24 @@ Sugestões de melhorias são bem-vindas e devem ser:
 
 ---
 
-## 🗺️ Plano de Evolução (Roadmap)
-
-### Versão 1.1.0 (Prevista para Q1 2025)
-- [ ] Integração com banco de dados local (SQLite)
-- [ ] Autenticação multi-usuário com permissões
-- [ ] Geração de relatórios em PDF
-- [ ] Agendamento integrado de atendimentos
-- [ ] Sincronização com Google Calendar
-
-### Versão 1.2.0 (Prevista para Q2 2025)
-- [ ] Aplicativo mobile para iOS/Android
-- [ ] Notificações em tempo real
-- [ ] Integração com WhatsApp Business
-- [ ] SMS automático para confirmação
-- [ ] Backup automático em armazenamento local criptografado
-
-### Versão 2.0.0 (Futuro - 2025/2026)
-- [ ] Analytics avançado com IA
-- [ ] Dashboard executivo com KPIs customizáveis
-- [ ] Gestão de estoque e equipamentos
-- [ ] Integração contábil avançada
-- [ ] API interna para sistemas parceiros
-
----
-
 ## 📈 Informações do Sistema
 
 | Informação | Valor |
 |-----------|-------|
-| **Versão Atual** | 1.1.1 |
+| **Versão Atual** | 1.1.2 |
 | **Data de Lançamento** | Novembro de 2025 |
-| **Desenvolvedor** | Lucas Tavares |
+| **Desenvolvedor** | GameDev Necromante96Official (Lucas Tavares Mattos) |
+| **Diretora Autorizante** | Fernanda Tambosi Varella - ESEFID/UFRGS |
 | **Instituição** | ESEFID/UFRGS - Clínica de Fisioterapia |
+| **Universidade** | UFRGS - Universidade Federal do Rio Grande do Sul |
 | **Ano de Desenvolvimento** | 2025 |
-| **Linhas de Código** | 15.000+ |
+| **Linhas de Código** | 20.000+ |
 | **Módulos Principais** | 3 (Evoluções, Financeiro, Agendamentos) |
-| **Arquivos CSS** | 2.500+ linhas |
+| **Arquivos CSS** | 3.000+ linhas |
 | **Dependências Externas** | Nenhuma (Vanilla Stack) |
-| **Tamanho** | ~150 KB |
+| **Tamanho Total** | ~200 KB |
 | **Performance** | 95+ (Lighthouse Score) |
-
----
-
-## 🌟 Histórico de Versões
-
-### Versão 1.1.1 (Novembro 2025) - ATUAL ✨
-
-**🎨 Sistema de Cores e Modais Padronizados**
-
-Atualização focada em experiência visual, acessibilidade e consistência de design. Os 3 modais do sistema foram completamente padronizados com paleta de cores do sistema aplicada mediante CSS Variables.
-
-**🚀 Melhorias Implementadas:**
-- ✅ **Padronização de 3 Modais** - Agendamentos, Detalhes do Paciente e Floating Cards com layout consistente
-- ✅ **Layout Horizontal Otimizado** - Header no lado esquerdo, conteúdo em grid 2 colunas no lado direito
-- ✅ **Cores do Sistema CSS Variables** - Implementação de `var(--bg-primary)`, `var(--bg-secondary)`, `var(--text-primary)`, `var(--text-secondary)`
-- ✅ **Verde Zenfisio (#2fbe8f)** - Gradiente linear `to right` em headers de todos os modais
-- ✅ **Tema Escuro Primário (#0f0f0f)** - `var(--bg-primary)` para fundo dos containers
-- ✅ **Tema Secundário (#1a1a1a)** - `var(--bg-secondary)` para corpo dos modais
-- ✅ **Cards Cinza (#252525)** - `var(--bg-card)` para elementos internos (boxes, cards, stats)
-- ✅ **Texto Alto Contraste (#f5f5f5)** - `var(--text-primary)` em tema escuro para máxima legibilidade
-- ✅ **Texto Secundário (#b0b0b0)** - `var(--text-secondary)` para legendas e texto ajudante
-- ✅ **Botão X Repositionado** - Absolutamente posicionado `top: 1rem, right: 1rem` em todos os modais
-- ✅ **Grid Layout Compactado** - 2 colunas com gap `1.2rem` para melhor organização visual
-- ✅ **Dimensões Responsivas** - `max-width: 1100px`, `max-height: 65vh`, totalmente centralizados
-- ✅ **Overlay Aprimorado** - Opacidade `0.7` com `backdrop-filter: blur(5px)` para hierarquia visual clara
-- ✅ **Sem Animações** - Mantidas conforme solicitado (design clean e direto)
-- ✅ **Validação CSS** - Zero erros em todos 3 arquivos CSS principais (schedules-module.css, patient-details-modal.css, floating-cards.css)
-- ✅ **Arquivo Obsoleto Removido** - `schedules-module-old.css` deletado (versão antiga não referenciada)
-- ✅ **Acessibilidade de Texto** - Cores de texto ajustam automaticamente conforme tema do sistema
-
-**🐛 Correções Implementadas:**
-- ✅ Texto em modais agora visível em tema escuro (cor atualizada para `var(--text-primary)`)
-- ✅ Botão X visível em tema escuro (cor alterada de `white` para `var(--text-primary)`)
-- ✅ Modais centrados corretamente com `position: absolute` + `transform: translate(-50%, -50%)`
-- ✅ Overlay aumentado de opacidade `0.5` para `0.7` para melhor contraste
-- ✅ Arquivo CSS obsoleto removido (sem impacto, não estava referenciado)
-- ✅ Consistência visual entre os 3 modais garantida
-
-**📐 Especificações Técnicas:**
-- **Header Modal**: Largura mínima 180px, gradiente verde de `#2fbe8f` a `#1a9970`
-- **Container Modal**: max-width 1100px, max-height 65vh, 8px border-radius
-- **Overlay Modal**: rgba(0,0,0,0.7) com 5px backdrop blur
-- **Grid Conteúdo**: 2 colunas, gap 1.2rem, padding 1.5rem
-- **Posicionamento**: Centralizado com `top: 50%`, `left: 50%`, `transform: translate(-50%, -50%)`
-- **Z-index**: 10000+ para garantir visibilidade acima de outros elementos
-
-**🎯 Benefícios da Atualização:**
-- Experiência visual **consistente em todo o sistema**
-- **Acessibilidade melhorada** com alto contraste texto/fundo
-- **Tema automático** - cores invertem perfeitamente em tema claro (data-theme="light")
-- **Manutenção facilitada** - CSS variables permitem mudanças globais com uma variável
-- **Design profissional** - paleta de cores padronizada em tudo
-- **Performance mantida** - nenhum overhead adicional
-- **Responsivo** - funciona perfeitamente em mobile, tablet e desktop
-
-**📊 Arquivos Modificados:**
-- `css/schedules-module.css` - Cores atualizadas, layout otimizado
-- `css/patient-details-modal.css` - Cores do sistema aplicadas
-- `css/floating-cards.css` - Cores e layout padronizados
-- `frontend/js/history.js` - Entrada v1.1.1 adicionada
-- `index.html` - Version badge atualizada para 1.1.1
-- `README.md` - Documentação completa desta versão
-
-**👨‍💻 Informações de Desenvolvimento:**
-- Desenvolvido por: Lucas Tavares
-- Autorização: Fernanda Tambosi Varella (Diretora - ESEFID/UFRGS)
-- Contexto: Continuação do projeto profissional voluntário
-- Objetivo: Melhorar UX/UI com design system consistente
-
----
-
-### Versão 1.1.0 (Novembro 2025)
-
-**🚀 Melhorias Implementadas:**
-- ✅ **Novo Módulo Agendamentos** - Sistema completo de gerenciamento de agendamentos
-- ✅ **Visualização de Agendamentos** - Cards mostrando comparecimentos, faltas e total
-- ✅ **Botão "Limpar Tudo"** - Remove dados de todos os módulos simultaneamente
-- ✅ **Confirmação de Segurança** - Dialog pergunta antes de limpar tudo para evitar acidentes
-- ✅ **Limpeza Completa** - localStorage, analyzer properties e DOM todos limpos
-- ✅ **Auto-reload após Limpeza** - Página recarrega automaticamente para estado limpo
-- ✅ **Layout Agendamentos Horizontal** - Aproveita tela cheia sem espaço cinza desperdiçado
-- ✅ **Botão Limpar Agendamentos** - Posicionado na aba esquerda para fácil acesso
-- ✅ **Modal "Como Usar" Completo** - 8 passos detalhados com instruções acessíveis
-- ✅ **4 Caixas de Informação** - Verde (dicas), Vermelho (avisos), Azul (formato), Amarelo (ajuda)
-- ✅ **Animações de Reveal** - Passos aparecem com animação elegante em cascata
-- ✅ **Typography Melhorada** - Textos maiores e mais legíveis para melhor compreensão
-- ✅ **Documentação Acessível** - Linguagem simples para usuários comuns entenderem tudo
-
-**🐛 Correções Implementadas:**
-- ✅ Layout Agendamentos sem espaço cinza excessivo (max-width removido)
-- ✅ Título de Agendamentos não duplicado mais (apenas HTML header)
-- ✅ Dados de Agendamentos agora limpam completamente (analyzer properties limpas)
-- ✅ localStorage limpo integralmente com pattern matching
-- ✅ Página sincroniza corretamente após limpeza de dados
-
-**📊 Novo em v1.1.0:**
-- Terceiro módulo completo - Agendamentos com análise
-- Controle centralizado de dados - "Limpar Tudo" gerencia tudo
-- 8 passos de tutorial em vez de 6 (mais completo)
-- Info boxes coloridas com significados claros
-- Layout responsivo sem desperdiçadores de espaço
-
-**👨‍💻 Informações de Desenvolvimento:**
-- Desenvolvido por: Lucas Tavares
-- Autorização: Fernanda Tambosi Varella (Diretora - ESEFID/UFRGS)
-- Contexto: Projeto profissional voluntário para otimização de processos
-- Objetivo: Resolver deficiências operacionais com análise moderna de dados
-
----
-
-**✨ Memória de Posição + Filtros Avançados**
-
-- ✅ **Memória Completa de Posição do Usuário** - Sistema salva e restaura estado
-- ✅ **Posição em Abas** - Usuário mantém aba ativa ao sincronizar dados
-- ✅ **Scroll Position** - Manutenção de scroll após sincronização
-- ✅ **Filtros Persistentes** - Todos os filtros aplicados são mantidos
-- ✅ **Filtros de Especialidades** - Botões [📊 Todos] [💳 Particulares] [🛡️ Isentos]
-- ✅ **Filtros Avançados de Registros** - 7 filtros por coluna (Data, Horário, Fisio, Paciente, Convênio, Procedimento, Valor)
-- ✅ **Dropdown Expansível** - 🔎 Filtros Avançados recolhível
-- ✅ **Filtros Combinados** - Múltiplos filtros funcionam simultaneamente
-
----
-
-### Versão 1.0.8 (Novembro 2025)
-
-**✨ Sistema de Sincronização Automática (60s) + Botão de Refresh Premium**
-
-- ✅ **Auto-refresh a cada 60 segundos** - Dados sempre frescos
-- ✅ **Botão de refresh visual** - Com animações dinâmicas (spin, pulse, bounce)
-- ✅ **Refresh manual** - Clique no botão 🔄 para atualizar imediatamente
-- ✅ **Notificações de sincronização** - Usuário sabe quando dados foram atualizados
-
----
-
-### Versão 1.0.7 (Novembro 2025)
-
-**✨ Export/Import v2 Completo + Melhorias Finais**
-
-- ✅ **3 Formatos de Exportação** - JSON (técnico), TXT (legível), Markdown (profissional)
-- ✅ **Importação de Backups** - Restaure dados salvos anteriormente
-- ✅ **Botões Visuais** - Escolha o formato desejado facilmente
-- ✅ **Resumo Estatístico** - Cada backup inclui informações de quantos dados foram salvos
-
----
-
-### Versão 1.0.6 (Novembro 2025)
-
-**✨ Sistema de Limpeza Independente & Melhorias de Interface**
-
-**✨ Características Implementadas:**
-- ✅ Modal de confirmação personalizado
-- ✅ Limpeza independente de dados por módulo
-- ✅ Acumulação de dados sem limpeza automática
-- ✅ Documentação completa (README.md)
-- ✅ Estrutura modular e escalável
-- ✅ Botões de filtro e limpeza posicionados corretamente
-- ✅ Termos de uso específicos para instituição
-
-**🐛 Correções Implementadas:**
-- ✅ Renderização correta de dados do Financeiro
-- ✅ Botões funcionando adequadamente
-- ✅ Validações de dados robustas
-- ✅ Tratamento aprimorado de erros
-
-**📚 Documentação Completa:**
-- ✅ README.md com instruções de uso
-- ✅ CHANGELOG.md com histórico
-- ✅ Termos legais claros
-- ✅ Estrutura de arquivos documentada
+| **Compatibilidade** | 100% (Chrome, Firefox, Safari, Edge) |
 
 ---
 
@@ -923,7 +732,7 @@ Desenvolvido por: Lucas Tavares
 Para: ESEFID/UFRGS - Clínica de Fisioterapia
 Autorização: Fernanda Tambosi Varella (Diretora)
 Ano: 2025
-Versão: 1.1.0
+Versão: 1.1.2
 ```
 
 ---
